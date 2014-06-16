@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-md-8">
+        <form id="userProfile">
+            <fieldset>
+                <div class="form-group">
+                    <label for="inputLogin">Login</label>
+                    <input class="form-control" id="inputLogin" placeholder="Login" readonly="true" ng-model="user.login">
+                </div>
+                <div class="form-group">
+                    <label for="inputUserId">User ID</label>
+                    <input class="form-control" id="inputUserId" placeholder="Generated" readonly="true" ng-model="user.id">
+                </div>
+                <div class="form-group">
+                    <label for="inputFirstname">Firstname</label>
+                    <input class="form-control" id="inputFirstname" placeholder="Name" required="true" ng-model="user.firstname">
+                </div>
+                <div class="form-group">
+                    <label for="inputLastname">Lastname</label>
+                    <input class="form-control" id="inputLastname" placeholder="Lastname" required="true" ng-model="user.lastname">
+                </div>
+                <div class="form-group">
+                    <label for="inputEMail">E-Mail</label>
+                    <input class="form-control" id="inputEMail" placeholder="E-Mail" type="email" ng-model="user.email">
+                </div>
+                <div class="form-group">
+                    <label for="inputEMail">Gravatar E-Mail</label>
+                    <input class="form-control" id="inputGravatarMail" placeholder="Gravatar E-Mail" type="email" ng-model="user.gravatarMail">
+                </div>
+                <div class="form-group">
+                    <label for="inputPrimaryRole">Primary Role</label>
+                    <select class="form-control" id="inputPrimaryRole" ng-model="user.primaryRole" ng-options="role as (role.name) for role in roles">
+                        <option value="">-- choose role --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inputStatus">Status</label>
+                    <select class="form-control" id="inputStatus" ng-model="user.status">
+                        <option>active</option>
+                        <option>inactive</option>
+                    </select>
+                </div>
+            </fieldset>
+            <div ng-transclude></div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div style="max-width: 220px; margin: 15px 5px">
+            <label>Profile Preview</label>
+            <img height="220" width="220" ng-src="{{user.gravatarMail ? ('http://www.gravatar.com/avatar/'+(user.gravatarMail | md5)+'?s=220') : user.photo}}">
+            <h1>
+                <span style="color: #333; font-size: 26px; line-height: 30px;">{{currentUser.fullname}}</span>
+                        <span style="display: block; overflow: hidden; width: 100%; font-size: 20px; font-style: normal; font-weight: 300;
+                        line-height: 24px; color: #666; text-overflow: ellipsis;">{{currentUser.login}}</span>
+            </h1>
+            <ul style="list-style: none; padding-left: 0px; padding-top: 15px; padding-bottom: 15px; border-top: 1px solid #428bca; border-bottom: 1px solid #428bca">
+                <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>  {{user.primaryRole.name}}</li>
+                <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-envelope"></i>  {{user.email}}</li>
+                <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-time"></i>  {{user.creationDate | date:'dd.MM.yyyy'}}</li>
+                <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-flag"></i>  {{user.status}}</li>
+            </ul>
+        </div>
+    </div>
+</div>

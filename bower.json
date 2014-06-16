@@ -1,0 +1,19 @@
+{
+    "name": "chell-iam",
+    "version": "0.0.1",
+    "main": [
+       "chell-iam.js"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "angular": "~1.2",
+        "angular-resource": "~1.2",
+        "angular-mocks": "~1.2",
+        "ng-table": "~0.3.2",
+        "underscore": "~1.6",
+        "angular-underscore-module": "",
+        "angular-underscore": "",
+        "angular-md5": "~0.1",
+        "angular-base64": "~2.0"
+    }
+}
