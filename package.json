@@ -17,7 +17,8 @@
     "karma": "~0.12",
     "karma-jasmine": "^0.1.5",
     "phantomjs": "~1.9",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "grunt-karma": "~0.8.3"
   },
   "private": true
 }

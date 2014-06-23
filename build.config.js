@@ -3,7 +3,7 @@
  */
 module.exports = {
 
-    dependency_files: [
+    module_dependencies: [
         //AngularJS
         'bower-components/angular/angular.js',
         'bower-components/angular-resource/angular-resource.js',
@@ -20,14 +20,7 @@ module.exports = {
         //Misc
         'bower-components/angular-md5/angular-md5.js',
         'bower-components/angular-base64/angular-base64.js',
-        'bower-components/ng-table/ng-table.js',
-
-        // module
-        'chell-iam.js',
-        'adapters/MockIamAdapter.js',
-
-        // tests
-        'tests/*.js'
+        'bower-components/ng-table/ng-table.js'
     ],
 
     /**

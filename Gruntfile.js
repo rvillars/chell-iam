@@ -11,6 +11,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-ngmin');
+    grunt.loadNpmTasks('grunt-karma');
 
     /**
      * Load in our build configuration file.
@@ -155,6 +156,25 @@ module.exports = function (grunt) {
             build: {
                 files: ['src/**/*'],
                 tasks: ['build']
+            }
+        },
+        karma: {
+            unit: {
+                options: {
+                    files: [
+                        '<%= module_dependencies %>',
+                        'chell-iam.js',
+                        'adapters/MockIamAdapter.js',
+                        'tests/*.js'
+                    ],
+                    frameworks: [
+                        'jasmine'
+                    ],
+                    singleRun: true,
+                    autoWatch: false,
+                    browsers: ['PhantomJS'],
+                    logLevel: 'INFO'
+                }
             }
         }
     };
