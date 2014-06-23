@@ -14,6 +14,7 @@
         "angular-underscore-module": "",
         "angular-underscore": "",
         "angular-md5": "~0.1",
-        "angular-base64": "~2.0"
+        "angular-base64": "~2.0",
+        "angular-bootstrap": "~0.10.0"
     }
 }
