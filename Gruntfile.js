@@ -163,7 +163,7 @@ module.exports = function (grunt) {
                 options: {
                     files: [
                         '<%= module_dependencies %>',
-                        'chell-iam.js',
+                        '<%= pkg.name %>.js',
                         'adapters/MockIamAdapter.js',
                         'tests/*.js'
                     ],
