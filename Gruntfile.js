@@ -184,13 +184,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', ['jshint', 'ngmin', 'html2js:build', 'concat', 'uglify:src', 'copy', 'less:build', 'example']);
     grunt.registerTask('default', ['watch:hint']);
 
-    /**
-     * The index.html template includes the stylesheet and javascript sources
-     * based on dynamic names calculated in this Gruntfile. This task assembles
-     * the list into variables for the template to use and then runs the
-     * compilation.
-     */
-    grunt.registerTask('example', 'Process index.html template', function () {
+    grunt.registerTask('example', 'Process example .html template', function () {
         grunt.file.copy('src/examples/example1.html', 'examples/example1.html', {
             process: function (contents, path) {
                 return grunt.template.process(contents, {
