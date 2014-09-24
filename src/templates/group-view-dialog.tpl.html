@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <button class="close" ng-click="cancel()">{{'CHELL_IAM.GROUP_VIEW_DIALOG.X_BUTTON' | translate}}</button>
+    <h3>{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUP_TITLE' | translate}}: {{group.name}}</h3>
+</div>
+<div class="modal-body">
+    <form id="groupDetail">
+        <fieldset>
+            <div class="form-group">
+                <label for="inputGroupId">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUP_ID' | translate}}</label>
+                <input class="form-control" id="inputGroupId" placeholder="{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_GROUP_ID' | translate}}" readonly="true" ng-model="group.id">
+            </div>
+            <div class="form-group">
+                <label for="inputGroupName">{{'CHELL_IAM.GROUP_VIEW_DIALOG.NAME' | translate}}</label>
+                <input class="form-control" id="inputGroupName" placeholder="{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_NAME' | translate}}" readonly="true" ng-model="group.name">
+            </div>
+            <div class="form-group">
+                <label for="inputParentGroup">{{'CHELL_IAM.GROUP_VIEW_DIALOG.PARENT_GROUP' | translate}}</label>
+                <input class="form-control" id="inputParentGroup" placeholder="{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_GROUP' | translate}}" readonly="true" ng-model="group.parentId">
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="cancel()">{{'CHELL_IAM.GROUP_VIEW_DIALOG.CLOSE_BUTTON' | translate}}</button>
+</div>
+

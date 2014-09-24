@@ -11,11 +11,11 @@ chellIam.factory('CurrentUserService', function () {
         getCurrentUser: function () {
             return this.currentUser;
         },
-        hasRoleId: function(roleId) {
+        hasGroupId: function(groupId) {
             if (this.currentUser == null) {
                 return false;
             }
-            return this.currentUser.primaryRole.id == roleId;
+            return this.currentUser.primaryGroup.id == groupId;
         }
     };
 });

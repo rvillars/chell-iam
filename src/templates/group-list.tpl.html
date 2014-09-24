@@ -1,0 +1,62 @@
+<div ng-controller="GroupListController">
+    <div ng-show="list">
+        <button class="btn btn-primary btn-xs" ng-click="create()"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'
+            | translate}}
+        </button>
+        <table ng-table="tableParams" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="datatable">
+            <thead>
+            <tr>
+                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate}}</th>
+                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.GROUP_ID' | translate}}</th>
+                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.PARENT' | translate}}</th>
+                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="group in $data">
+                <td>{{group.name}}</td>
+                <td>{{group.id}}</td>
+                <td>{{group.parentId}}</td>
+                <td class="center">
+                    <div class="btn-group btn-group-sm">
+                        <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}" ng-click="view(group)">
+                            <i class="glyphicon glyphicon-zoom-in icon-white"></i>
+                        </a>
+                        <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(group)">
+                            <i class="glyphicon glyphicon-edit icon-white"></i>
+                        </a>
+                        <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(group)">
+                            <i class="glyphicon glyphicon-trash icon-white"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-show="detail">
+        <form id="groupDetail">
+            <fieldset>
+                <div class="form-group">
+                    <label for="inputGroupId">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>
+                    <input class="form-control" id="inputGroupId" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}" readonly="true"
+                           ng-model="editGroup.id"/>
+                </div>
+                <div class="form-group">
+                    <label for="inputGroupname">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>
+                    <input class="form-control" id="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}" required="true"
+                           ng-model="editGroup.name"/>
+                </div>
+                <div class="form-group">
+                    <label for="inputParentGroup">{{'CHELL_IAM.GROUP_LIST.PARENT_GROUP' | translate}}</label>
+                    <select class="form-control" id="inputParentGroup" ng-model="editGroup.parentId"
+                            ng-options="group.id as (group.name) for group in possibleParentGroups">
+                        <option value="">{{'CHELL_IAM.GROUP_LIST.COOSE_GROUP' | translate}}</option>
+                    </select>
+                </div>
+            </fieldset>
+            <button class="btn btn-primary" ng-click="save()">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>
+            <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.GROUP_LIST.CANCEL_BUTTON' | translate}}</button>
+        </form>
+    </div>
+</div>

@@ -23,13 +23,17 @@ module.exports = {
         // Misc
         'bower-components/angular-md5/angular-md5.js',
         'bower-components/angular-base64/angular-base64.js',
-        'bower-components/ng-table/ng-table.js'
+        'bower-components/ng-table/ng-table.js',
+
+        //Angular-Translate
+        'bower-components/angular-translate/angular-translate.js'
     ],
 
     /**
      * These are the files needed for this module and their order
      */
     module_files: [
+        'locale-en.js',
         'interceptors.js',
         'module.js',
         'services.js',

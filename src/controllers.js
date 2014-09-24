@@ -2,7 +2,7 @@
 
 var chellIam = angular.module('chell-iam');
 
-chellIam.controller('UserListController', function ($scope, $modal, IamUser, IamRole, ngTableParams) {
+chellIam.controller('UserListController', function ($scope, $modal, IamUser, IamGroup, ngTableParams) {
 
     $scope.list = true;
     $scope.detail = false;
@@ -10,8 +10,8 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
     $scope.users = [];
     $scope.editUser = {};
 
-    IamRole.query().then(function (roles) {
-        $scope.roles = roles;
+    IamGroup.query().then(function (groups) {
+        $scope.groups = groups;
     });
 
     $scope.$watchCollection('users', function () {
@@ -93,84 +93,84 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
     };
 });
 
-chellIam.controller('RoleListController', function ($scope, $timeout, $modal, IamRole, ngTableParams) {
+chellIam.controller('GroupListController', function ($scope, $timeout, $modal, IamGroup, ngTableParams) {
 
     $scope.list = true;
     $scope.detail = false;
 
-    $scope.roles = [];
-    $scope.editRole = {};
+    $scope.groups = [];
+    $scope.editGroup = {};
 
-    $scope.$watchCollection('roles', function () {
+    $scope.$watchCollection('groups', function () {
         if ($scope.tableParams) {
             $scope.tableParams.reload();
         }
     });
 
-    IamRole.query().then(function (roles) {
-        $scope.roles = roles;
+    IamGroup.query().then(function (groups) {
+        $scope.groups = groups;
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
             count: 10           // count per page
         }, {
-            total: $scope.roles.length, // length of data
+            total: $scope.groups.length, // length of data
             getData: function ($defer, params) {
-                $defer.resolve($scope.roles.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                $defer.resolve($scope.groups.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             },
             $scope: { $data: {}, $emit: function(){} }
         });
 
     });
 
-    $scope.view = function (role) {
+    $scope.view = function (group) {
         $scope.modalInstance = $modal.open({
-            templateUrl: 'templates/role-view-dialog.tpl.html',
+            templateUrl: 'templates/group-view-dialog.tpl.html',
             backdrop: false,
-            controller: 'RoleViewModalController',
+            controller: 'GroupViewModalController',
             windowClass: 'modal-wide',
             resolve: {
-                role: function () {
-                    return role;
+                group: function () {
+                    return group;
                 }
             }
         });
     };
 
     $scope.create = function () {
-        $scope.editRole = {};
-        $scope.possibleParentRoles = $scope.roles.slice(0);
+        $scope.editGroup = {};
+        $scope.possibleParentGroups = $scope.groups.slice(0);
         $scope.showDetail();
     };
 
-    $scope.edit = function (role) {
-        $scope.editRole = role;
-        $scope.possibleParentRoles = $scope.roles.filter(function (role) {
-            return role != $scope.editRole;
+    $scope.edit = function (group) {
+        $scope.editGroup = group;
+        $scope.possibleParentGroups = $scope.groups.filter(function (group) {
+            return group != $scope.editGroup;
         });
         $scope.showDetail();
     };
 
-    $scope.remove = function (role) {
+    $scope.remove = function (group) {
         if (!confirm('Are you sure?')) return;
-        IamRole.remove(role).then(function () {
-            $scope.roles.splice($scope.roles.indexOf(role), 1);
+        IamGroup.remove(group).then(function () {
+            $scope.groups.splice($scope.groups.indexOf(group), 1);
         });
     };
 
     $scope.save = function () {
-        var isNew = $scope.editRole.id == null;
+        var isNew = $scope.editGroup.id == null;
         if (isNew) {
-            IamRole.create($scope.editRole).then(function (role) {
-                $scope.roles.push(role);
+            IamGroup.create($scope.editGroup).then(function (group) {
+                $scope.groups.push(group);
             });
         } else {
-            IamRole.update($scope.editRole).then(function (role) {});
+            IamGroup.update($scope.editGroup).then(function (group) {});
         }
         $scope.cancel();
     };
 
     $scope.cancel = function () {
-        $scope.editRole = {};
+        $scope.editGroup = {};
         $scope.showList();
     };
 
@@ -185,9 +185,9 @@ chellIam.controller('RoleListController', function ($scope, $timeout, $modal, Ia
     };
 });
 
-chellIam.controller('RoleViewModalController', function ($scope, $modalInstance, role) {
+chellIam.controller('GroupViewModalController', function ($scope, $modalInstance, group) {
 
-    $scope.role = role;
+    $scope.group = group;
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');

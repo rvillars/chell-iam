@@ -16,10 +16,10 @@ chellIam.factory('IamAdapter', [
         });
         return deferred.promise;
       },
-      getRoleList: function () {
+      getGroupList: function () {
         var deferred = $q.defer();
         $http.get('http://' + chellIam.host + '/cxf/roles').success(function (roles) {
-          deferred.resolve(_.map(roles, externalToIamRole));
+          deferred.resolve(_.map(roles, externalToIamGroup));
         }).error(function () {
           deferred.reject('An error occured while fetching role list');
         });
@@ -44,7 +44,7 @@ var externalToIamUser = function (externalUser) {
   iamUser.firstname = _.findWhere(externalUser.attributes, { schema: 'firstname' }).values[0];
   iamUser.lastname = _.findWhere(externalUser.attributes, { schema: 'lastname' }).values[0];
   iamUser.fullname = _.findWhere(externalUser.derivedAttributes, { schema: 'fullname' }).values[0];
-  iamUser.primaryRole = externalToIamMembership(externalUser.memberships[0]);
+  iamUser.primaryGroup = externalToIamMembership(externalUser.memberships[0]);
   iamUser.email = _.findWhere(externalUser.attributes, { schema: 'email' }).values[0];
   iamUser.gravatarMail = _.findWhere(externalUser.attributes, { schema: 'gravatarMail' }).values[0];
   iamUser.status = externalUser.status;
@@ -55,20 +55,20 @@ var iamToExternalUser = function (iamUser) {
   var externalUser = iamUser;
   return externalUser;
 };
-var externalToIamRole = function (externalRole) {
-  var iamRole = {};
-  iamRole.id = externalRole.id;
-  iamRole.name = externalRole.name;
-  iamRole.parentId = externalRole.parent;
-  return iamRole;
+var externalToIamGroup = function (externalGroup) {
+  var iamGroup = {};
+  iamGroup.id = externalGroup.id;
+  iamGroup.name = externalGroup.name;
+  iamGroup.parentId = externalGroup.parent;
+  return iamGroup;
 };
-var iamToExternalRole = function (iamRole) {
-  var externalRole = iamRole;
-  return externalRole;
+var iamToExternalGroup = function (iamGroup) {
+  var externalGroup = iamGroup;
+  return externalGroup;
 };
 var externalToIamMembership = function (externalMembership) {
-  var iamRole = {};
-  iamRole.id = externalMembership.roleId;
-  iamRole.name = externalMembership.roleName;
-  return iamRole;
+  var iamGroup = {};
+  iamGroup.id = externalMembership.groupId;
+  iamGroup.name = externalMembership.groupName;
+  return iamGroup;
 };

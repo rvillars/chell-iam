@@ -40,7 +40,7 @@ chellIam.factory('IamAdapter', function ($http, $q, _) {
             $http.post('http://'+host+'/iam/users', iamToExternalUser(user)).success(function(user){
                 deferred.resolve(externalToIamUser(user));
             }).error(function(){
-                deferred.reject('An error occured while updating role');
+                deferred.reject('An error occured while updating group');
             });
             return deferred.promise;
         },
@@ -63,49 +63,49 @@ chellIam.factory('IamAdapter', function ($http, $q, _) {
             return deferred.promise;
         },
 
-        // --- Role ---
-        getRoleList: function(){
+        // --- Group ---
+        getGroupList: function(){
             var deferred = $q.defer();
-            $http.get('http://'+host+'/iam/roles').success(function(roles){
-                deferred.resolve(_.map(roles, externalToIamRole));
+            $http.get('http://'+host+'/iam/groups').success(function(groups){
+                deferred.resolve(_.map(groups, externalToIamGroup));
             }).error(function(){
-                deferred.reject('An error occured while fetching role list');
+                deferred.reject('An error occured while fetching group list');
             });
             return deferred.promise;
         },
-        getRole: function(id){
+        getGroup: function(id){
             var deferred = $q.defer();
-            $http.get('http://'+host+'/iam/roles/'+id).success(function(role){
-                deferred.resolve(externalToIamRole(role));
+            $http.get('http://'+host+'/iam/groups/'+id).success(function(group){
+                deferred.resolve(externalToIamGroup(group));
             }).error(function(){
-                deferred.reject('An error occured while fetching role');
+                deferred.reject('An error occured while fetching group');
             });
             return deferred.promise;
         },
-        createRole: function(role){
+        createGroup: function(group){
             var deferred = $q.defer();
-            $http.post('http://'+host+'/iam/roles', iamToExternalRole(role)).success(function(role){
-                deferred.resolve(externalToIamRole(role));
+            $http.post('http://'+host+'/iam/groups', iamToExternalGroup(group)).success(function(group){
+                deferred.resolve(externalToIamGroup(group));
             }).error(function(){
-                deferred.reject('An error occured while updating role');
+                deferred.reject('An error occured while updating group');
             });
             return deferred.promise;
         },
-        updateRole: function(role){
+        updateGroup: function(group){
             var deferred = $q.defer();
-            $http.put('http://'+host+'/iam/roles/'+role.id, iamToExternalRole(role)).success(function(role){
-                deferred.resolve(externalToIamRole(role));
+            $http.put('http://'+host+'/iam/groups/'+group.id, iamToExternalGroup(group)).success(function(group){
+                deferred.resolve(externalToIamGroup(group));
             }).error(function(){
-                deferred.reject('An error occured while updating role');
+                deferred.reject('An error occured while updating group');
             });
             return deferred.promise;
         },
-        removeRole: function(role){
+        removeGroup: function(group){
             var deferred = $q.defer();
-            $http({method: 'DELETE', url: 'http://'+host+'/iam/roles/'+role.id}).success(function(){
+            $http({method: 'DELETE', url: 'http://'+host+'/iam/groups/'+group.id}).success(function(){
                 deferred.resolve();
             }).error(function(){
-                deferred.reject('An error occured while updating role');
+                deferred.reject('An error occured while updating group');
             });
             return deferred.promise;
         }
@@ -123,30 +123,30 @@ var iamToExternalUser = function(iamUser) {
     return externalUser;
 };
 
-// --- Role ---
-var externalToIamRole = function(externalRole) {
-    var iamRole = externalRole; //replace with mapping
-    return iamRole;
+// --- Group ---
+var externalToIamGroup = function(externalGroup) {
+    var iamGroup = externalGroup; //replace with mapping
+    return iamGroup;
 };
-var iamToExternalRole = function(iamRole) {
-    var externalRole = iamRole; //replace with mapping
-    return externalRole;
+var iamToExternalGroup = function(iamGroup) {
+    var externalGroup = iamGroup; //replace with mapping
+    return externalGroup;
 };
 
 
 chellIam.run(function($httpBackend, $base64) {
 
     // *** Mock Data ***
-    var mockUserRole = {
+    var mockUserGroup = {
         id: 100,
         name: 'User'
     };
-    var mockAdminRole = {
+    var mockAdminGroup = {
         id: 101,
         name: 'Administrator',
         parentId: 100
     };
-    var mockRoles = [mockUserRole, mockAdminRole];
+    var mockGroups = [mockUserGroup, mockAdminGroup];
     var mockAdmin = {
         id: 1,
         login: 'chellAdmin',
@@ -154,7 +154,7 @@ chellIam.run(function($httpBackend, $base64) {
         firstname: 'Chell',
         lastname: 'Admin',
         fullname: 'Chell Admin',
-        primaryRole: externalToIamRole(mockAdminRole),
+        primaryGroup: externalToIamGroup(mockAdminGroup),
         email: 'chell.admin@mimacom.com',
         status: 'active',
         creationDate: new Date(),
@@ -167,7 +167,7 @@ chellIam.run(function($httpBackend, $base64) {
         firstname: 'Chell',
         lastname: 'User',
         fullname: 'Chell User',
-        primaryRole: externalToIamRole(mockUserRole),
+        primaryGroup: externalToIamGroup(mockUserGroup),
         email: 'chell.user@mimacom.com',
         gravatarMail: 'roger.villars@bluewin.ch',
         status: 'active',
@@ -260,62 +260,62 @@ chellIam.run(function($httpBackend, $base64) {
         }
     });
 
-    // --- Role ---
-    $httpBackend.whenGET(/iam\/roles\/[\d]/).respond(function(method, url, data, headers) {
+    // --- Group ---
+    $httpBackend.whenGET(/iam\/groups\/[\d]/).respond(function(method, url, data, headers) {
         if (authenticated(headers)) {
             var id = url.split('\/').pop();
-            var existingRole = _.find(mockRoles, function(aRole) {return aRole.id == id;});
-            if (!existingRole) {
+            var existingGroup = _.find(mockGroups, function(aGroup) {return aGroup.id == id;});
+            if (!existingGroup) {
                 return [404];
             }
-            return [200, existingRole];
+            return [200, existingGroup];
         } else {
             return [401];
         }
     });
 
     //has to be after more specific whenGETs
-    $httpBackend.whenGET(/iam\/roles/).respond(function(method, url, data, headers) {
-        return authenticated(headers) ? [200, mockRoles] : [401];
+    $httpBackend.whenGET(/iam\/groups/).respond(function(method, url, data, headers) {
+        return authenticated(headers) ? [200, mockGroups] : [401];
     });
 
-    $httpBackend.whenPOST(/iam\/roles/).respond(function(method, url, data, headers) {
+    $httpBackend.whenPOST(/iam\/groups/).respond(function(method, url, data, headers) {
         if (authenticated(headers)) {
-            var role = JSON.parse(data);
-            var currentMaxId = _.max(mockRoles, function(aRole) {return aRole.id;}).id;
-            role.id = ++currentMaxId;
-            mockRoles.push(role);
-            return [200, role];
+            var group = JSON.parse(data);
+            var currentMaxId = _.max(mockGroups, function(aGroup) {return aGroup.id;}).id;
+            group.id = ++currentMaxId;
+            mockGroups.push(group);
+            return [200, group];
         } else {
             return [401];
         }
     });
 
-    $httpBackend.whenPUT(/iam\/roles\/[\d]/).respond(function(method, url, data, headers) {
+    $httpBackend.whenPUT(/iam\/groups\/[\d]/).respond(function(method, url, data, headers) {
         if (authenticated(headers)) {
             var id = url.split('\/').pop();
-            var role = JSON.parse(data);
-            var existingRole = _.find(mockRoles, function(aRole) {return aRole.id == id;});
-            if (!existingRole) {
+            var group = JSON.parse(data);
+            var existingGroup = _.find(mockGroups, function(aGroup) {return aGroup.id == id;});
+            if (!existingGroup) {
                 return [404];
             }
-            var index = mockRoles.indexOf(existingRole);
-            mockRoles[index] = role;
-            return [200, role];
+            var index = mockGroups.indexOf(existingGroup);
+            mockGroups[index] = group;
+            return [200, group];
         } else {
             return [401];
         }
     });
 
-    $httpBackend.whenDELETE(/iam\/roles\/[\d]/).respond(function(method, url, data, headers) {
+    $httpBackend.whenDELETE(/iam\/groups\/[\d]/).respond(function(method, url, data, headers) {
         if (authenticated(headers)) {
             var id = url.split('\/').pop();
-            var existingRole = _.find(mockRoles, function(aRole) {return aRole.id == id;});
-            if (!existingRole) {
+            var existingGroup = _.find(mockGroups, function(aGroup) {return aGroup.id == id;});
+            if (!existingGroup) {
                 return [404];
             }
-            var index = mockRoles.indexOf(existingRole);
-            mockRoles.splice(index, 1);
+            var index = mockGroups.indexOf(existingGroup);
+            mockGroups.splice(index, 1);
             return [200];
         } else {
             return [401];

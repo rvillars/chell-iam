@@ -1,11 +1,11 @@
 <div class="modal-header">
-    <button class="close" ng-click="cancel()">×</button>
-    <h3>User: {{user.fullname}}</h3>
+    <button class="close" ng-click="cancel()">{{'CHELL_IAM.USER_VIEW_DIALOG.X_BUTTON' | translate}}</button>
+    <h3>{{'CHELL_IAM.USER_VIEW_DIALOG.USER_TITLE' | translate}}: {{user.fullname}}</h3>
 </div>
 <div class="modal-body">
     <chell-user-profile user="user"/>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="cancel()">Close</button>
+    <button class="btn btn-primary" ng-click="cancel()">{{'CHELL_IAM.USER_VIEW_DIALOG.CLOSE_BUTTON' | translate}}</button>
 </div>
 

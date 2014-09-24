@@ -16,7 +16,7 @@ chellIam.factory('IamAdapter', function ($http, $q, _) {
             });
             return deferred.promise;
         },
-        getRoleList: function(){
+        getGroupList: function(){
             //implement
         },
         getAuthenticatedUser: function(){
@@ -36,14 +36,14 @@ var iamToExternalUser = function(iamUser) {
     return externalUser;
 };
 
-// --- Role ---
-var externalToIamRole = function(externalRole) {
-    var iamRole = externalRole; //replace with mapping
-    return iamRole;
+// --- Group ---
+var externalToIamGroup = function(externalGroup) {
+    var iamGroup = externalGroup; //replace with mapping
+    return iamGroup;
 };
-var iamToExternalRole = function(iamRole) {
-    var externalRole = iamRole; //replace with mapping
-    return externalRole;
+var iamToExternalGroup = function(iamGroup) {
+    var externalGroup = iamGroup; //replace with mapping
+    return externalGroup;
 };
 
 

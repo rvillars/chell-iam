@@ -9,10 +9,10 @@ chellIam.directive('chellUserList', function () {
     };
 });
 
-chellIam.directive('chellRoleList', function () {
+chellIam.directive('chellGroupList', function () {
     return {
         restrict: 'E',
-        templateUrl: 'templates/role-list.tpl.html'
+        templateUrl: 'templates/group-list.tpl.html'
     };
 });
 
@@ -22,7 +22,7 @@ chellIam.directive('chellUserProfile', function () {
         transclude: true,
         scope: {
             user: '=',
-            roles: '='
+            groups: '='
         },
         templateUrl: 'templates/user-profile.tpl.html'
     };
@@ -68,7 +68,7 @@ chellIam.directive('chellLoginDialog', function () {
     };
 });
 
-chellIam.directive('visibilityRoleId', function (CurrentUserService, IamUser) {
+chellIam.directive('visibilityGroupId', function (CurrentUserService, IamUser) {
     return {
         restrict: 'A',
         controller: function ($scope, $element) {
@@ -76,7 +76,7 @@ chellIam.directive('visibilityRoleId', function (CurrentUserService, IamUser) {
         },
         link: function ($scope, element, attrs) {
             IamUser.self().then(function(user) {
-                if (!CurrentUserService.hasRoleId(attrs.visibilityRoleId)) {
+                if (!CurrentUserService.hasGroupId(attrs.visibilityGroupId)) {
                     element.hide();
                 } else {
                     element.show();
@@ -84,7 +84,7 @@ chellIam.directive('visibilityRoleId', function (CurrentUserService, IamUser) {
             });
             $scope.$on('event:auth-loginConfirmed', function() {
                 IamUser.self().then(function(user) {
-                    if (!CurrentUserService.hasRoleId(attrs.visibilityRoleId)) {
+                    if (!CurrentUserService.hasGroupId(attrs.visibilityGroupId)) {
                         element.hide();
                     } else {
                         element.show();
@@ -98,7 +98,7 @@ chellIam.directive('visibilityRoleId', function (CurrentUserService, IamUser) {
     };
 });
 
-chellIam.directive('moveableRoleId', function (CurrentUserService, IamUser) {
+chellIam.directive('moveableGroupId', function (CurrentUserService, IamUser) {
     return {
         restrict: 'A',
         controller: function ($scope, $element) {
@@ -106,7 +106,7 @@ chellIam.directive('moveableRoleId', function (CurrentUserService, IamUser) {
         },
         link: function ($scope, element, attrs) {
             IamUser.self().then(function(user) {
-                if (!CurrentUserService.hasRoleId(attrs.moveableRoleId)) {
+                if (!CurrentUserService.hasGroupId(attrs.moveableGroupId)) {
                     $(element).addClass('box-locked');
                 } else {
                     $(element).removeClass('box-locked');
@@ -114,7 +114,7 @@ chellIam.directive('moveableRoleId', function (CurrentUserService, IamUser) {
             });
             $scope.$on('event:auth-loginConfirmed', function() {
                 IamUser.self().then(function(user) {
-                    if (!CurrentUserService.hasRoleId(attrs.moveableRoleId)) {
+                    if (!CurrentUserService.hasGroupId(attrs.moveableGroupId)) {
                         $(element).addClass('box-locked');
                     } else {
                         $(element).removeClass('box-locked');

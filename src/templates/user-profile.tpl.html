@@ -3,40 +3,40 @@
         <form id="userProfile">
             <fieldset>
                 <div class="form-group">
-                    <label for="inputLogin">Login</label>
-                    <input class="form-control" id="inputLogin" placeholder="Login" readonly="true" ng-model="user.login">
+                    <label for="inputLogin">{{'CHELL_IAM.USER_PROFILE.LOGIN' | translate}}</label>
+                    <input class="form-control" id="inputLogin" placeholder="{{'CHELL_IAM.USER_PROFILE.PH_LOGIN' | translate}}" readonly="true" ng-model="user.login">
                 </div>
                 <div class="form-group">
-                    <label for="inputUserId">User ID</label>
-                    <input class="form-control" id="inputUserId" placeholder="Generated" readonly="true" ng-model="user.id">
+                    <label for="inputUserId">{{'CHELL_IAM.USER_PROFILE.USER_ID' | translate}}</label>
+                    <input class="form-control" id="inputUserId" placeholder="{{'CHELL_IAM.USER_PROFILE.PH_USER_ID' | translate}}" readonly="true" ng-model="user.id">
                 </div>
                 <div class="form-group">
-                    <label for="inputFirstname">Firstname</label>
-                    <input class="form-control" id="inputFirstname" placeholder="Name" required="true" ng-model="user.firstname">
+                    <label for="inputFirstname">{{'CHELL_IAM.USER_PROFILE.FIRSTNAME' | translate}}</label>
+                    <input class="form-control" id="inputFirstname" placeholder="{{'CHELL_IAM.USER_PROFILE.PH_FIRSTNAME' | translate}}" required="true" ng-model="user.firstname">
                 </div>
                 <div class="form-group">
-                    <label for="inputLastname">Lastname</label>
-                    <input class="form-control" id="inputLastname" placeholder="Lastname" required="true" ng-model="user.lastname">
+                    <label for="inputLastname">{{'CHELL_IAM.USER_PROFILE.LASTNAME' | translate}}</label>
+                    <input class="form-control" id="inputLastname" placeholder="{{'CHELL_IAM.USER_PROFILE.PH_LASTNAME' | translate}}" required="true" ng-model="user.lastname">
                 </div>
                 <div class="form-group">
-                    <label for="inputEMail">E-Mail</label>
-                    <input class="form-control" id="inputEMail" placeholder="E-Mail" type="email" ng-model="user.email">
+                    <label for="inputEMail">{{'CHELL_IAM.USER_PROFILE.EMAIL' | translate}}</label>
+                    <input class="form-control" id="inputEMail" placeholder="{{'CHELL_IAM.USER_PROFILE.PH_EMAIL' | translate}}" type="email" ng-model="user.email">
                 </div>
                 <div class="form-group">
-                    <label for="inputEMail">Gravatar E-Mail</label>
-                    <input class="form-control" id="inputGravatarMail" placeholder="Gravatar E-Mail" type="email" ng-model="user.gravatarMail">
+                    <label for="inputEMail">{{'CHELL_IAM.USER_PROFILE.GRAVATAR_EMAIL' | translate}}</label>
+                    <input class="form-control" id="inputGravatarMail" placeholder="{{'CHELL_IAM.USER_PROFILE.PH_GRAVATAR_EMAIL' | translate}}" type="email" ng-model="user.gravatarMail">
                 </div>
                 <div class="form-group">
-                    <label for="inputPrimaryRole">Primary Role</label>
-                    <select class="form-control" id="inputPrimaryRole" ng-model="user.primaryRole" ng-options="role as (role.name) for role in roles">
-                        <option value="">-- choose role --</option>
+                    <label for="inputPrimaryGroup">{{'CHELL_IAM.USER_PROFILE.GROUPS' | translate}}</label>
+                    <select class="form-control" id="inputPrimaryGroup" ng-model="user.primaryGroup" ng-options="group as (group.name) for group in groups">
+                        <option value="">{{'CHELL_IAM.USER_PROFILE.CHOOSE_GROUP' | translate}}</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="inputStatus">Status</label>
+                    <label for="inputStatus">{{'CHELL_IAM.USER_PROFILE.STATUS' | translate}}</label>
                     <select class="form-control" id="inputStatus" ng-model="user.status">
-                        <option>active</option>
-                        <option>inactive</option>
+                        <option>{{'CHELL_IAM.USER_PROFILE.ACTIVE' | translate}}</option>
+                        <option>{{'CHELL_IAM.USER_PROFILE.INACTIVE' | translate}}</option>
                     </select>
                 </div>
             </fieldset>
@@ -45,7 +45,7 @@
     </div>
     <div class="col-md-4">
         <div style="max-width: 220px; margin: 15px 5px">
-            <label>Profile Preview</label>
+            <label>{{'CHELL_IAM.USER_PROFILE.PROFILE_PREVIEW' | translate}}</label>
             <img height="220" width="220" ng-src="{{user.gravatarMail ? ('http://www.gravatar.com/avatar/'+(user.gravatarMail | md5)+'?s=220') : user.photo}}">
             <h1>
                 <span style="color: #333; font-size: 26px; line-height: 30px;">{{currentUser.fullname}}</span>
@@ -53,7 +53,7 @@
                         line-height: 24px; color: #666; text-overflow: ellipsis;">{{currentUser.login}}</span>
             </h1>
             <ul style="list-style: none; padding-left: 0px; padding-top: 15px; padding-bottom: 15px; border-top: 1px solid #428bca; border-bottom: 1px solid #428bca">
-                <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>  {{user.primaryRole.name}}</li>
+                <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>  {{user.primaryGroup.name}}</li>
                 <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-envelope"></i>  {{user.email}}</li>
                 <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-time"></i>  {{user.creationDate | date:'dd.MM.yyyy'}}</li>
                 <li style="color: #428bca;"><i style="padding-right: 10px" class="glyphicon glyphicon-flag"></i>  {{user.status}}</li>

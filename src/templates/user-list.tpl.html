@@ -1,7 +1,19 @@
 <div ng-controller="UserListController">
     <div ng-show="list">
-        <button class="btn btn-primary btn-xs" ng-click="create()"><i style="padding-right: 10px" class="glyphicon glyphicon-user"></i>Create User</button>
+        <button class="btn btn-primary btn-xs" ng-click="create()"><i style="padding-right: 10px" class="glyphicon glyphicon-user"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>
         <table ng-table="tableParams" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="datatable">
+            <thead>
+            <tr>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.NAME' | translate}}</th>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate}}</th>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate}}</th>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.EMAIL' | translate}}</th>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.USER_ID' | translate}}</th>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate}}</th>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATE' | translate}}</th>
+                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>
+            </tr>
+            </thead>
             <tbody>
             <tr ng-repeat="user in $data">
                 <td data-title="'Name'">{{user.fullname}}</td>
@@ -9,19 +21,19 @@
                 <td data-title="'Date registered'" class="center">{{user.creationDate | date:'dd.MM.yyyy'}}</td>
                 <td data-title="'E-Mail'">{{user.email}}</td>
                 <td data-title="'User ID'" class="center">{{user.id}}</td>
-                <td data-title="'Primary Role'" class="center">{{user.primaryRole.name}}</td>
+                <td data-title="'Primary Group'" class="center">{{user.primaryGroup.name}}</td>
                 <td data-title="'State'" class="center">
                     <span class="badge">{{user.status}}</span>
                 </td>
                 <td data-title="'Actions'" class="center">
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-default" title="View">
+                        <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.VIEW_BUTTON' | translate}}">
                             <i class="glyphicon glyphicon-zoom-in icon-white" ng-click="view(user)"></i>
                         </button>
-                        <button class="btn btn-default" title="Edit" ng-click="edit(user)">
+                        <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(user)">
                             <i class="glyphicon glyphicon-edit icon-white"></i>
                         </button>
-                        <button class="btn btn-default" title="Delete" ng-click="remove(user)">
+                        <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(user)">
                             <i class="glyphicon glyphicon-trash icon-white"></i>
                         </button>
                     </div>
@@ -31,9 +43,9 @@
         </table>
     </div>
     <div ng-show="detail">
-        <chell-user-profile user="editUser" roles="roles">
-            <button type="submit" class="btn btn-primary" ng-click="save()">Save</button>
-            <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <chell-user-profile user="editUser" groups="groups">
+            <button type="submit" class="btn btn-primary" ng-click="save()">{{'CHELL_IAM.USER_LIST.SAVE_BUTTON' | translate}}</button>
+            <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.USER_LIST.CANCEL_BUTTON' | translate}}</button>
         </chell-user-profile>
     </div>
 </div>
