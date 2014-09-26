@@ -10,12 +10,19 @@ chellIam.run([
             displayName: 'Users',
             members: [
                 {
-                    'value': '2832c223-7f76-453a-8d9d-413331904629',
-                    'display': 'Chell User'
+                    value: '2832c223-7f76-453a-8d9d-413331904629',
+                    display: 'Chell User',
+                    type: 'User'
                 },
                 {
-                    'value': '2819c223-7f76-453a-919d-413861904646',
-                    'display': 'Chell Admin'
+                    value: '2819c223-7f76-453a-919d-413861904646',
+                    display: 'Chell Admin',
+                    type: 'User'
+                },
+                {
+                    value: 'e9e30dba-f08f-4109-8486-d5c6a331660a',
+                    display: 'Administrators',
+                    type: 'Group'
                 }
             ],
             meta: { created: '2010-01-23T04:56:22Z' }
@@ -27,7 +34,8 @@ chellIam.run([
             members: [
                 {
                     'value': '2819c223-7f76-453a-919d-413861904646',
-                    'display': 'Chell Admin'
+                    'display': 'Chell Admin',
+                    type: 'User'
                 }
             ],
             meta: { created: '2010-01-23T04:56:22Z' }
@@ -56,12 +64,12 @@ chellIam.run([
             ],
             groups: [
                 {
-                    display: 'Administrators',
-                    value: 'e9e30dba-f08f-4109-8486-d5c6a331660a'
+                    value: 'e9e30dba-f08f-4109-8486-d5c6a331660a',
+                    display: 'Administrators'
                 },
                 {
-                    display: 'Users',
-                    value: 'e9e304ba-f08f-4409-8486-d5c6a43166ee'
+                    value: 'e9e304ba-f08f-4409-8486-d5c6a43166ee',
+                    display: 'Users'
                 }
             ],
             active: true,
@@ -111,7 +119,7 @@ chellIam.run([
             mockUser
         ];
         var authenticated = function (headers) {
-            if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.login + ':' + mockAdmin.password) || headers.Authorization == 'Basic ' + $base64.encode(mockUser.login + ':' + mockUser.password)) {
+            if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.userName + ':' + mockAdmin.password) || headers.Authorization == 'Basic ' + $base64.encode(mockUser.userName + ':' + mockUser.password)) {
                 return true;
             }
             return false;
@@ -133,7 +141,7 @@ chellIam.run([
                 return [401];
             }
         });
-        $httpBackend.whenGET(/iam\/users\/self/).respond(function (method, url, data, headers) {
+        $httpBackend.whenGET(/iam\/Users\/self/).respond(function (method, url, data, headers) {
             var currentUser = {};
             if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.login + ':' + mockAdmin.password)) {
                 currentUser = mockAdmin;
@@ -145,13 +153,13 @@ chellIam.run([
                 currentUser
             ] : [401];
         });
-        $httpBackend.whenGET(/iam\/users/).respond(function (method, url, data, headers) {
+        $httpBackend.whenGET(/iam\/Users/).respond(function (method, url, data, headers) {
             return authenticated(headers) ? [
                 200,
                 mockUsers
             ] : [401];
         });
-        $httpBackend.whenPOST(/iam\/users/).respond(function (method, url, data, headers) {
+        $httpBackend.whenPOST(/iam\/Users/).respond(function (method, url, data, headers) {
             if (authenticated(headers)) {
                 var user = JSON.parse(data);
                 var currentMaxId = _.max(mockUsers, function (aUser) {
@@ -169,7 +177,7 @@ chellIam.run([
                 return [401];
             }
         });
-        $httpBackend.whenPUT(/iam\/users\/[\d]/).respond(function (method, url, data, headers) {
+        $httpBackend.whenPUT(/iam\/Users\/[\d]/).respond(function (method, url, data, headers) {
             if (authenticated(headers)) {
                 var id = url.split('/').pop();
                 var user = JSON.parse(data);
@@ -189,7 +197,7 @@ chellIam.run([
                 return [401];
             }
         });
-        $httpBackend.whenDELETE(/iam\/users\/[\d]/).respond(function (method, url, data, headers) {
+        $httpBackend.whenDELETE(/iam\/Users\/[\d]/).respond(function (method, url, data, headers) {
             if (authenticated(headers)) {
                 var id = url.split('/').pop();
                 var existingUser = _.find(mockUsers, function (aUser) {
@@ -205,7 +213,7 @@ chellIam.run([
                 return [401];
             }
         });
-        $httpBackend.whenGET(/iam\/groups\/[\d]/).respond(function (method, url, data, headers) {
+        $httpBackend.whenGET(/iam\/Groups\/[\d]/).respond(function (method, url, data, headers) {
             if (authenticated(headers)) {
                 var id = url.split('/').pop();
                 var existingGroup = _.find(mockGroups, function (aGroup) {
@@ -222,13 +230,13 @@ chellIam.run([
                 return [401];
             }
         });
-        $httpBackend.whenGET(/iam\/groups/).respond(function (method, url, data, headers) {
+        $httpBackend.whenGET(/iam\/Groups/).respond(function (method, url, data, headers) {
             return authenticated(headers) ? [
                 200,
                 mockGroups
             ] : [401];
         });
-        $httpBackend.whenPOST(/iam\/groups/).respond(function (method, url, data, headers) {
+        $httpBackend.whenPOST(/iam\/Groups/).respond(function (method, url, data, headers) {
             if (authenticated(headers)) {
                 var group = JSON.parse(data);
                 var currentMaxId = _.max(mockGroups, function (aGroup) {
@@ -244,7 +252,7 @@ chellIam.run([
                 return [401];
             }
         });
-        $httpBackend.whenPUT(/iam\/groups\/[\d]/).respond(function (method, url, data, headers) {
+        $httpBackend.whenPUT(/iam\/Groups\/[\d]/).respond(function (method, url, data, headers) {
             if (authenticated(headers)) {
                 var id = url.split('/').pop();
                 var group = JSON.parse(data);
@@ -264,7 +272,7 @@ chellIam.run([
                 return [401];
             }
         });
-        $httpBackend.whenDELETE(/iam\/groups\/[\d]/).respond(function (method, url, data, headers) {
+        $httpBackend.whenDELETE(/iam\/Groups\/[\d]/).respond(function (method, url, data, headers) {
             if (authenticated(headers)) {
                 var id = url.split('/').pop();
                 var existingGroup = _.find(mockGroups, function (aGroup) {

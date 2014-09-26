@@ -116,7 +116,15 @@ chellIam.factory('IamAdapter', [
   }
 ]);
 var externalToIamUser = function (externalUser) {
-  var iamUser = externalUser;
+  var iamUser = {};
+  iamUser.id = externalUser.id;
+  iamUser.login = externalUser.userName;
+  iamUser.password = externalUser.password;
+  iamUser.fullname = externalUser.name.formatted;
+  iamUser.email = externalUser.emails[0].value;
+  iamUser.status = externalUser.active ? 'active' : 'inactive';
+  iamUser.creationDate = externalUser.meta.created;
+  iamUser.groups = externalUser.groups;
   return iamUser;
 };
 var iamToExternalUser = function (iamUser) {
@@ -124,7 +132,10 @@ var iamToExternalUser = function (iamUser) {
   return externalUser;
 };
 var externalToIamGroup = function (externalGroup) {
-  var iamGroup = externalGroup;
+  var iamGroup = {};
+  iamGroup.id = externalGroup.id;
+  iamGroup.name = externalGroup.displayName;
+  iamGroup.members = externalGroup.members;
   return iamGroup;
 };
 var iamToExternalGroup = function (iamGroup) {

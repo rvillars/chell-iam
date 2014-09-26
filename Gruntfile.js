@@ -142,6 +142,10 @@ module.exports = function (grunt) {
         },
         less: {
             build: {
+                options: {
+                    strictImports: true,
+                    syncImport: true
+                },
                 files: {
                     'styles/<%= pkg.name %>.css': 'src/less/<%= pkg.name %>.less'
                 }
@@ -163,7 +167,8 @@ module.exports = function (grunt) {
                 lang: ['en'],
                 prefix: 'locale-',
                 dest: 'src/i18n',
-                namespace: true
+                namespace: true,
+                nullEmpty: true
             }
         },
         jsonAngularTranslate: {
@@ -171,13 +176,15 @@ module.exports = function (grunt) {
                 options: {
                     moduleName: 'translations'
                 },
-                files: [{
-                    expand: true,
-                    cwd: 'src/i18n',
-                    src: '*.json',
-                    dest: 'build',
-                    ext: '.js'
-                }]
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'src/i18n',
+                        src: '*.json',
+                        dest: 'build',
+                        ext: '.js'
+                    }
+                ]
             }
         },
         watch: {
@@ -190,7 +197,7 @@ module.exports = function (grunt) {
             unit: {
                 options: {
                     files: [
-                        '<%= module_dependencies %>',
+                        '<%= module_dependencies.js %>',
                         '<%= pkg.name %>.js',
                         'adapters/MockIamAdapter.js',
                         'tests/*.js'
@@ -217,7 +224,8 @@ module.exports = function (grunt) {
             process: function (contents, path) {
                 return grunt.template.process(contents, {
                     data: {
-                        scripts: userConfig.module_dependencies
+                        scripts: userConfig.module_dependencies.js,
+                        styles: userConfig.module_dependencies.css
                     }
                 });
             }

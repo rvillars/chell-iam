@@ -13,8 +13,7 @@ angular.module('translations').config(function ($translateProvider) {
         'CREATE_GROUP_BUTTON': 'Create Group',
         'COLUMN_TITLE': {
           'NAME': 'Name',
-          'GROUP_ID': 'Group ID',
-          'PARENT': 'Parent',
+          'MEMBERS': 'Members',
           'ACTIONS': 'Actions'
         },
         'VIEW_BUTTON': 'View',
@@ -24,20 +23,19 @@ angular.module('translations').config(function ($translateProvider) {
         'PH_GENERATED': 'Generated',
         'NAME': 'Name',
         'PH_NAME': 'Name',
-        'PARENT_GROUP': 'Parent Group',
-        'COOSE_GROUP': '-- choose group --',
+        'MEMBERS': 'Members',
         'SAVE_BUTTON': 'Save',
         'CANCEL_BUTTON': 'Cancel'
       },
       'GROUP_VIEW_DIALOG': {
         'X_BUTTON': 'x',
         'GROUP_TITLE': 'Group',
-        'GROUP_ID': 'Group ID',
-        'PH_GROUP_ID': 'Generated',
         'NAME': 'Name',
         'PH_NAME': 'Name',
-        'PARENT_GROUP': 'Parent group',
-        'PH_GROUP': 'None',
+        'GROUP_ID': 'Group ID',
+        'PH_GROUP_ID': 'Generated',
+        'USERS': 'Member users',
+        'GROUPS': 'Member groups',
         'CLOSE_BUTTON': 'Close'
       },
       'LOGIN_DIALOG': {
@@ -57,7 +55,6 @@ angular.module('translations').config(function ($translateProvider) {
           'LOGIN': 'Login',
           'DATE_REGISTERED': 'Date registered',
           'EMAIL': 'E-Mail',
-          'USER_ID': 'User ID',
           'GROUPS': 'Groups',
           'STATE': 'State',
           'ACTIONS': 'Actions'
@@ -200,6 +197,7 @@ var chellIam = angular.module('chell-iam', [
     'ui.bootstrap',
     'angular-md5',
     'pascalprecht.translate',
+    'multi-select',
     'translations',
     'base64',
     'ngMockE2E'
@@ -458,6 +456,7 @@ chellIam.controller('UserListController', [
     $scope.list = true;
     $scope.detail = false;
     $scope.users = [];
+    $scope.groups = [];
     $scope.editUser = {};
     IamGroup.query().then(function (groups) {
       $scope.groups = groups;
@@ -543,12 +542,18 @@ chellIam.controller('GroupListController', [
   '$timeout',
   '$modal',
   'IamGroup',
+  'IamUser',
   'ngTableParams',
-  function ($scope, $timeout, $modal, IamGroup, ngTableParams) {
+  '$translate',
+  function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams, $translate) {
     $scope.list = true;
     $scope.detail = false;
+    $scope.users = {};
     $scope.groups = [];
     $scope.editGroup = {};
+    IamUser.query().then(function (users) {
+      $scope.users = users;
+    });
     $scope.$watchCollection('groups', function () {
       if ($scope.tableParams) {
         $scope.tableParams.reload();
@@ -586,14 +591,12 @@ chellIam.controller('GroupListController', [
     };
     $scope.create = function () {
       $scope.editGroup = {};
-      $scope.possibleParentGroups = $scope.groups.slice(0);
+      $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
       $scope.showDetail();
     };
     $scope.edit = function (group) {
       $scope.editGroup = group;
-      $scope.possibleParentGroups = $scope.groups.filter(function (group) {
-        return group != $scope.editGroup;
-      });
+      $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
       $scope.showDetail();
     };
     $scope.remove = function (group) {
@@ -626,6 +629,47 @@ chellIam.controller('GroupListController', [
     $scope.showDetail = function () {
       $scope.list = false;
       $scope.detail = true;
+    };
+    $scope.calculatePossibleMembers = function (editGroup, groups, users) {
+      var possibleMembers = [];
+      possibleMembers = possibleMembers.concat({
+        name: 'Groups',
+        isGroup: true
+      }).concat(groups.slice(0).map(function (group) {
+        var ticked = false;
+        for (var groupMemberIndex in editGroup.members) {
+          if (groupMemberIndex != null) {
+            var groupMember = editGroup.members[groupMemberIndex];
+            if (groupMember.type == 'Group' && groupMember.value == group.id) {
+              ticked = true;
+            }
+          }
+        }
+        return {
+          icon: '<i class="glyphicon glyphicon-folder-open"></i>',
+          name: group.name,
+          ticked: ticked
+        };
+      })).concat({ isGroup: false }).concat({
+        name: 'Users',
+        isGroup: true
+      }).concat(users.slice(0).map(function (user) {
+        var ticked = false;
+        for (var groupMemberIndex in editGroup.members) {
+          if (groupMemberIndex != null) {
+            var groupMember = editGroup.members[groupMemberIndex];
+            if (groupMember.type == 'User' && groupMember.value == user.id) {
+              ticked = true;
+            }
+          }
+        }
+        return {
+          icon: '<i class="glyphicon glyphicon-user"></i>',
+          name: user.fullname,
+          ticked: ticked
+        };
+      })).concat({ isGroup: false });
+      return possibleMembers;
     };
   }
 ]);
@@ -719,16 +763,20 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "            <thead>\n" +
     "            <tr>\n" +
     "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.GROUP_ID' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.PARENT' | translate}}</th>\n" +
+    "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>\n" +
     "            </tr>\n" +
     "            </thead>\n" +
     "            <tbody>\n" +
     "            <tr ng-repeat=\"group in $data\">\n" +
     "                <td>{{group.name}}</td>\n" +
-    "                <td>{{group.id}}</td>\n" +
-    "                <td>{{group.parentId}}</td>\n" +
+    "                <td>\n" +
+    "                    <div ng-repeat=\"member in group.members\">\n" +
+    "                        <i ng-show=\"member.type == 'User'\" class=\"glyphicon glyphicon-user\"></i>\n" +
+    "                        <i ng-show=\"member.type == 'Group'\" class=\"glyphicon glyphicon-folder-open\"></i>\n" +
+    "                        {{member.display}}\n" +
+    "                    </div>\n" +
+    "                </td>\n" +
     "                <td class=\"center\">\n" +
     "                    <div class=\"btn-group btn-group-sm\">\n" +
     "                        <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}\" ng-click=\"view(group)\">\n" +
@@ -760,11 +808,8 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "                           ng-model=\"editGroup.name\"/>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label for=\"inputParentGroup\">{{'CHELL_IAM.GROUP_LIST.PARENT_GROUP' | translate}}</label>\n" +
-    "                    <select class=\"form-control\" id=\"inputParentGroup\" ng-model=\"editGroup.parentId\"\n" +
-    "                            ng-options=\"group.id as (group.name) for group in possibleParentGroups\">\n" +
-    "                        <option value=\"\">{{'CHELL_IAM.GROUP_LIST.COOSE_GROUP' | translate}}</option>\n" +
-    "                    </select>\n" +
+    "                    <label for=\"inputMembers\">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>\n" +
+    "                    <div multi-select id=\"inputMembers\" input-model=\"possibleMembers\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\" group-property=\"isGroup\"/>\n" +
     "                </div>\n" +
     "            </fieldset>\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"save()\">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>\n" +
@@ -784,16 +829,29 @@ angular.module("templates/group-view-dialog.tpl.html", []).run(["$templateCache"
     "    <form id=\"groupDetail\">\n" +
     "        <fieldset>\n" +
     "            <div class=\"form-group\">\n" +
-    "                <label for=\"inputGroupId\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUP_ID' | translate}}</label>\n" +
-    "                <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_GROUP_ID' | translate}}\" readonly=\"true\" ng-model=\"group.id\">\n" +
-    "            </div>\n" +
-    "            <div class=\"form-group\">\n" +
     "                <label for=\"inputGroupName\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.NAME' | translate}}</label>\n" +
-    "                <input class=\"form-control\" id=\"inputGroupName\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_NAME' | translate}}\" readonly=\"true\" ng-model=\"group.name\">\n" +
+    "                <input class=\"form-control\" id=\"inputGroupName\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_NAME' | translate}}\" readonly=\"true\"\n" +
+    "                       ng-model=\"group.name\">\n" +
     "            </div>\n" +
     "            <div class=\"form-group\">\n" +
-    "                <label for=\"inputParentGroup\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.PARENT_GROUP' | translate}}</label>\n" +
-    "                <input class=\"form-control\" id=\"inputParentGroup\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_GROUP' | translate}}\" readonly=\"true\" ng-model=\"group.parentId\">\n" +
+    "                <label for=\"inputGroupId\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUP_ID' | translate}}</label>\n" +
+    "                <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_GROUP_ID' | translate}}\" readonly=\"true\"\n" +
+    "                       ng-model=\"group.id\">\n" +
+    "            </div>\n" +
+    "            <div >\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <i class=\"glyphicon glyphicon-user\"></i> <label for=\"inputUsers\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.USERS' | translate}}</label>\n" +
+    "                    <select id=\"inputUsers\" size=\"2\" class=\"form-control\">\n" +
+    "                        <option ng-repeat=\"member in group.members\" ng-show=\"member.type=='User'\">{{member.display}}</option>\n" +
+    "                    </select>\n" +
+    "\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <i class=\"glyphicon glyphicon-folder-open\"></i>  <label for=\"inputGroups\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>\n" +
+    "                    <select id=\"inputGroups\" size=\"2\" class=\"form-control\">\n" +
+    "                        <option ng-repeat=\"member in group.members\" ng-show=\"member.type=='Group'\">{{member.display}}</option>\n" +
+    "                    </select>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </fieldset>\n" +
     "    </form>\n" +
@@ -875,7 +933,6 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.EMAIL' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.USER_ID' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATE' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>\n" +
@@ -887,8 +944,12 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                <td data-title=\"'Login'\">{{user.login}}</td>\n" +
     "                <td data-title=\"'Date registered'\" class=\"center\">{{user.creationDate | date:'dd.MM.yyyy'}}</td>\n" +
     "                <td data-title=\"'E-Mail'\">{{user.email}}</td>\n" +
-    "                <td data-title=\"'User ID'\" class=\"center\">{{user.id}}</td>\n" +
-    "                <td data-title=\"'Primary Group'\" class=\"center\">{{user.primaryGroup.name}}</td>\n" +
+    "                <td data-title=\"'Groups'\">\n" +
+    "                    <div ng-repeat=\"group in user.groups\">\n" +
+    "                        <i class=\"glyphicon glyphicon-folder-open\"></i>\n" +
+    "                        {{group.display}}\n" +
+    "                    </div>\n" +
+    "                </td>\n" +
     "                <td data-title=\"'State'\" class=\"center\">\n" +
     "                    <span class=\"badge\">{{user.status}}</span>\n" +
     "                </td>\n" +

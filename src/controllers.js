@@ -8,6 +8,7 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
     $scope.detail = false;
 
     $scope.users = [];
+    $scope.groups = [];
     $scope.editUser = {};
 
     IamGroup.query().then(function (groups) {
@@ -30,7 +31,8 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
             getData: function ($defer, params) {
                 $defer.resolve($scope.users.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             },
-            $scope: { $data: {}, $emit: function(){} }
+            $scope: { $data: {}, $emit: function () {
+            } }
         });
     });
 
@@ -72,7 +74,8 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
                 $scope.users.push(user);
             });
         } else {
-            IamUser.update($scope.editUser).then(function (user) {});
+            IamUser.update($scope.editUser).then(function (user) {
+            });
         }
         $scope.cancel();
     };
@@ -93,13 +96,18 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
     };
 });
 
-chellIam.controller('GroupListController', function ($scope, $timeout, $modal, IamGroup, ngTableParams) {
+chellIam.controller('GroupListController', function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams, $translate) {
 
     $scope.list = true;
     $scope.detail = false;
 
+    $scope.users = {};
     $scope.groups = [];
     $scope.editGroup = {};
+
+    IamUser.query().then(function (users) {
+        $scope.users = users;
+    });
 
     $scope.$watchCollection('groups', function () {
         if ($scope.tableParams) {
@@ -117,7 +125,8 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
             getData: function ($defer, params) {
                 $defer.resolve($scope.groups.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             },
-            $scope: { $data: {}, $emit: function(){} }
+            $scope: { $data: {}, $emit: function () {
+            } }
         });
 
     });
@@ -138,15 +147,13 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
 
     $scope.create = function () {
         $scope.editGroup = {};
-        $scope.possibleParentGroups = $scope.groups.slice(0);
+        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
         $scope.showDetail();
     };
 
     $scope.edit = function (group) {
         $scope.editGroup = group;
-        $scope.possibleParentGroups = $scope.groups.filter(function (group) {
-            return group != $scope.editGroup;
-        });
+        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
         $scope.showDetail();
     };
 
@@ -164,7 +171,8 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
                 $scope.groups.push(group);
             });
         } else {
-            IamGroup.update($scope.editGroup).then(function (group) {});
+            IamGroup.update($scope.editGroup).then(function (group) {
+            });
         }
         $scope.cancel();
     };
@@ -182,6 +190,42 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
     $scope.showDetail = function () {
         $scope.list = false;
         $scope.detail = true;
+    };
+
+    $scope.calculatePossibleMembers = function (editGroup, groups, users) {
+        var possibleMembers = [];
+        possibleMembers = possibleMembers
+            .concat({name: 'Groups', isGroup: true})
+            .concat(groups.slice(0)
+                .map(function (group) {
+                    var ticked = false;
+                    for (var groupMemberIndex in editGroup.members) {
+                        if (groupMemberIndex != null) {
+                            var groupMember = editGroup.members[groupMemberIndex];
+                            if (groupMember.type == 'Group' && groupMember.value == group.id) {
+                                ticked = true;
+                            }
+                        }
+                    }
+                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked};
+                }))
+            .concat({isGroup: false})
+            .concat({name: 'Users', isGroup: true})
+            .concat(users.slice(0)
+                .map(function (user) {
+                    var ticked = false;
+                    for (var groupMemberIndex in editGroup.members) {
+                        if (groupMemberIndex != null) {
+                            var groupMember = editGroup.members[groupMemberIndex];
+                            if (groupMember.type == 'User' && groupMember.value == user.id) {
+                                ticked = true;
+                            }
+                        }
+                    }
+                    return {icon: '<i class="glyphicon glyphicon-user"></i>', name: user.fullname, ticked: ticked};
+                }))
+            .concat({isGroup: false});
+        return possibleMembers;
     };
 });
 

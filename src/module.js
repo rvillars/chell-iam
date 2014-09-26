@@ -9,6 +9,7 @@ var chellIam = angular.module('chell-iam', [
     'ui.bootstrap',
     'angular-md5',
     'pascalprecht.translate',
+    'multi-select',
     'translations',
     'base64',
     'ngMockE2E'

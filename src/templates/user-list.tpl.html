@@ -8,7 +8,6 @@
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.EMAIL' | translate}}</th>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.USER_ID' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATE' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>
@@ -20,8 +19,12 @@
                 <td data-title="'Login'">{{user.login}}</td>
                 <td data-title="'Date registered'" class="center">{{user.creationDate | date:'dd.MM.yyyy'}}</td>
                 <td data-title="'E-Mail'">{{user.email}}</td>
-                <td data-title="'User ID'" class="center">{{user.id}}</td>
-                <td data-title="'Primary Group'" class="center">{{user.primaryGroup.name}}</td>
+                <td data-title="'Groups'">
+                    <div ng-repeat="group in user.groups">
+                        <i class="glyphicon glyphicon-folder-open"></i>
+                        {{group.display}}
+                    </div>
+                </td>
                 <td data-title="'State'" class="center">
                     <span class="badge">{{user.status}}</span>
                 </td>

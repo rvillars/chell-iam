@@ -4,8 +4,7 @@
             "CREATE_GROUP_BUTTON": "Create Group",
             "COLUMN_TITLE": {
                 "NAME": "Name",
-                "GROUP_ID": "Group ID",
-                "PARENT": "Parent",
+                "MEMBERS": "Members",
                 "ACTIONS": "Actions"
             },
             "VIEW_BUTTON": "View",
@@ -15,20 +14,19 @@
             "PH_GENERATED": "Generated",
             "NAME": "Name",
             "PH_NAME": "Name",
-            "PARENT_GROUP": "Parent Group",
-            "COOSE_GROUP": "-- choose group --",
+            "MEMBERS": "Members",
             "SAVE_BUTTON": "Save",
             "CANCEL_BUTTON": "Cancel"
         },
         "GROUP_VIEW_DIALOG": {
             "X_BUTTON": "x",
             "GROUP_TITLE": "Group",
-            "GROUP_ID": "Group ID",
-            "PH_GROUP_ID": "Generated",
             "NAME": "Name",
             "PH_NAME": "Name",
-            "PARENT_GROUP": "Parent group",
-            "PH_GROUP": "None",
+            "GROUP_ID": "Group ID",
+            "PH_GROUP_ID": "Generated",
+            "USERS": "Member users",
+            "GROUPS": "Member groups",
             "CLOSE_BUTTON": "Close"
         },
         "LOGIN_DIALOG": {
@@ -48,7 +46,6 @@
                 "LOGIN": "Login",
                 "DATE_REGISTERED": "Date registered",
                 "EMAIL": "E-Mail",
-                "USER_ID": "User ID",
                 "GROUPS": "Groups",
                 "STATE": "State",
                 "ACTIONS": "Actions"

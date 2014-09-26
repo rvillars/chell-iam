@@ -7,16 +7,20 @@
             <thead>
             <tr>
                 <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate}}</th>
-                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.GROUP_ID' | translate}}</th>
-                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.PARENT' | translate}}</th>
+                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate}}</th>
                 <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="group in $data">
                 <td>{{group.name}}</td>
-                <td>{{group.id}}</td>
-                <td>{{group.parentId}}</td>
+                <td>
+                    <div ng-repeat="member in group.members">
+                        <i ng-show="member.type == 'User'" class="glyphicon glyphicon-user"></i>
+                        <i ng-show="member.type == 'Group'" class="glyphicon glyphicon-folder-open"></i>
+                        {{member.display}}
+                    </div>
+                </td>
                 <td class="center">
                     <div class="btn-group btn-group-sm">
                         <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}" ng-click="view(group)">
@@ -48,11 +52,8 @@
                            ng-model="editGroup.name"/>
                 </div>
                 <div class="form-group">
-                    <label for="inputParentGroup">{{'CHELL_IAM.GROUP_LIST.PARENT_GROUP' | translate}}</label>
-                    <select class="form-control" id="inputParentGroup" ng-model="editGroup.parentId"
-                            ng-options="group.id as (group.name) for group in possibleParentGroups">
-                        <option value="">{{'CHELL_IAM.GROUP_LIST.COOSE_GROUP' | translate}}</option>
-                    </select>
+                    <label for="inputMembers">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>
+                    <div multi-select id="inputMembers" input-model="possibleMembers" button-label="icon name" item-label="icon name" tick-property="ticked" group-property="isGroup"/>
                 </div>
             </fieldset>
             <button class="btn btn-primary" ng-click="save()">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>
