@@ -45,9 +45,8 @@
                 "NAME": "Name",
                 "LOGIN": "Login",
                 "DATE_REGISTERED": "Date registered",
-                "EMAIL": "E-Mail",
                 "GROUPS": "Groups",
-                "STATE": "State",
+                "STATE": "Status",
                 "ACTIONS": "Actions"
             },
             "VIEW_BUTTON": "View",
@@ -66,14 +65,9 @@
             "LASTNAME": "Lastname",
             "PH_LASTNAME": "Lastname",
             "EMAIL": "E-Mail",
-            "PH_EMAIL": "E-Mail",
-            "GRAVATAR_EMAIL": "Gravatar E-Mail",
-            "PH_GRAVATAR_EMAIL": "Gravatar E-Mail",
+            "PHONE": "Phone numbers",
+            "IMS": "Instant Messaging",
             "GROUPS": "Groups",
-            "CHOOSE_GROUP": "-- choose group --",
-            "STATUS": "Status",
-            "ACTIVE": "active",
-            "INACTIVE": "inactive",
             "PROFILE_PREVIEW": "Profile preview"
         },
         "USER_VIEW_DIALOG": {

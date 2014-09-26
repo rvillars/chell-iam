@@ -18,14 +18,14 @@
             <div >
                 <div class="form-group">
                     <i class="glyphicon glyphicon-user"></i> <label for="inputUsers">{{'CHELL_IAM.GROUP_VIEW_DIALOG.USERS' | translate}}</label>
-                    <select id="inputUsers" size="2" class="form-control">
+                    <select id="inputUsers" size="5" class="form-control">
                         <option ng-repeat="member in group.members" ng-show="member.type=='User'">{{member.display}}</option>
                     </select>
 
                 </div>
                 <div class="form-group">
                     <i class="glyphicon glyphicon-folder-open"></i>  <label for="inputGroups">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>
-                    <select id="inputGroups" size="2" class="form-control">
+                    <select id="inputGroups" size="5" class="form-control">
                         <option ng-repeat="member in group.members" ng-show="member.type=='Group'">{{member.display}}</option>
                     </select>
                 </div>

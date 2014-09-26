@@ -15,6 +15,8 @@
     <script type="text/javascript" src="../adapters/SCIMIamMock.js"></script>
     <script type="text/javascript" src="example1.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../styles/chell-iam.css" />
+
 </head>
 <body class="chell-login-required">
 <div style="width: 928px; margin: 0 auto;">
@@ -28,7 +30,7 @@
     </div>
     <div ng-controller="CurrentUserController">
         <h2>User Profile</h2>
-        <chell-user-profile user="currentUser"/>
+        <chell-user-profile user="currentUser" read-only="true"/>
     </div>
 </div>
 </body>

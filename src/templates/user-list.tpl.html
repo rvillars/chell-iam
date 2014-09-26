@@ -7,7 +7,6 @@
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.NAME' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate}}</th>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.EMAIL' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATE' | translate}}</th>
                 <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>
@@ -18,7 +17,6 @@
                 <td data-title="'Name'">{{user.fullname}}</td>
                 <td data-title="'Login'">{{user.login}}</td>
                 <td data-title="'Date registered'" class="center">{{user.creationDate | date:'dd.MM.yyyy'}}</td>
-                <td data-title="'E-Mail'">{{user.email}}</td>
                 <td data-title="'Groups'">
                     <div ng-repeat="group in user.groups">
                         <i class="glyphicon glyphicon-folder-open"></i>
@@ -26,7 +24,7 @@
                     </div>
                 </td>
                 <td data-title="'State'" class="center">
-                    <span class="badge">{{user.status}}</span>
+                    <span class="label" ng-class="{'label-success': user.status=='active', 'label-danger': user.status!='active'}">{{user.status}}</span>
                 </td>
                 <td data-title="'Actions'" class="center">
                     <div class="btn-group btn-group-sm">
@@ -46,7 +44,7 @@
         </table>
     </div>
     <div ng-show="detail">
-        <chell-user-profile user="editUser" groups="groups">
+        <chell-user-profile user="editUser" groups="groups" possible-groups="possibleGroups" read-only="false">
             <button type="submit" class="btn btn-primary" ng-click="save()">{{'CHELL_IAM.USER_LIST.SAVE_BUTTON' | translate}}</button>
             <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.USER_LIST.CANCEL_BUTTON' | translate}}</button>
         </chell-user-profile>

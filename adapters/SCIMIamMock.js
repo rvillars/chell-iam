@@ -53,10 +53,30 @@ chellIam.run([
           givenName: 'Chell'
         },
         password: 'chellAdmin',
-        emails: [{
+        emails: [
+          {
             value: 'chell.admin@mimacom.com',
-            type: 'work',
+            type: 'Work',
             primery: true
+          },
+          {
+            value: 'chell.admin.gravatar@mimacom.com',
+            type: 'Gravatar'
+          }
+        ],
+        phoneNumbers: [
+          {
+            value: '+41 12 345 67 89',
+            type: 'Work'
+          },
+          {
+            value: '+49 98 765 43 21',
+            type: 'Private'
+          }
+        ],
+        ims: [{
+            value: 'chell.mimacom',
+            type: 'Skype'
           }],
         groups: [
           {
@@ -86,19 +106,25 @@ chellIam.run([
           givenName: 'Chell'
         },
         password: 'chellUser',
-        emails: [{
-            value: 'chell.user@mimacom.com',
-            type: 'work',
+        emails: [
+          {
+            value: 'chell.user.work@mimacom.com',
+            type: 'Work',
             primery: true
-          }],
+          },
+          {
+            value: 'chell.user.home@mimacom.com',
+            type: 'Private'
+          }
+        ],
         groups: [{
             display: 'Users',
             value: 'e9e304ba-f08f-4409-8486-d5c6a43166ee'
           }],
-        active: true,
-        meta: { created: '2010-01-23T04:56:22Z' },
+        active: false,
+        meta: { created: '2012-06-12T04:56:22Z' },
         photos: [{
-            'value': 'assets/member_user.png',
+            'value': '../assets/member_user.png',
             'type': 'photo'
           }]
       };

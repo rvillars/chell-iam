@@ -121,10 +121,16 @@ var externalToIamUser = function (externalUser) {
     iamUser.login = externalUser.userName;
     iamUser.password = externalUser.password;
     iamUser.fullname = externalUser.name.formatted;
-    iamUser.email = externalUser.emails[0].value;
+    iamUser.firstname = externalUser.name.givenName;
+    iamUser.lastname = externalUser.name.familyName;
+    iamUser.emails = externalUser.emails;
+    iamUser.phones = externalUser.phoneNumbers;
+    iamUser.ims = externalUser.ims;
+    iamUser.gravatarMail = !_.isUndefined(_.findWhere(externalUser.emails, { type: 'Gravatar' }))?_.findWhere(externalUser.emails, { type: 'Gravatar' }).value:null;
     iamUser.status = externalUser.active ? 'active' : 'inactive';
     iamUser.creationDate = externalUser.meta.created;
     iamUser.groups = externalUser.groups;
+    iamUser.photo = !_.isUndefined(_.findWhere(externalUser.photos, { type: 'photo' }))?_.findWhere(externalUser.photos, { type: 'photo' }).value:null;
     return iamUser;
 };
 var iamToExternalUser = function (iamUser) {

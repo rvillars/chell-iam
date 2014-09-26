@@ -22,7 +22,9 @@ chellIam.directive('chellUserProfile', function () {
         transclude: true,
         scope: {
             user: '=',
-            groups: '='
+            groups: '=',
+            possibleGroups: '=',
+            readOnly: '='
         },
         templateUrl: 'templates/user-profile.tpl.html'
     };
@@ -125,6 +127,22 @@ chellIam.directive('moveableGroupId', function (CurrentUserService, IamUser) {
                 $(element).addClass('box-locked');
             });
         }
+    };
+});
+
+chellIam.directive('multiValue', function () {
+    return {
+        restrict: 'EA',
+        scope: {
+            valueList: '=',
+            labelProperty: '=',
+            valueProperty: '=',
+            readOnly: '='
+        },
+        controller: function ($scope, $element) {
+
+        },
+        templateUrl: 'templates/multi-value.tpl.html'
     };
 });
 

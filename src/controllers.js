@@ -52,11 +52,13 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
 
     $scope.create = function () {
         $scope.editUser = {};
+        $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
         $scope.showDetail();
     };
 
     $scope.edit = function (user) {
         $scope.editUser = user;
+        $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
         $scope.showDetail();
     };
 
@@ -94,9 +96,30 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
         $scope.list = false;
         $scope.detail = true;
     };
+
+    $scope.calculatePossibleGroups = function (editUser, groups) {
+        var possibleGroups = [];
+        possibleGroups = possibleGroups
+            .concat({name: 'Groups', isGroup: true})
+            .concat(groups.slice(0)
+                .map(function (group) {
+                    var ticked = false;
+                    for (var groupIndex in editUser.groups) {
+                        if (groupIndex != null) {
+                            var memberGroup = editUser.groups[groupIndex];
+                            if (memberGroup.value == group.id) {
+                                ticked = true;
+                            }
+                        }
+                    }
+                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked};
+                }))
+            .concat({isGroup: false});
+        return possibleGroups;
+    };
 });
 
-chellIam.controller('GroupListController', function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams, $translate) {
+chellIam.controller('GroupListController', function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
 
     $scope.list = true;
     $scope.detail = false;

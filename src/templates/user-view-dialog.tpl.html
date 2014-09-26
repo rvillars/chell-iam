@@ -3,7 +3,7 @@
     <h3>{{'CHELL_IAM.USER_VIEW_DIALOG.USER_TITLE' | translate}}: {{user.fullname}}</h3>
 </div>
 <div class="modal-body">
-    <chell-user-profile user="user"/>
+    <chell-user-profile user="user" read-only="true"/>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="cancel()">{{'CHELL_IAM.USER_VIEW_DIALOG.CLOSE_BUTTON' | translate}}</button>

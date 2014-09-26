@@ -199,7 +199,8 @@ module.exports = function (grunt) {
                     files: [
                         '<%= module_dependencies.js %>',
                         '<%= pkg.name %>.js',
-                        'adapters/MockIamAdapter.js',
+                        'adapters/SCIMIamAdapter.js',
+                        'adapters/SCIMIamMock.js',
                         'tests/*.js'
                     ],
                     frameworks: [

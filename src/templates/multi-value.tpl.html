@@ -1,0 +1,32 @@
+<div class="multiple-form-group input-group" style="padding-bottom: 3px" ng-repeat="value in valueList">
+    <div class="input-group-btn input-group-select">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-disabled="{{readOnly}}">
+            <span class="concept">Work</span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" ng-hide="readOnly">
+            <li><a href="#phone">Work</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#gravatar">Gravatar</a></li>
+        </ul>
+    </div>
+    <input type="text" class="form-control" ng-model="value.value" ng-readonly="{{readOnly}}">
+    <span ng-hide="readOnly" class="input-group-btn" style="width: 34px">
+        <button type="button" class="btn btn-danger btn-add" style="width: 34px">-</button>
+    </span>
+</div>
+<div class="multiple-form-group input-group" style="padding-bottom: 3px" ng-hide="readOnly">
+    <div class="input-group-btn input-group-select">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="concept">Work</span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#phone">Work</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#gravatar">Gravatar</a></li>
+        </ul>
+    </div>
+    <input type="text" class="form-control">
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-success btn-add">+</button>
+    </span>
+</div>

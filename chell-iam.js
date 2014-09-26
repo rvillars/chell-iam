@@ -54,9 +54,8 @@ angular.module('translations').config(function ($translateProvider) {
           'NAME': 'Name',
           'LOGIN': 'Login',
           'DATE_REGISTERED': 'Date registered',
-          'EMAIL': 'E-Mail',
           'GROUPS': 'Groups',
-          'STATE': 'State',
+          'STATE': 'Status',
           'ACTIONS': 'Actions'
         },
         'VIEW_BUTTON': 'View',
@@ -75,14 +74,9 @@ angular.module('translations').config(function ($translateProvider) {
         'LASTNAME': 'Lastname',
         'PH_LASTNAME': 'Lastname',
         'EMAIL': 'E-Mail',
-        'PH_EMAIL': 'E-Mail',
-        'GRAVATAR_EMAIL': 'Gravatar E-Mail',
-        'PH_GRAVATAR_EMAIL': 'Gravatar E-Mail',
+        'PHONE': 'Phone numbers',
+        'IMS': 'Instant Messaging',
         'GROUPS': 'Groups',
-        'CHOOSE_GROUP': '-- choose group --',
-        'STATUS': 'Status',
-        'ACTIVE': 'active',
-        'INACTIVE': 'inactive',
         'PROFILE_PREVIEW': 'Profile preview'
       },
       'USER_VIEW_DIALOG': {
@@ -312,7 +306,9 @@ chellIam.directive('chellUserProfile', function () {
     transclude: true,
     scope: {
       user: '=',
-      groups: '='
+      groups: '=',
+      possibleGroups: '=',
+      readOnly: '='
     },
     templateUrl: 'templates/user-profile.tpl.html'
   };
@@ -432,6 +428,24 @@ chellIam.directive('moveableGroupId', [
     };
   }
 ]);
+chellIam.directive('multiValue', function () {
+  return {
+    restrict: 'EA',
+    scope: {
+      valueList: '=',
+      labelProperty: '=',
+      valueProperty: '=',
+      readOnly: '='
+    },
+    controller: [
+      '$scope',
+      '$element',
+      function ($scope, $element) {
+      }
+    ],
+    templateUrl: 'templates/multi-value.tpl.html'
+  };
+});
 angular.module('ui.bootstrap.modal').directive('modalWindow', [
   '$timeout',
   function ($timeout) {
@@ -498,10 +512,12 @@ chellIam.controller('UserListController', [
     };
     $scope.create = function () {
       $scope.editUser = {};
+      $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
       $scope.showDetail();
     };
     $scope.edit = function (user) {
       $scope.editUser = user;
+      $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
       $scope.showDetail();
     };
     $scope.remove = function (user) {
@@ -535,6 +551,29 @@ chellIam.controller('UserListController', [
       $scope.list = false;
       $scope.detail = true;
     };
+    $scope.calculatePossibleGroups = function (editUser, groups) {
+      var possibleGroups = [];
+      possibleGroups = possibleGroups.concat({
+        name: 'Groups',
+        isGroup: true
+      }).concat(groups.slice(0).map(function (group) {
+        var ticked = false;
+        for (var groupIndex in editUser.groups) {
+          if (groupIndex != null) {
+            var memberGroup = editUser.groups[groupIndex];
+            if (memberGroup.value == group.id) {
+              ticked = true;
+            }
+          }
+        }
+        return {
+          icon: '<i class="glyphicon glyphicon-folder-open"></i>',
+          name: group.name,
+          ticked: ticked
+        };
+      })).concat({ isGroup: false });
+      return possibleGroups;
+    };
   }
 ]);
 chellIam.controller('GroupListController', [
@@ -544,8 +583,7 @@ chellIam.controller('GroupListController', [
   'IamGroup',
   'IamUser',
   'ngTableParams',
-  '$translate',
-  function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams, $translate) {
+  function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
     $scope.list = true;
     $scope.detail = false;
     $scope.users = {};
@@ -750,7 +788,7 @@ chellIam.controller('CurrentUserController', [
     };
   }
 ]);;// Source: build/templates.js
-angular.module('templates-chell-iam', ['templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
+angular.module('templates-chell-iam', ['templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/multi-value.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
 
 angular.module("templates/group-list.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/group-list.tpl.html",
@@ -809,7 +847,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputMembers\">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>\n" +
-    "                    <div multi-select id=\"inputMembers\" input-model=\"possibleMembers\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\" group-property=\"isGroup\"/>\n" +
+    "                    <multi-select id=\"inputMembers\" input-model=\"possibleMembers\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\" group-property=\"isGroup\"/>\n" +
     "                </div>\n" +
     "            </fieldset>\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"save()\">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>\n" +
@@ -841,14 +879,14 @@ angular.module("templates/group-view-dialog.tpl.html", []).run(["$templateCache"
     "            <div >\n" +
     "                <div class=\"form-group\">\n" +
     "                    <i class=\"glyphicon glyphicon-user\"></i> <label for=\"inputUsers\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.USERS' | translate}}</label>\n" +
-    "                    <select id=\"inputUsers\" size=\"2\" class=\"form-control\">\n" +
+    "                    <select id=\"inputUsers\" size=\"5\" class=\"form-control\">\n" +
     "                        <option ng-repeat=\"member in group.members\" ng-show=\"member.type=='User'\">{{member.display}}</option>\n" +
     "                    </select>\n" +
     "\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <i class=\"glyphicon glyphicon-folder-open\"></i>  <label for=\"inputGroups\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>\n" +
-    "                    <select id=\"inputGroups\" size=\"2\" class=\"form-control\">\n" +
+    "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\">\n" +
     "                        <option ng-repeat=\"member in group.members\" ng-show=\"member.type=='Group'\">{{member.display}}</option>\n" +
     "                    </select>\n" +
     "                </div>\n" +
@@ -921,6 +959,42 @@ angular.module("templates/login-dialog.tpl.html", []).run(["$templateCache", fun
     "");
 }]);
 
+angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/multi-value.tpl.html",
+    "<div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-repeat=\"value in valueList\">\n" +
+    "    <div class=\"input-group-btn input-group-select\">\n" +
+    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"{{readOnly}}\">\n" +
+    "            <span class=\"concept\">Work</span> <span class=\"caret\"></span>\n" +
+    "        </button>\n" +
+    "        <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
+    "            <li><a href=\"#phone\">Work</a></li>\n" +
+    "            <li><a href=\"#home\">Home</a></li>\n" +
+    "            <li><a href=\"#gravatar\">Gravatar</a></li>\n" +
+    "        </ul>\n" +
+    "    </div>\n" +
+    "    <input type=\"text\" class=\"form-control\" ng-model=\"value.value\" ng-readonly=\"{{readOnly}}\">\n" +
+    "    <span ng-hide=\"readOnly\" class=\"input-group-btn\" style=\"width: 34px\">\n" +
+    "        <button type=\"button\" class=\"btn btn-danger btn-add\" style=\"width: 34px\">-</button>\n" +
+    "    </span>\n" +
+    "</div>\n" +
+    "<div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-hide=\"readOnly\">\n" +
+    "    <div class=\"input-group-btn input-group-select\">\n" +
+    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\">\n" +
+    "            <span class=\"concept\">Work</span> <span class=\"caret\"></span>\n" +
+    "        </button>\n" +
+    "        <ul class=\"dropdown-menu\" role=\"menu\">\n" +
+    "            <li><a href=\"#phone\">Work</a></li>\n" +
+    "            <li><a href=\"#home\">Home</a></li>\n" +
+    "            <li><a href=\"#gravatar\">Gravatar</a></li>\n" +
+    "        </ul>\n" +
+    "    </div>\n" +
+    "    <input type=\"text\" class=\"form-control\">\n" +
+    "    <span class=\"input-group-btn\">\n" +
+    "        <button type=\"button\" class=\"btn btn-success btn-add\">+</button>\n" +
+    "    </span>\n" +
+    "</div>");
+}]);
+
 angular.module("templates/user-list.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/user-list.tpl.html",
     "<div ng-controller=\"UserListController\">\n" +
@@ -932,7 +1006,6 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.NAME' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.EMAIL' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATE' | translate}}</th>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>\n" +
@@ -943,7 +1016,6 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                <td data-title=\"'Name'\">{{user.fullname}}</td>\n" +
     "                <td data-title=\"'Login'\">{{user.login}}</td>\n" +
     "                <td data-title=\"'Date registered'\" class=\"center\">{{user.creationDate | date:'dd.MM.yyyy'}}</td>\n" +
-    "                <td data-title=\"'E-Mail'\">{{user.email}}</td>\n" +
     "                <td data-title=\"'Groups'\">\n" +
     "                    <div ng-repeat=\"group in user.groups\">\n" +
     "                        <i class=\"glyphicon glyphicon-folder-open\"></i>\n" +
@@ -951,7 +1023,7 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                    </div>\n" +
     "                </td>\n" +
     "                <td data-title=\"'State'\" class=\"center\">\n" +
-    "                    <span class=\"badge\">{{user.status}}</span>\n" +
+    "                    <span class=\"label\" ng-class=\"{'label-success': user.status=='active', 'label-danger': user.status!='active'}\">{{user.status}}</span>\n" +
     "                </td>\n" +
     "                <td data-title=\"'Actions'\" class=\"center\">\n" +
     "                    <div class=\"btn-group btn-group-sm\">\n" +
@@ -971,7 +1043,7 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "        </table>\n" +
     "    </div>\n" +
     "    <div ng-show=\"detail\">\n" +
-    "        <chell-user-profile user=\"editUser\" groups=\"groups\">\n" +
+    "        <chell-user-profile user=\"editUser\" groups=\"groups\" possible-groups=\"possibleGroups\" read-only=\"false\">\n" +
     "            <button type=\"submit\" class=\"btn btn-primary\" ng-click=\"save()\">{{'CHELL_IAM.USER_LIST.SAVE_BUTTON' | translate}}</button>\n" +
     "            <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.USER_LIST.CANCEL_BUTTON' | translate}}</button>\n" +
     "        </chell-user-profile>\n" +
@@ -987,39 +1059,45 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "            <fieldset>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputLogin\">{{'CHELL_IAM.USER_PROFILE.LOGIN' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputLogin\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LOGIN' | translate}}\" readonly=\"true\" ng-model=\"user.login\">\n" +
+    "                    <input class=\"form-control\" id=\"inputLogin\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LOGIN' | translate}}\" readonly=\"true\"\n" +
+    "                           ng-model=\"user.login\">\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputUserId\">{{'CHELL_IAM.USER_PROFILE.USER_ID' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputUserId\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_USER_ID' | translate}}\" readonly=\"true\" ng-model=\"user.id\">\n" +
+    "                    <input class=\"form-control\" id=\"inputUserId\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_USER_ID' | translate}}\" readonly=\"true\"\n" +
+    "                           ng-model=\"user.id\">\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputFirstname\">{{'CHELL_IAM.USER_PROFILE.FIRSTNAME' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputFirstname\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_FIRSTNAME' | translate}}\" required=\"true\" ng-model=\"user.firstname\">\n" +
+    "                    <input class=\"form-control\" id=\"inputFirstname\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_FIRSTNAME' | translate}}\" required=\"true\"\n" +
+    "                           ng-model=\"user.firstname\" ng-readonly=\"readOnly\">\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputLastname\">{{'CHELL_IAM.USER_PROFILE.LASTNAME' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputLastname\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LASTNAME' | translate}}\" required=\"true\" ng-model=\"user.lastname\">\n" +
+    "                    <input class=\"form-control\" id=\"inputLastname\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LASTNAME' | translate}}\" required=\"true\"\n" +
+    "                           ng-model=\"user.lastname\" ng-readonly=\"readOnly\">\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.emails != null || user.emails.length != 0 && !readOnly\">\n" +
     "                    <label for=\"inputEMail\">{{'CHELL_IAM.USER_PROFILE.EMAIL' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputEMail\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_EMAIL' | translate}}\" type=\"email\" ng-model=\"user.email\">\n" +
+    "                    <multi-value id=\"inputEMail\" value-list=\"user.emails\" label-property=\"type\" value-property=\"value\" read-only=\"readOnly\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label for=\"inputEMail\">{{'CHELL_IAM.USER_PROFILE.GRAVATAR_EMAIL' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputGravatarMail\" placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_GRAVATAR_EMAIL' | translate}}\" type=\"email\" ng-model=\"user.gravatarMail\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.phones != null || user.phones.length != 0 && !readOnly\">\n" +
+    "                    <label for=\"inputPhone\">{{'CHELL_IAM.USER_PROFILE.PHONE' | translate}}</label>\n" +
+    "                    <multi-value id=\"inputPhone\" value-list=\"user.phones\" label-property=\"type\" value-property=\"value\" read-only=\"readOnly\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label for=\"inputPrimaryGroup\">{{'CHELL_IAM.USER_PROFILE.GROUPS' | translate}}</label>\n" +
-    "                    <select class=\"form-control\" id=\"inputPrimaryGroup\" ng-model=\"user.primaryGroup\" ng-options=\"group as (group.name) for group in groups\">\n" +
-    "                        <option value=\"\">{{'CHELL_IAM.USER_PROFILE.CHOOSE_GROUP' | translate}}</option>\n" +
-    "                    </select>\n" +
+    "                <div class=\"form-group\" ng-show=\"user.ims != null || user.ims.length != 0 && !readOnly\">\n" +
+    "                    <label for=\"inputIms\">{{'CHELL_IAM.USER_PROFILE.IMS' | translate}}</label>\n" +
+    "                    <multi-value id=\"inputIms\" value-list=\"user.ims\" label-property=\"type\" value-property=\"value\" read-only=\"readOnly\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label for=\"inputStatus\">{{'CHELL_IAM.USER_PROFILE.STATUS' | translate}}</label>\n" +
-    "                    <select class=\"form-control\" id=\"inputStatus\" ng-model=\"user.status\">\n" +
-    "                        <option>{{'CHELL_IAM.USER_PROFILE.ACTIVE' | translate}}</option>\n" +
-    "                        <option>{{'CHELL_IAM.USER_PROFILE.INACTIVE' | translate}}</option>\n" +
+    "                <div class=\"form-group\" ng-hide=\"readOnly\">\n" +
+    "                    <label for=\"inputGroups\">{{'CHELL_IAM.USER_PROFILE.GROUPS' | translate}}</label>\n" +
+    "                    <multi-select id=\"inputGroups\" input-model=\"possibleGroups\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\"\n" +
+    "                                  group-property=\"isGroup\"/>\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\" ng-show=\"readOnly\">\n" +
+    "                    <i class=\"glyphicon glyphicon-folder-open\"></i> <label for=\"inputGroups\">{{'CHELL_IAM.USER_PROFILE.GROUPS' | translate}}</label>\n" +
+    "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\">\n" +
+    "                        <option ng-repeat=\"group in user.groups\">{{group.display}}</option>\n" +
     "                    </select>\n" +
     "                </div>\n" +
     "            </fieldset>\n" +
@@ -1030,16 +1108,18 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "        <div style=\"max-width: 220px; margin: 15px 5px\">\n" +
     "            <label>{{'CHELL_IAM.USER_PROFILE.PROFILE_PREVIEW' | translate}}</label>\n" +
     "            <img height=\"220\" width=\"220\" ng-src=\"{{user.gravatarMail ? ('http://www.gravatar.com/avatar/'+(user.gravatarMail | md5)+'?s=220') : user.photo}}\">\n" +
+    "\n" +
     "            <h1>\n" +
-    "                <span style=\"color: #333; font-size: 26px; line-height: 30px;\">{{currentUser.fullname}}</span>\n" +
-    "                        <span style=\"display: block; overflow: hidden; width: 100%; font-size: 20px; font-style: normal; font-weight: 300;\n" +
-    "                        line-height: 24px; color: #666; text-overflow: ellipsis;\">{{currentUser.login}}</span>\n" +
+    "                <span style=\"color: #428bca; font-size: 26px; line-height: 30px;\">{{user.fullname}}</span>\n" +
+    "                <span style=\"display: block; overflow: hidden; width: 100%; font-size: 20px; font-style: normal; font-weight: 300;\n" +
+    "                        line-height: 24px; color: #666; text-overflow: ellipsis;\">{{user.login}}</span>\n" +
     "            </h1>\n" +
     "            <ul style=\"list-style: none; padding-left: 0px; padding-top: 15px; padding-bottom: 15px; border-top: 1px solid #428bca; border-bottom: 1px solid #428bca\">\n" +
-    "                <li style=\"color: #428bca;\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>  {{user.primaryGroup.name}}</li>\n" +
-    "                <li style=\"color: #428bca;\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-envelope\"></i>  {{user.email}}</li>\n" +
-    "                <li style=\"color: #428bca;\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-time\"></i>  {{user.creationDate | date:'dd.MM.yyyy'}}</li>\n" +
-    "                <li style=\"color: #428bca;\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-flag\"></i>  {{user.status}}</li>\n" +
+    "\n" +
+    "                <li style=\"color: #428bca; font-size: 11px\" ng-repeat=\"email in user.emails\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-envelope\"></i> {{email.value}}</li>\n" +
+    "                <li style=\"color: #428bca; font-size: 11px\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-time\"></i> {{user.creationDate | date:'dd.MM.yyyy'}}</li>\n" +
+    "                <li style=\"color: #428bca; font-size: 11px\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-flag\"></i> {{user.status}}</li>\n" +
+    "                <li style=\"color: #428bca; font-size: 11px\" ng-repeat=\"group in user.groups\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-folder-open\"></i> {{group.display}}</li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -1053,7 +1133,7 @@ angular.module("templates/user-view-dialog.tpl.html", []).run(["$templateCache",
     "    <h3>{{'CHELL_IAM.USER_VIEW_DIALOG.USER_TITLE' | translate}}: {{user.fullname}}</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "    <chell-user-profile user=\"user\"/>\n" +
+    "    <chell-user-profile user=\"user\" read-only=\"true\"/>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "    <button class=\"btn btn-primary\" ng-click=\"cancel()\">{{'CHELL_IAM.USER_VIEW_DIALOG.CLOSE_BUTTON' | translate}}</button>\n" +
