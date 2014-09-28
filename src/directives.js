@@ -77,15 +77,15 @@ chellIam.directive('visibilityGroupId', function (CurrentUserService, IamUser) {
             $element.hide();
         },
         link: function ($scope, element, attrs) {
-            IamUser.self().then(function(user) {
+            IamUser.self().then(function (user) {
                 if (!CurrentUserService.hasGroupId(attrs.visibilityGroupId)) {
                     element.hide();
                 } else {
                     element.show();
                 }
             });
-            $scope.$on('event:auth-loginConfirmed', function() {
-                IamUser.self().then(function(user) {
+            $scope.$on('event:auth-loginConfirmed', function () {
+                IamUser.self().then(function (user) {
                     if (!CurrentUserService.hasGroupId(attrs.visibilityGroupId)) {
                         element.hide();
                     } else {
@@ -93,7 +93,7 @@ chellIam.directive('visibilityGroupId', function (CurrentUserService, IamUser) {
                     }
                 });
             });
-            $scope.$on('event:auth-logoutConfirmed', function() {
+            $scope.$on('event:auth-logoutConfirmed', function () {
                 element.hide();
             });
         }
@@ -107,15 +107,15 @@ chellIam.directive('moveableGroupId', function (CurrentUserService, IamUser) {
             $($element).addClass('box-locked');
         },
         link: function ($scope, element, attrs) {
-            IamUser.self().then(function(user) {
+            IamUser.self().then(function (user) {
                 if (!CurrentUserService.hasGroupId(attrs.moveableGroupId)) {
                     $(element).addClass('box-locked');
                 } else {
                     $(element).removeClass('box-locked');
                 }
             });
-            $scope.$on('event:auth-loginConfirmed', function() {
-                IamUser.self().then(function(user) {
+            $scope.$on('event:auth-loginConfirmed', function () {
+                IamUser.self().then(function (user) {
                     if (!CurrentUserService.hasGroupId(attrs.moveableGroupId)) {
                         $(element).addClass('box-locked');
                     } else {
@@ -123,7 +123,7 @@ chellIam.directive('moveableGroupId', function (CurrentUserService, IamUser) {
                     }
                 });
             });
-            $scope.$on('event:auth-logoutConfirmed', function() {
+            $scope.$on('event:auth-logoutConfirmed', function () {
                 $(element).addClass('box-locked');
             });
         }
@@ -137,10 +137,34 @@ chellIam.directive('multiValue', function () {
             valueList: '=',
             labelProperty: '=',
             valueProperty: '=',
-            readOnly: '='
+            readOnly: '=',
+            possibleTypes: '@'
         },
         controller: function ($scope, $element) {
+            $scope.newType = 'None';
+            $scope.newValue = '';
+            $scope.possibleTypeList = $scope.possibleTypes.split(',');
 
+            $scope.addValue = function () {
+                if (!$scope.valueList) {
+                    $scope.valueList = [];
+                }
+                $scope.valueList = $scope.valueList.concat({value: $scope.newValue, type: $scope.newType});
+                $scope.newType = 'None';
+                $scope.newValue = '';
+            };
+
+            $scope.removeValue = function (value) {
+                $scope.valueList.splice($scope.valueList.indexOf(value), 1);
+            };
+
+            $scope.selectType = function (type, value) {
+                if (value) {
+                    $scope.valueList[$scope.valueList.indexOf(value)].type = type;
+                } else {
+                    $scope.newType = type;
+                }
+            };
         },
         templateUrl: 'templates/multi-value.tpl.html'
     };

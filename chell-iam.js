@@ -42,8 +42,8 @@ angular.module('translations').config(function ($translateProvider) {
         'TITLE': 'Login',
         'FORGOT_PASSWORD': 'Forgot password?',
         'INCORRECT_LOGIN_PW': 'Incorrect Username or password!',
-        'PH_LOGIN': 'Login',
-        'PH_PASSWORD': 'Password',
+        'PH_LOGIN': 'Login (Use login \'chellAdmin\')',
+        'PH_PASSWORD': 'Password (Use password \'chellAdmin\')',
         'REMEMBER_ME': 'Remember me',
         'LOGIN_BUTTON': 'Log in',
         'RESET_BUTTON': 'Reset'
@@ -435,12 +435,37 @@ chellIam.directive('multiValue', function () {
       valueList: '=',
       labelProperty: '=',
       valueProperty: '=',
-      readOnly: '='
+      readOnly: '=',
+      possibleTypes: '@'
     },
     controller: [
       '$scope',
       '$element',
       function ($scope, $element) {
+        $scope.newType = 'None';
+        $scope.newValue = '';
+        $scope.possibleTypeList = $scope.possibleTypes.split(',');
+        $scope.addValue = function () {
+          if (!$scope.valueList) {
+            $scope.valueList = [];
+          }
+          $scope.valueList = $scope.valueList.concat({
+            value: $scope.newValue,
+            type: $scope.newType
+          });
+          $scope.newType = 'None';
+          $scope.newValue = '';
+        };
+        $scope.removeValue = function (value) {
+          $scope.valueList.splice($scope.valueList.indexOf(value), 1);
+        };
+        $scope.selectType = function (type, value) {
+          if (value) {
+            $scope.valueList[$scope.valueList.indexOf(value)].type = type;
+          } else {
+            $scope.newType = type;
+          }
+        };
       }
     ],
     templateUrl: 'templates/multi-value.tpl.html'
@@ -963,34 +988,32 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
   $templateCache.put("templates/multi-value.tpl.html",
     "<div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-repeat=\"value in valueList\">\n" +
     "    <div class=\"input-group-btn input-group-select\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"{{readOnly}}\">\n" +
-    "            <span class=\"concept\">Work</span> <span class=\"caret\"></span>\n" +
+    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"{{readOnly}}\"\n" +
+    "                style=\"min-width: 95px;\">\n" +
+    "            <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +
     "        </button>\n" +
     "        <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
-    "            <li><a href=\"#phone\">Work</a></li>\n" +
-    "            <li><a href=\"#home\">Home</a></li>\n" +
-    "            <li><a href=\"#gravatar\">Gravatar</a></li>\n" +
+    "            <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType, value)\">{{possibleType}}</a></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "    <input type=\"text\" class=\"form-control\" ng-model=\"value.value\" ng-readonly=\"{{readOnly}}\">\n" +
     "    <span ng-hide=\"readOnly\" class=\"input-group-btn\" style=\"width: 34px\">\n" +
-    "        <button type=\"button\" class=\"btn btn-danger btn-add\" style=\"width: 34px\">-</button>\n" +
+    "        <button type=\"button\" class=\"btn btn-danger btn-add\" style=\"width: 34px\" ng-click=\"removeValue(value)\">-\n" +
+    "        </button>\n" +
     "    </span>\n" +
     "</div>\n" +
     "<div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-hide=\"readOnly\">\n" +
     "    <div class=\"input-group-btn input-group-select\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\">\n" +
-    "            <span class=\"concept\">Work</span> <span class=\"caret\"></span>\n" +
+    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" style=\"min-width: 95px;\">\n" +
+    "            <span class=\"concept\">{{newType}}</span> <span class=\"caret\"></span>\n" +
     "        </button>\n" +
     "        <ul class=\"dropdown-menu\" role=\"menu\">\n" +
-    "            <li><a href=\"#phone\">Work</a></li>\n" +
-    "            <li><a href=\"#home\">Home</a></li>\n" +
-    "            <li><a href=\"#gravatar\">Gravatar</a></li>\n" +
+    "            <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType)\">{{possibleType}}</a></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
-    "    <input type=\"text\" class=\"form-control\">\n" +
+    "    <input type=\"text\" class=\"form-control\" ng-model=\"newValue\">\n" +
     "    <span class=\"input-group-btn\">\n" +
-    "        <button type=\"button\" class=\"btn btn-success btn-add\">+</button>\n" +
+    "        <button type=\"button\" class=\"btn btn-success btn-add\" ng-click=\"addValue()\">+</button>\n" +
     "    </span>\n" +
     "</div>");
 }]);
@@ -1079,15 +1102,18 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                </div>\n" +
     "                <div class=\"form-group\" ng-show=\"user.emails != null || user.emails.length != 0 && !readOnly\">\n" +
     "                    <label for=\"inputEMail\">{{'CHELL_IAM.USER_PROFILE.EMAIL' | translate}}</label>\n" +
-    "                    <multi-value id=\"inputEMail\" value-list=\"user.emails\" label-property=\"type\" value-property=\"value\" read-only=\"readOnly\"/>\n" +
+    "                    <multi-value id=\"inputEMail\" value-list=\"user.emails\" label-property=\"type\"\n" +
+    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Work,Home,Gravatar\"/>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\" ng-show=\"user.phones != null || user.phones.length != 0 && !readOnly\">\n" +
     "                    <label for=\"inputPhone\">{{'CHELL_IAM.USER_PROFILE.PHONE' | translate}}</label>\n" +
-    "                    <multi-value id=\"inputPhone\" value-list=\"user.phones\" label-property=\"type\" value-property=\"value\" read-only=\"readOnly\"/>\n" +
+    "                    <multi-value id=\"inputPhone\" value-list=\"user.phones\" label-property=\"type\"\n" +
+    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Work,Home,Mobile\"/>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\" ng-show=\"user.ims != null || user.ims.length != 0 && !readOnly\">\n" +
     "                    <label for=\"inputIms\">{{'CHELL_IAM.USER_PROFILE.IMS' | translate}}</label>\n" +
-    "                    <multi-value id=\"inputIms\" value-list=\"user.ims\" label-property=\"type\" value-property=\"value\" read-only=\"readOnly\"/>\n" +
+    "                    <multi-value id=\"inputIms\" value-list=\"user.ims\" label-property=\"type\"\n" +
+    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Skype,Lync,Yahoo\"/>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\" ng-hide=\"readOnly\">\n" +
     "                    <label for=\"inputGroups\">{{'CHELL_IAM.USER_PROFILE.GROUPS' | translate}}</label>\n" +

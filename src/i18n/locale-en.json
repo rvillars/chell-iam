@@ -33,8 +33,8 @@
             "TITLE": "Login",
             "FORGOT_PASSWORD": "Forgot password?",
             "INCORRECT_LOGIN_PW": "Incorrect Username or password!",
-            "PH_LOGIN": "Login",
-            "PH_PASSWORD": "Password",
+            "PH_LOGIN": "Login (Use login 'chellAdmin')",
+            "PH_PASSWORD": "Password (Use password 'chellAdmin')",
             "REMEMBER_ME": "Remember me",
             "LOGIN_BUTTON": "Log in",
             "RESET_BUTTON": "Reset"
