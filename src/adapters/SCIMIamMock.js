@@ -5,7 +5,7 @@ chellIam.run([
     '$base64',
     function ($httpBackend, $base64) {
         var mockUserGroup = {
-            schemas: ['urn:scim:schemas:core:1.0'],
+            schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
             id: 'e9e304ba-f08f-4409-8486-d5c6a43166ee',
             displayName: 'Users',
             members: [
@@ -28,7 +28,7 @@ chellIam.run([
             meta: { created: '2010-01-23T04:56:22Z' }
         };
         var mockAdminGroup = {
-            schemas: ['urn:scim:schemas:core:1.0'],
+            schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
             id: 'e9e30dba-f08f-4109-8486-d5c6a331660a',
             displayName: 'Administrators',
             members: [
@@ -45,7 +45,7 @@ chellIam.run([
             mockAdminGroup
         ];
         var mockAdmin = {
-            schemas: ['urn:scim:schemas:core:1.0'],
+            schemas: ['urn:ietf:params:scim:schemas:core:2.0:User'],
             id: '2819c223-7f76-453a-919d-413861904646',
             externalId: '42',
             userName: 'chellAdmin',
@@ -54,7 +54,6 @@ chellIam.run([
                 familyName: 'Admin',
                 givenName: 'Chell'
             },
-            password: 'chellAdmin',
             emails: [
                 {
                     value: 'chell.admin@mimacom.com',
@@ -82,6 +81,16 @@ chellIam.run([
                     type: 'Skype'
                 }
             ],
+            photos: [
+                {
+                    'value': 'assets/member_admin.png',
+                    'type': 'photo'
+                }
+            ],
+            title: 'Dipl. Ing. FH',
+            preferredLanguage: 'en_US',
+            active: true,
+            password: 'chellAdmin',
             groups: [
                 {
                     value: 'e9e30dba-f08f-4109-8486-d5c6a331660a',
@@ -92,26 +101,17 @@ chellIam.run([
                     display: 'Users'
                 }
             ],
-            active: true,
-            meta: { created: '2010-01-23T04:56:22Z' },
-            photos: [
-                {
-                    'value': 'assets/member_admin.png',
-                    'type': 'photo'
-                }
-            ]
+            meta: { created: '2010-01-23T04:56:22Z' }
         };
         var mockUser = {
-            schemas: ['urn:scim:schemas:core:1.0'],
+            schemas: ['urn:ietf:params:scim:schemas:core:2.0:User'],
             id: '2832c223-7f76-453a-8d9d-413331904629',
-            externalId: '43',
             userName: 'chellUser',
             name: {
                 formatted: 'Chell User',
                 familyName: 'User',
                 givenName: 'Chell'
             },
-            password: 'chellUser',
             emails: [
                 {
                     value: 'chell.user.work@mimacom.com',
@@ -123,20 +123,22 @@ chellIam.run([
                     type: 'Private'
                 }
             ],
+            photos: [
+                {
+                    'value': '../assets/member_user.png',
+                    'type': 'photo'
+                }
+            ],
+            preferredLanguage: 'en_US',
+            active: false,
+            password: 'chellUser',
             groups: [
                 {
                     display: 'Users',
                     value: 'e9e304ba-f08f-4409-8486-d5c6a43166ee'
                 }
             ],
-            active: false,
-            meta: { created: '2012-06-12T04:56:22Z' },
-            photos: [
-                {
-                    'value': '../assets/member_user.png',
-                    'type': 'photo'
-                }
-            ]
+            meta: { created: '2012-06-12T04:56:22Z' }
         };
         var mockUsers = [
             mockAdmin,
