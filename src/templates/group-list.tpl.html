@@ -42,17 +42,17 @@
         <form id="groupDetail">
             <fieldset>
                 <div class="form-group">
-                    <label for="inputGroupId">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>
+                    <label for="inputGroupId" class="control-label">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>
                     <input class="form-control" id="inputGroupId" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}" readonly="true"
                            ng-model="editGroup.id"/>
                 </div>
                 <div class="form-group">
-                    <label for="inputGroupname">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>
+                    <label for="inputGroupname" class="control-label">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>
                     <input class="form-control" id="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}" required="true"
                            ng-model="editGroup.name"/>
                 </div>
                 <div class="form-group">
-                    <label for="inputMembers">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>
+                    <label for="inputMembers" class="control-label">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>
                     <multi-select id="inputMembers" input-model="possibleMembers" button-label="icon name" item-label="icon name" tick-property="ticked" group-property="isGroup"/>
                 </div>
             </fieldset>

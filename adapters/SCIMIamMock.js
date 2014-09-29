@@ -48,10 +48,10 @@ chellIam.run([
         externalId: '42',
         userName: 'chellAdmin',
         name: {
-          formatted: 'Chell Admin',
           familyName: 'Admin',
           givenName: 'Chell'
         },
+        displayName: 'Chell Admin',
         emails: [
           {
             value: 'chell.admin@mimacom.com',
@@ -61,6 +61,25 @@ chellIam.run([
           {
             value: 'chell.admin.gravatar@mimacom.com',
             type: 'Gravatar'
+          }
+        ],
+        addresses: [
+          {
+            type: 'work',
+            streetAddress: 'Galgenfeldweg 16',
+            locality: 'Bern',
+            region: 'Bern',
+            postalCode: '3006',
+            country: 'CH',
+            'primary': true
+          },
+          {
+            type: 'private',
+            streetAddress: 'Dreik\xf6nigstrasse 31 A',
+            locality: 'Zurich',
+            region: 'Zurich',
+            postalCode: '8002',
+            country: 'CH'
           }
         ],
         phoneNumbers: [
@@ -102,10 +121,10 @@ chellIam.run([
         id: '2832c223-7f76-453a-8d9d-413331904629',
         userName: 'chellUser',
         name: {
-          formatted: 'Chell User',
           familyName: 'User',
           givenName: 'Chell'
         },
+        displayName: 'Chell User',
         emails: [
           {
             value: 'chell.user.work@mimacom.com',

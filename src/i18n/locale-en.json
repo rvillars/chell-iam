@@ -62,6 +62,8 @@
             "PH_EXTERNAL_ID": "External ID",
             "LOGIN": "Login",
             "PH_LOGIN": "Login",
+            "DISPLAY": "Display Name",
+            "PH_DISPLAY": "Display Name",
             "FIRSTNAME": "Firstname",
             "PH_FIRSTNAME": "Firstname",
             "LASTNAME": "Lastname",
