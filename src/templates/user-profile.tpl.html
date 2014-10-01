@@ -73,6 +73,46 @@
                         <option value="de">German</option>
                     </select>
                 </div>
+                <div class="form-group" ng-show="!readOnly || user.addresses">
+                    <label for="inputAddresses" class="control-label">{{'CHELL_IAM.USER_PROFILE.ADRESSES' | translate}}</label>
+                    <multi-value id="inputAddresses" value-list="user.addresses" label-property="type" panel="true"
+                                 read-only="readOnly" possible-types="Work,Home">
+                        <div class="form-group" ng-show="!readOnly || value.streetAddress">
+                            <label for="inputStreetAddress" class="control-label">{{'CHELL_IAM.USER_PROFILE.STREET' | translate}}</label>
+                            <input class="form-control" id="inputStreetAddress"
+                                   placeholder="{{'CHELL_IAM.USER_PROFILE.PH_STREET' | translate}}" ng-readonly="readOnly"
+                                   ng-model="$parent.value.streetAddress">
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6" ng-show="!readOnly || value.postalCode">
+                                <label for="inputZip" class="control-label">{{'CHELL_IAM.USER_PROFILE.ZIP' | translate}}</label>
+                                <input class="form-control" id="inputZip"
+                                       placeholder="{{'CHELL_IAM.USER_PROFILE.PH_ZIP' | translate}}" ng-readonly="readOnly"
+                                       ng-model="value.postalCode">
+                            </div>
+                            <div class="form-group col-md-6" ng-show="!readOnly || value.locality">
+                                <label for="inputCity" class="control-label">{{'CHELL_IAM.USER_PROFILE.CITY' | translate}}</label>
+                                <input class="form-control" id="inputCity"
+                                       placeholder="{{'CHELL_IAM.USER_PROFILE.PH_CITY' | translate}}" ng-readonly="readOnly"
+                                       ng-model="value.locality">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6" ng-show="!readOnly || value.region">
+                                <label for="inputRegion" class="control-label">{{'CHELL_IAM.USER_PROFILE.REGION' | translate}}</label>
+                                <input class="form-control" id="inputRegion"
+                                       placeholder="{{'CHELL_IAM.USER_PROFILE.PH_REGION' | translate}}" ng-readonly="readOnly"
+                                       ng-model="value.region">
+                            </div>
+                            <div class="form-group col-md-6" ng-show="!readOnly || value.country">
+                                <label for="inputCountry" class="control-label">{{'CHELL_IAM.USER_PROFILE.COUNTRY' | translate}}</label>
+                                <input class="form-control" id="inputCountry"
+                                       placeholder="{{'CHELL_IAM.USER_PROFILE.PH_COUNTRY' | translate}}" ng-readonly="readOnly"
+                                       ng-model="value.country">
+                            </div>
+                        </div>
+                    </multi-value>
+                </div>
                 <div class="form-group" ng-show="!readOnly">
                     <label for="inputActive" class="control-label">{{'CHELL_IAM.USER_PROFILE.STATUS' | translate}}</label>
 

@@ -133,11 +133,13 @@ chellIam.directive('moveableGroupId', function (CurrentUserService, IamUser) {
 chellIam.directive('multiValue', function () {
     return {
         restrict: 'EA',
+        transclude: true,
         scope: {
             valueList: '=',
             labelProperty: '=',
             valueProperty: '=',
             readOnly: '=',
+            panel: '=',
             possibleTypes: '@'
         },
         controller: function ($scope, $element) {

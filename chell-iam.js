@@ -83,6 +83,17 @@ angular.module('translations').config(function ($translateProvider) {
         'PHONE': 'Phone',
         'IMS': 'Instant Messaging',
         'LANGUAGE': 'Language',
+        'ADRESSES': 'Addresses',
+        'STREET': 'Street',
+        'PH_STREET': 'Street',
+        'ZIP': 'Zip',
+        'PH_ZIP': 'Zip',
+        'CITY': 'City',
+        'PH_CITY': 'City',
+        'REGION': 'Region',
+        'PH_REGION': 'Region',
+        'COUNTRY': 'Country',
+        'PH_COUNTRY': 'Country',
         'STATUS': 'Status',
         'ACTIVE': 'Active',
         'GROUPS': 'Groups',
@@ -440,11 +451,13 @@ chellIam.directive('moveableGroupId', [
 chellIam.directive('multiValue', function () {
   return {
     restrict: 'EA',
+    transclude: true,
     scope: {
       valueList: '=',
       labelProperty: '=',
       valueProperty: '=',
       readOnly: '=',
+      panel: '=',
       possibleTypes: '@'
     },
     controller: [
@@ -995,35 +1008,74 @@ angular.module("templates/login-dialog.tpl.html", []).run(["$templateCache", fun
 
 angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/multi-value.tpl.html",
-    "<div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-repeat=\"value in valueList\">\n" +
-    "    <div class=\"input-group-btn input-group-select\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"{{readOnly}}\"\n" +
-    "                style=\"min-width: 95px;\">\n" +
-    "            <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +
-    "        </button>\n" +
-    "        <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
-    "            <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType, value)\">{{possibleType}}</a></li>\n" +
-    "        </ul>\n" +
+    "<div ng-show=\"!panel\">\n" +
+    "    <div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-repeat=\"value in valueList\">\n" +
+    "        <div class=\"input-group-btn input-group-select\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"{{readOnly}}\"\n" +
+    "                    style=\"min-width: 95px;\">\n" +
+    "                <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +
+    "            </button>\n" +
+    "            <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
+    "                <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType, value)\">{{possibleType}}</a></li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"value.value\" ng-readonly=\"{{readOnly}}\">\n" +
+    "        <span ng-hide=\"readOnly\" class=\"input-group-btn\" style=\"width: 34px\">\n" +
+    "            <button type=\"button\" class=\"btn btn-danger btn-add\" style=\"width: 34px\" ng-click=\"removeValue(value)\">-</button>\n" +
+    "        </span>\n" +
     "    </div>\n" +
-    "    <input type=\"text\" class=\"form-control\" ng-model=\"value.value\" ng-readonly=\"{{readOnly}}\">\n" +
-    "    <span ng-hide=\"readOnly\" class=\"input-group-btn\" style=\"width: 34px\">\n" +
-    "        <button type=\"button\" class=\"btn btn-danger btn-add\" style=\"width: 34px\" ng-click=\"removeValue(value)\">-\n" +
-    "        </button>\n" +
-    "    </span>\n" +
+    "    <div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-hide=\"readOnly\">\n" +
+    "        <div class=\"input-group-btn input-group-select\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" style=\"min-width: 95px;\">\n" +
+    "                <span class=\"concept\">{{newType}}</span> <span class=\"caret\"></span>\n" +
+    "            </button>\n" +
+    "            <ul class=\"dropdown-menu\" role=\"menu\">\n" +
+    "                <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType)\">{{possibleType}}</a></li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"newValue\">\n" +
+    "        <span class=\"input-group-btn\">\n" +
+    "            <button type=\"button\" class=\"btn btn-success btn-add\" ng-click=\"addValue()\">+</button>\n" +
+    "        </span>\n" +
+    "    </div>\n" +
     "</div>\n" +
-    "<div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-hide=\"readOnly\">\n" +
-    "    <div class=\"input-group-btn input-group-select\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" style=\"min-width: 95px;\">\n" +
-    "            <span class=\"concept\">{{newType}}</span> <span class=\"caret\"></span>\n" +
-    "        </button>\n" +
-    "        <ul class=\"dropdown-menu\" role=\"menu\">\n" +
-    "            <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType)\">{{possibleType}}</a></li>\n" +
-    "        </ul>\n" +
+    "<div ng-show=\"panel\">\n" +
+    "    <div class=\"panel panel-default\" ng-repeat=\"value in valueList\">\n" +
+    "        <div class=\"panel-heading clearfix\" style=\"padding: 0px; background-color: #ffffff\">\n" +
+    "            <div class=\"input-group-btn input-group-select pull-left\">\n" +
+    "                <button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" style=\"min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px\">\n" +
+    "                    <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +
+    "                </button>\n" +
+    "                <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
+    "                    <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType, value)\">{{possibleType}}</a></li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
+    "        <span class=\"btn-group pull-right\" style=\"width: 34px\">\n" +
+    "            <button type=\"button\" class=\"btn btn-danger btn-add\" style=\"width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;\" ng-click=\"removeValue()\">-</button>\n" +
+    "        </span>\n" +
+    "        </div>\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div ng-transclude></div>\n" +
+    "        </div>\n" +
     "    </div>\n" +
-    "    <input type=\"text\" class=\"form-control\" ng-model=\"newValue\">\n" +
-    "    <span class=\"input-group-btn\">\n" +
-    "        <button type=\"button\" class=\"btn btn-success btn-add\" ng-click=\"addValue()\">+</button>\n" +
-    "    </span>\n" +
+    "    <div class=\"panel panel-default\">\n" +
+    "        <div class=\"panel-heading clearfix\" style=\"padding: 0px; background-color: #ffffff\">\n" +
+    "            <div class=\"input-group-btn input-group-select pull-left\">\n" +
+    "                <button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" style=\"min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px\">\n" +
+    "                    <span class=\"concept\">{{newType}}</span> <span class=\"caret\"></span>\n" +
+    "                </button>\n" +
+    "                <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
+    "                    <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType, value)\">{{possibleType}}</a></li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
+    "        <span class=\"btn-group pull-right\" style=\"width: 34px\">\n" +
+    "            <button type=\"button\" class=\"btn btn-success btn-add\" style=\"width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;\" ng-click=\"addValue()\">+</button>\n" +
+    "        </span>\n" +
+    "        </div>\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div ng-transclude></div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>");
 }]);
 
@@ -1159,6 +1211,46 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                        <!-- TODO: Get available languages dynamically -->\n" +
     "                        <option value=\"de\">German</option>\n" +
     "                    </select>\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\" ng-show=\"!readOnly || user.addresses\">\n" +
+    "                    <label for=\"inputAddresses\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.ADRESSES' | translate}}</label>\n" +
+    "                    <multi-value id=\"inputAddresses\" value-list=\"user.addresses\" label-property=\"type\" panel=\"true\"\n" +
+    "                                 read-only=\"readOnly\" possible-types=\"Work,Home\">\n" +
+    "                        <div class=\"form-group\" ng-show=\"!readOnly || value.streetAddress\">\n" +
+    "                            <label for=\"inputStreetAddress\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.STREET' | translate}}</label>\n" +
+    "                            <input class=\"form-control\" id=\"inputStreetAddress\"\n" +
+    "                                   placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_STREET' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                   ng-model=\"$parent.value.streetAddress\">\n" +
+    "                        </div>\n" +
+    "                        <div class=\"row\">\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.postalCode\">\n" +
+    "                                <label for=\"inputZip\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.ZIP' | translate}}</label>\n" +
+    "                                <input class=\"form-control\" id=\"inputZip\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_ZIP' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       ng-model=\"value.postalCode\">\n" +
+    "                            </div>\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.locality\">\n" +
+    "                                <label for=\"inputCity\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.CITY' | translate}}</label>\n" +
+    "                                <input class=\"form-control\" id=\"inputCity\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_CITY' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       ng-model=\"value.locality\">\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"row\">\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.region\">\n" +
+    "                                <label for=\"inputRegion\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.REGION' | translate}}</label>\n" +
+    "                                <input class=\"form-control\" id=\"inputRegion\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_REGION' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       ng-model=\"value.region\">\n" +
+    "                            </div>\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.country\">\n" +
+    "                                <label for=\"inputCountry\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.COUNTRY' | translate}}</label>\n" +
+    "                                <input class=\"form-control\" id=\"inputCountry\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_COUNTRY' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       ng-model=\"value.country\">\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                    </multi-value>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\" ng-show=\"!readOnly\">\n" +
     "                    <label for=\"inputActive\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.STATUS' | translate}}</label>\n" +

@@ -67,21 +67,21 @@ chellIam.run([
             ],
             addresses: [
                 {
-                    type: 'work',
-                    streetAddress: "Galgenfeldweg 16",
-                    locality: "Bern",
-                    region: "Bern",
-                    postalCode: "3006",
-                    country: "CH",
-                    "primary": true
+                    type: 'Work',
+                    streetAddress: 'Galgenfeldweg 16',
+                    locality: 'Bern',
+                    region: 'Bern',
+                    postalCode: '3006',
+                    country: 'CH',
+                    primary: true
                 },
                 {
-                    type: 'private',
-                    streetAddress: "Dreikönigstrasse 31 A",
-                    locality: "Zurich",
-                    region: "Zurich",
-                    postalCode: "8002",
-                    country: "CH"
+                    type: 'Private',
+                    streetAddress: 'Dreikönigstrasse 31 A',
+                    locality: 'Zurich',
+                    region: 'Zurich',
+                    postalCode: '8002',
+                    country: 'CH'
                 }
             ],
             phoneNumbers: [

@@ -65,16 +65,16 @@ chellIam.run([
         ],
         addresses: [
           {
-            type: 'work',
+            type: 'Work',
             streetAddress: 'Galgenfeldweg 16',
             locality: 'Bern',
             region: 'Bern',
             postalCode: '3006',
             country: 'CH',
-            'primary': true
+            primary: true
           },
           {
-            type: 'private',
+            type: 'Private',
             streetAddress: 'Dreik\xf6nigstrasse 31 A',
             locality: 'Zurich',
             region: 'Zurich',
