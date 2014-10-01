@@ -1,7 +1,7 @@
 <div ng-show="!panel">
     <div class="multiple-form-group input-group" style="padding-bottom: 3px" ng-repeat="value in valueList">
         <div class="input-group-btn input-group-select">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-disabled="{{readOnly}}"
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-disabled="readOnly"
                     style="min-width: 95px;">
                 <span class="concept">{{value.type}}</span> <span class="caret"></span>
             </button>
@@ -33,15 +33,19 @@
     <div class="panel panel-default" ng-repeat="value in valueList">
         <div class="panel-heading clearfix" style="padding: 0px; background-color: #ffffff">
             <div class="input-group-btn input-group-select pull-left">
-                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-disabled="readOnly"
+                        style="min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px">
                     <span class="concept">{{value.type}}</span> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu" ng-hide="readOnly">
                     <li ng-repeat="possibleType in possibleTypeList"><a ng-click="selectType(possibleType, value)">{{possibleType}}</a></li>
                 </ul>
             </div>
-        <span class="btn-group pull-right" style="width: 34px">
-            <button type="button" class="btn btn-danger btn-add" style="width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;" ng-click="removeValue()">-</button>
+        <span ng-hide="readOnly" class="btn-group pull-right" style="width: 34px">
+            <button type="button" class="btn btn-danger btn-add"
+                    style="width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;"
+                    ng-click="removeValue()">-
+            </button>
         </span>
         </div>
         <div class="panel-body">
@@ -51,15 +55,19 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix" style="padding: 0px; background-color: #ffffff">
             <div class="input-group-btn input-group-select pull-left">
-                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-disabled="readOnly"
+                        style="min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px">
                     <span class="concept">{{newType}}</span> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu" ng-hide="readOnly">
                     <li ng-repeat="possibleType in possibleTypeList"><a ng-click="selectType(possibleType, value)">{{possibleType}}</a></li>
                 </ul>
             </div>
-        <span class="btn-group pull-right" style="width: 34px">
-            <button type="button" class="btn btn-success btn-add" style="width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;" ng-click="addValue()">+</button>
+        <span ng-hide="readOnly" class="btn-group pull-right" style="width: 34px">
+            <button type="button" class="btn btn-success btn-add"
+                    style="width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;"
+                    ng-click="addValue()">+
+            </button>
         </span>
         </div>
         <div class="panel-body">
