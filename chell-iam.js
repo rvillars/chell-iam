@@ -493,6 +493,23 @@ chellIam.directive('multiValue', function () {
     templateUrl: 'templates/multi-value.tpl.html'
   };
 });
+chellIam.directive('inject', function () {
+  return {
+    link: function ($scope, $element, $attrs, controller, $transclude) {
+      if (!$transclude) {
+        console.log('No Transclude!');
+      }
+      var innerScope = $scope.$new();
+      $transclude(innerScope, function (clone) {
+        $element.empty();
+        $element.append(clone);
+        $element.on('$destroy', function () {
+          innerScope.$destroy();
+        });
+      });
+    }
+  };
+});
 angular.module('ui.bootstrap.modal').directive('modalWindow', [
   '$timeout',
   function ($timeout) {
@@ -1011,7 +1028,7 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
     "<div ng-show=\"!panel\">\n" +
     "    <div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-repeat=\"value in valueList\">\n" +
     "        <div class=\"input-group-btn input-group-select\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"{{readOnly}}\"\n" +
+    "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"readOnly\"\n" +
     "                    style=\"min-width: 95px;\">\n" +
     "                <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +
     "            </button>\n" +
@@ -1043,37 +1060,45 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
     "    <div class=\"panel panel-default\" ng-repeat=\"value in valueList\">\n" +
     "        <div class=\"panel-heading clearfix\" style=\"padding: 0px; background-color: #ffffff\">\n" +
     "            <div class=\"input-group-btn input-group-select pull-left\">\n" +
-    "                <button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" style=\"min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px\">\n" +
+    "                <button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"readOnly\"\n" +
+    "                        style=\"min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px\">\n" +
     "                    <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +
     "                </button>\n" +
     "                <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
     "                    <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType, value)\">{{possibleType}}</a></li>\n" +
     "                </ul>\n" +
     "            </div>\n" +
-    "        <span class=\"btn-group pull-right\" style=\"width: 34px\">\n" +
-    "            <button type=\"button\" class=\"btn btn-danger btn-add\" style=\"width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;\" ng-click=\"removeValue()\">-</button>\n" +
+    "        <span ng-hide=\"readOnly\" class=\"btn-group pull-right\" style=\"width: 34px\">\n" +
+    "            <button type=\"button\" class=\"btn btn-danger btn-add\"\n" +
+    "                    style=\"width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;\"\n" +
+    "                    ng-click=\"removeValue()\">-\n" +
+    "            </button>\n" +
     "        </span>\n" +
     "        </div>\n" +
     "        <div class=\"panel-body\">\n" +
-    "            <div ng-transclude></div>\n" +
+    "            <div inject></div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <div class=\"panel panel-default\">\n" +
+    "    <div class=\"panel panel-default\" ng-hide=\"readOnly\">\n" +
     "        <div class=\"panel-heading clearfix\" style=\"padding: 0px; background-color: #ffffff\">\n" +
     "            <div class=\"input-group-btn input-group-select pull-left\">\n" +
-    "                <button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" style=\"min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px\">\n" +
+    "                <button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\"\n" +
+    "                        style=\"min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px\">\n" +
     "                    <span class=\"concept\">{{newType}}</span> <span class=\"caret\"></span>\n" +
     "                </button>\n" +
-    "                <ul class=\"dropdown-menu\" role=\"menu\" ng-hide=\"readOnly\">\n" +
+    "                <ul class=\"dropdown-menu\" role=\"menu\">\n" +
     "                    <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType, value)\">{{possibleType}}</a></li>\n" +
     "                </ul>\n" +
     "            </div>\n" +
-    "        <span class=\"btn-group pull-right\" style=\"width: 34px\">\n" +
-    "            <button type=\"button\" class=\"btn btn-success btn-add\" style=\"width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;\" ng-click=\"addValue()\">+</button>\n" +
+    "        <span ng-hide=\"readOnly\" class=\"btn-group pull-right\" style=\"width: 34px\">\n" +
+    "            <button type=\"button\" class=\"btn btn-success btn-add\"\n" +
+    "                    style=\"width: 34px; border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px; border-bottom-right-radius: 0px; border-top-right-radius: 3px;\"\n" +
+    "                    ng-click=\"addValue()\">+\n" +
+    "            </button>\n" +
     "        </span>\n" +
     "        </div>\n" +
     "        <div class=\"panel-body\">\n" +
-    "            <div ng-transclude></div>\n" +
+    "            <div inject></div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>");

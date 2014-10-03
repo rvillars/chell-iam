@@ -9,6 +9,7 @@ module.exports = {
     module_dependencies: {
         js: [
             // AngularJS
+            'bower-components/jquery/dist/jquery.js',
             'bower-components/angular/angular.js',
             'bower-components/angular-resource/angular-resource.js',
             'bower-components/angular-mocks/angular-mocks.js',

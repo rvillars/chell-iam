@@ -172,6 +172,24 @@ chellIam.directive('multiValue', function () {
     };
 });
 
+chellIam.directive('inject', function () {
+    return {
+        link: function ($scope, $element, $attrs, controller, $transclude) {
+            if (!$transclude) {
+                console.log('No Transclude!');
+            }
+            var innerScope = $scope.$new();
+            $transclude(innerScope, function (clone) {
+                $element.empty();
+                $element.append(clone);
+                $element.on('$destroy', function () {
+                    innerScope.$destroy();
+                });
+            });
+        }
+    };
+});
+
 angular.module('ui.bootstrap.modal').directive('modalWindow', function ($timeout) {
     return {
         priority: 1,
