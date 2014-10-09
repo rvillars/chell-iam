@@ -29,6 +29,7 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
         }, {
             total: $scope.users.length, // length of data
             getData: function ($defer, params) {
+                params.total($scope.users.length); // used to update paginator
                 $defer.resolve($scope.users.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             },
             $scope: { $data: {}, $emit: function () {
@@ -167,6 +168,7 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
         }, {
             total: $scope.groups.length, // length of data
             getData: function ($defer, params) {
+                params.total($scope.groups.length); // used to update paginator
                 $defer.resolve($scope.groups.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             },
             $scope: { $data: {}, $emit: function () {

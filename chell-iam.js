@@ -570,6 +570,7 @@ chellIam.controller('UserListController', [
       }, {
         total: $scope.users.length,
         getData: function ($defer, params) {
+          params.total($scope.users.length);
           $defer.resolve($scope.users.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         },
         $scope: {
@@ -705,6 +706,7 @@ chellIam.controller('GroupListController', [
       }, {
         total: $scope.groups.length,
         getData: function ($defer, params) {
+          params.total($scope.groups.length);
           $defer.resolve($scope.groups.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         },
         $scope: {
