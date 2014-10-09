@@ -1,7 +1,6 @@
 {
     "CHELL_IAM": {
         "GROUP_LIST": {
-            "CREATE_GROUP_BUTTON": "Create Group",
             "COLUMN_TITLE": {
                 "NAME": "Name",
                 "MEMBERS": "Members",
@@ -10,6 +9,7 @@
             "VIEW_BUTTON": "View",
             "EDIT_BUTTON": "Edit",
             "DELETE_BUTTON": "Delete",
+            "CREATE_GROUP_BUTTON": "New Group",
             "GROUP_ID": "Group ID",
             "PH_GENERATED": "Generated",
             "CREATION_DATE": "Creation Date",
@@ -44,7 +44,6 @@
             "RESET_BUTTON": "Reset"
         },
         "USER_LIST": {
-            "CREATE_USER_BUTTON": "Create User",
             "COLUMN_TITLE": {
                 "NAME": "Name",
                 "LOGIN": "Login",
@@ -56,6 +55,7 @@
             "VIEW_BUTTON": "View",
             "EDIT_BUTTON": "Edit",
             "DELETE_BUTTON": "Delete",
+            "CREATE_USER_BUTTON": "New User",
             "SAVE_BUTTON": "Save",
             "CANCEL_BUTTON": "Cancel"
         },

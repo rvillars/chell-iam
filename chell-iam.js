@@ -10,7 +10,6 @@ angular.module('translations').config(function ($translateProvider) {
   $translateProvider.translations('en', {
     'CHELL_IAM': {
       'GROUP_LIST': {
-        'CREATE_GROUP_BUTTON': 'Create Group',
         'COLUMN_TITLE': {
           'NAME': 'Name',
           'MEMBERS': 'Members',
@@ -19,6 +18,7 @@ angular.module('translations').config(function ($translateProvider) {
         'VIEW_BUTTON': 'View',
         'EDIT_BUTTON': 'Edit',
         'DELETE_BUTTON': 'Delete',
+        'CREATE_GROUP_BUTTON': 'New Group',
         'GROUP_ID': 'Group ID',
         'PH_GENERATED': 'Generated',
         'CREATION_DATE': 'Creation Date',
@@ -53,7 +53,6 @@ angular.module('translations').config(function ($translateProvider) {
         'RESET_BUTTON': 'Reset'
       },
       'USER_LIST': {
-        'CREATE_USER_BUTTON': 'Create User',
         'COLUMN_TITLE': {
           'NAME': 'Name',
           'LOGIN': 'Login',
@@ -65,6 +64,7 @@ angular.module('translations').config(function ($translateProvider) {
         'VIEW_BUTTON': 'View',
         'EDIT_BUTTON': 'Edit',
         'DELETE_BUTTON': 'Delete',
+        'CREATE_USER_BUTTON': 'New User',
         'SAVE_BUTTON': 'Save',
         'CANCEL_BUTTON': 'Cancel'
       },
@@ -908,10 +908,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
   $templateCache.put("templates/group-list.tpl.html",
     "<div ng-controller=\"GroupListController\">\n" +
     "    <div ng-show=\"list\">\n" +
-    "        <button class=\"btn btn-primary btn-xs\" ng-click=\"create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
-    "            | translate}}\n" +
-    "        </button>\n" +
-    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager\" class=\"table table-striped table-bordered\"\n" +
+    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/group\" class=\"table table-striped table-bordered\"\n" +
     "               id=\"datatable\">\n" +
     "            <thead>\n" +
     "            <tr>\n" +
@@ -946,21 +943,27 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "            </tr>\n" +
     "            </tbody>\n" +
     "        </table>\n" +
-    "        <script type=\"text/ng-template\" id=\"custom/pager\">\n" +
-    "            <div class=\"ng-cloak ng-table-pager\">\n" +
-    "                <ul class=\"pagination ng-table-pagination\" style=\"display: block;\">\n" +
-    "                    <li ng-class=\"{'disabled': !page.active}\" ng-repeat=\"page in pages\" ng-switch=\"page.type\">\n" +
-    "                        <a ng-switch-when=\"prev\" ng-click=\"params.page(page.number)\" href=\"\">&laquo;</a>\n" +
-    "                        <a ng-switch-when=\"first\" ng-click=\"params.page(page.number)\" href=\"\"><span ng-bind=\"page.number\"></span></a>\n" +
-    "                        <a ng-switch-when=\"page\" ng-click=\"params.page(page.number)\" href=\"\"><span ng-bind=\"page.number\"></span></a>\n" +
-    "                        <a ng-switch-when=\"more\" ng-click=\"params.page(page.number)\" href=\"\">&#8230;</a>\n" +
-    "                        <a ng-switch-when=\"last\" ng-click=\"params.page(page.number)\" href=\"\"><span ng-bind=\"page.number\"></span></a>\n" +
-    "                        <a ng-switch-when=\"next\" ng-click=\"params.page(page.number)\" href=\"\">&raquo;</a>\n" +
-    "                    </li>\n" +
-    "                </ul>\n" +
-    "                <div>\n" +
+    "        <script type=\"text/ng-template\" id=\"custom/pager/group\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <button class=\"btn btn-default\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
+    "                        | translate}}\n" +
+    "                    </button>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <div class=\"btn-group center-block\">\n" +
+    "                        <button class=\"btn btn-default center-block\" ng-click=\"params.page(page.number)\" ng-class=\"{'disabled': !page.active}\" ng-repeat=\"page in pages\" ng-switch=\"page.type\">\n" +
+    "                            <div ng-switch-when=\"prev\" ng-click=\"params.page(page.number)\">&laquo;</div>\n" +
+    "                            <div ng-switch-when=\"first\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                            <div ng-switch-when=\"page\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                            <div ng-switch-when=\"more\" ng-click=\"params.page(page.number)\">&#8230;</div>\n" +
+    "                            <div ng-switch-when=\"last\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                            <div ng-switch-when=\"next\" ng-click=\"params.page(page.number)\">&raquo;</div>\n" +
+    "                        </button>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-md-4\">\n" +
     "                    <div ng-if=\"params.settings().counts.length\" class=\"ng-table-counts btn-group pull-right\">\n" +
-    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 1}\" ng-click=\"params.count(1)\" class=\"btn btn-default\">1</button>\n" +
     "                        <button type=\"button\" ng-class=\"{'active':params.count() == 10}\" ng-click=\"params.count(10)\" class=\"btn btn-default\">10</button>\n" +
     "                        <button type=\"button\" ng-class=\"{'active':params.count() == 25}\" ng-click=\"params.count(25)\" class=\"btn btn-default\">25</button>\n" +
     "                        <button type=\"button\" ng-class=\"{'active':params.count() == 50}\" ng-click=\"params.count(50)\" class=\"btn btn-default\">50</button>\n" +
@@ -1198,8 +1201,7 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
   $templateCache.put("templates/user-list.tpl.html",
     "<div ng-controller=\"UserListController\">\n" +
     "    <div ng-show=\"list\">\n" +
-    "        <button class=\"btn btn-primary btn-xs\" ng-click=\"create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-user\"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>\n" +
-    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"table table-striped table-bordered\" id=\"datatable\">\n" +
+    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/user\" class=\"table table-striped table-bordered\" id=\"datatable\">\n" +
     "            <thead>\n" +
     "            <tr>\n" +
     "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.NAME' | translate}}</th>\n" +
@@ -1240,6 +1242,33 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "            </tr>\n" +
     "            </tbody>\n" +
     "        </table>\n" +
+    "        <script type=\"text/ng-template\" id=\"custom/pager/user\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <button class=\"btn btn-default\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-user\"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <div class=\"btn-group center-block\">\n" +
+    "                        <button class=\"btn btn-default center-block\" ng-click=\"params.page(page.number)\" ng-class=\"{'disabled': !page.active}\" ng-repeat=\"page in pages\" ng-switch=\"page.type\">\n" +
+    "                            <div ng-switch-when=\"prev\" ng-click=\"params.page(page.number)\">&laquo;</div>\n" +
+    "                            <div ng-switch-when=\"first\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                            <div ng-switch-when=\"page\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                            <div ng-switch-when=\"more\" ng-click=\"params.page(page.number)\">&#8230;</div>\n" +
+    "                            <div ng-switch-when=\"last\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                            <div ng-switch-when=\"next\" ng-click=\"params.page(page.number)\">&raquo;</div>\n" +
+    "                        </button>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <div ng-if=\"params.settings().counts.length\" class=\"ng-table-counts btn-group pull-right\">\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 10}\" ng-click=\"params.count(10)\" class=\"btn btn-default\">10</button>\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 25}\" ng-click=\"params.count(25)\" class=\"btn btn-default\">25</button>\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 50}\" ng-click=\"params.count(50)\" class=\"btn btn-default\">50</button>\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 100}\" ng-click=\"params.count(100)\" class=\"btn btn-default\">100</button>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </script>\n" +
     "    </div>\n" +
     "    <div ng-show=\"detail\">\n" +
     "        <chell-user-profile user=\"editUser\" groups=\"groups\" possible-groups=\"possibleGroups\" read-only=\"false\">\n" +
