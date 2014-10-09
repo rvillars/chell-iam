@@ -131,7 +131,7 @@
                                   group-property="isGroup"/>
                 </div>
                 <div class="form-group" ng-show="readOnly">
-                    <i class="glyphicon glyphicon-folder-open"></i> <label for="inputGroups" class="control-label">{{'CHELL_IAM.USER_PROFILE.GROUPS'
+                    <i class="glyphicon glyphicon-lock"></i> <label for="inputGroups" class="control-label">{{'CHELL_IAM.USER_PROFILE.GROUPS'
                     | translate}}</label>
                     <select id="inputGroups" size="5" class="form-control" ng-disabled="readOnly">
                         <option ng-repeat="group in user.groups">{{group.display}}</option>
@@ -165,7 +165,7 @@
                                                                class="glyphicon glyphicon-flag"></i> {{user.status}}
                 </li>
                 <li style="color: #428bca; font-size: 11px" ng-repeat="group in user.groups"><i
-                        style="padding-right: 10px" class="glyphicon glyphicon-folder-open"></i> {{group.display}}
+                        style="padding-right: 10px" class="glyphicon glyphicon-lock"></i> {{group.display}}
                 </li>
             </ul>
         </div>

@@ -145,7 +145,9 @@ var iamToExternalUser = function (iamUser) {
   externalUser.externalId = iamUser.externalId;
   externalUser.userName = iamUser.login;
   externalUser.displayName = iamUser.fullname;
-  externalUser.name = {};
+  if (!externalUser.name) {
+    externalUser.name = {};
+  }
   externalUser.name.givenName = iamUser.firstname;
   externalUser.name.familyName = iamUser.lastname;
   externalUser.title = iamUser.title;
@@ -153,6 +155,13 @@ var iamToExternalUser = function (iamUser) {
   externalUser.addresses = iamUser.addresses;
   externalUser.phoneNumbers = iamUser.phones;
   externalUser.ims = iamUser.ims;
+  externalUser.active = iamUser.active;
+  externalUser.preferredLanguage = iamUser.language;
+  if (!externalUser.meta) {
+    externalUser.meta = {};
+  }
+  externalUser.meta.created = iamUser.creationDate;
+  externalUser.groups = iamUser.groups;
   return externalUser;
 };
 var externalToIamGroup = function (externalGroup) {

@@ -204,7 +204,15 @@ chellIam.run([
         }
         user.meta.created = new Date();
         if (!user.displayName) {
-          user.displayName = user.givenName + ' ' + user.familyName;
+          if (!user.name || _.isEmpty(user.name)) {
+            user.displayName = user.userName;
+          } else if (user.name.givenName && user.name.familyName) {
+            user.displayName = user.givenName + ' ' + user.familyName;
+          } else if (user.name.familyName) {
+            user.displayName = user.familyName;
+          } else if (user.name.givenName) {
+            user.displayName = user.givenName;
+          }
         }
         mockUsers.push(user);
         return [
@@ -219,9 +227,7 @@ chellIam.run([
       if (authenticated(headers)) {
         var id = url.split('/').pop();
         var user = JSON.parse(data);
-        var existingUser = _.find(mockUsers, function (aUser) {
-            return aUser.id == id;
-          });
+        var existingUser = _.findWhere(mockUsers, { id: id });
         if (!existingUser) {
           return [404];
         }

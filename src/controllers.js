@@ -52,13 +52,17 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
 
     $scope.create = function () {
         $scope.editUser = {};
-        $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
+        IamGroup.query().then(function (groups) {
+            $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, groups);
+        });
         $scope.showDetail();
     };
 
     $scope.edit = function (user) {
         $scope.editUser = user;
-        $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
+        IamGroup.query().then(function (groups) {
+            $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, groups);
+        });
         $scope.showDetail();
     };
 
@@ -129,7 +133,7 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
                             }
                         }
                     }
-                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked, id: group.id, type: 'Group'};
+                    return {icon: '<i class="glyphicon glyphicon-lock"></i>', name: group.name, ticked: ticked, id: group.id, type: 'Group'};
                 }))
             .concat({isGroup: false});
         return possibleGroups;
@@ -187,13 +191,17 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
 
     $scope.create = function () {
         $scope.editGroup = {};
-        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
+        IamUser.query().then(function (users) {
+            $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
+        });
         $scope.showDetail();
     };
 
     $scope.edit = function (group) {
         $scope.editGroup = group;
-        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
+        IamUser.query().then(function (users) {
+            $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
+        });
         $scope.showDetail();
     };
 
@@ -273,7 +281,7 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
                             ticked = true;
                         }
                     });
-                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked, id: group.id, type: 'Group'};
+                    return {icon: '<i class="glyphicon glyphicon-lock"></i>', name: group.name, ticked: ticked, id: group.id, type: 'Group'};
                 }))
             .concat({isGroup: false});
         return possibleMembers;

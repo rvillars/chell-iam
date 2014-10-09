@@ -594,12 +594,16 @@ chellIam.controller('UserListController', [
     };
     $scope.create = function () {
       $scope.editUser = {};
-      $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
+      IamGroup.query().then(function (groups) {
+        $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, groups);
+      });
       $scope.showDetail();
     };
     $scope.edit = function (user) {
       $scope.editUser = user;
-      $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, $scope.groups);
+      IamGroup.query().then(function (groups) {
+        $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, groups);
+      });
       $scope.showDetail();
     };
     $scope.remove = function (user) {
@@ -610,6 +614,16 @@ chellIam.controller('UserListController', [
       });
     };
     $scope.save = function () {
+      $scope.editUser.groups = [];
+      angular.forEach($scope.possibleGroups, function (possibleGroup, key) {
+        if (possibleGroup.ticked === true) {
+          $scope.editUser.groups.push({
+            value: possibleGroup.id,
+            display: possibleGroup.name,
+            type: possibleGroup.type
+          });
+        }
+      });
       var isNew = $scope.editUser.id == null;
       if (isNew) {
         IamUser.create($scope.editUser).then(function (user) {
@@ -617,6 +631,8 @@ chellIam.controller('UserListController', [
         });
       } else {
         IamUser.update($scope.editUser).then(function (user) {
+          var userToUpdate = _.findWhere($scope.users, { id: user.id });
+          $scope.users[$scope.users.indexOf(userToUpdate)] = user;
         });
       }
       $scope.cancel();
@@ -649,9 +665,11 @@ chellIam.controller('UserListController', [
           }
         }
         return {
-          icon: '<i class="glyphicon glyphicon-folder-open"></i>',
+          icon: '<i class="glyphicon glyphicon-lock"></i>',
           name: group.name,
-          ticked: ticked
+          ticked: ticked,
+          id: group.id,
+          type: 'Group'
         };
       })).concat({ isGroup: false });
       return possibleGroups;
@@ -711,12 +729,16 @@ chellIam.controller('GroupListController', [
     };
     $scope.create = function () {
       $scope.editGroup = {};
-      $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
+      IamUser.query().then(function (users) {
+        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
+      });
       $scope.showDetail();
     };
     $scope.edit = function (group) {
       $scope.editGroup = group;
-      $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, $scope.users);
+      IamUser.query().then(function (users) {
+        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
+      });
       $scope.showDetail();
     };
     $scope.remove = function (group) {
@@ -744,6 +766,8 @@ chellIam.controller('GroupListController', [
         });
       } else {
         IamGroup.update($scope.editGroup).then(function (group) {
+          var groupToUpdate = _.findWhere($scope.groups, { id: group.id });
+          $scope.groups[$scope.groups.indexOf(groupToUpdate)] = group;
         });
       }
       $scope.cancel();
@@ -767,7 +791,6 @@ chellIam.controller('GroupListController', [
         isGroup: true
       }).concat(users.slice(0).map(function (user) {
         var ticked = false;
-        var memberType = 'User';
         angular.forEach(editGroup.members, function (groupMember, key) {
           if (groupMember.type == 'User' && groupMember.value == user.id) {
             ticked = true;
@@ -778,25 +801,24 @@ chellIam.controller('GroupListController', [
           name: user.fullname,
           ticked: ticked,
           id: user.id,
-          type: memberType
+          type: 'User'
         };
       })).concat({ isGroup: false }).concat({
         name: 'Groups',
         isGroup: true
       }).concat(groups.slice(0).map(function (group) {
         var ticked = false;
-        var memberType = 'Group';
         angular.forEach(editGroup.members, function (groupMember, key) {
           if (groupMember.type == 'Group' && groupMember.value == group.id) {
             ticked = true;
           }
         });
         return {
-          icon: '<i class="glyphicon glyphicon-folder-open"></i>',
+          icon: '<i class="glyphicon glyphicon-lock"></i>',
           name: group.name,
           ticked: ticked,
           id: group.id,
-          type: memberType
+          type: 'Group'
         };
       })).concat({ isGroup: false });
       return possibleMembers;
@@ -889,7 +911,8 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "        <button class=\"btn btn-primary btn-xs\" ng-click=\"create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
     "            | translate}}\n" +
     "        </button>\n" +
-    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"table table-striped table-bordered\" id=\"datatable\">\n" +
+    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager\" class=\"table table-striped table-bordered\"\n" +
+    "               id=\"datatable\">\n" +
     "            <thead>\n" +
     "            <tr>\n" +
     "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate}}</th>\n" +
@@ -903,7 +926,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "                <td>\n" +
     "                    <div ng-repeat=\"member in group.members\">\n" +
     "                        <i ng-show=\"member.type == 'User'\" class=\"glyphicon glyphicon-user\"></i>\n" +
-    "                        <i ng-show=\"member.type == 'Group'\" class=\"glyphicon glyphicon-folder-open\"></i>\n" +
+    "                        <i ng-show=\"member.type == 'Group'\" class=\"glyphicon glyphicon-lock\"></i>\n" +
     "                        {{member.display}}\n" +
     "                    </div>\n" +
     "                </td>\n" +
@@ -923,6 +946,29 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "            </tr>\n" +
     "            </tbody>\n" +
     "        </table>\n" +
+    "        <script type=\"text/ng-template\" id=\"custom/pager\">\n" +
+    "            <div class=\"ng-cloak ng-table-pager\">\n" +
+    "                <ul class=\"pagination ng-table-pagination\" style=\"display: block;\">\n" +
+    "                    <li ng-class=\"{'disabled': !page.active}\" ng-repeat=\"page in pages\" ng-switch=\"page.type\">\n" +
+    "                        <a ng-switch-when=\"prev\" ng-click=\"params.page(page.number)\" href=\"\">&laquo;</a>\n" +
+    "                        <a ng-switch-when=\"first\" ng-click=\"params.page(page.number)\" href=\"\"><span ng-bind=\"page.number\"></span></a>\n" +
+    "                        <a ng-switch-when=\"page\" ng-click=\"params.page(page.number)\" href=\"\"><span ng-bind=\"page.number\"></span></a>\n" +
+    "                        <a ng-switch-when=\"more\" ng-click=\"params.page(page.number)\" href=\"\">&#8230;</a>\n" +
+    "                        <a ng-switch-when=\"last\" ng-click=\"params.page(page.number)\" href=\"\"><span ng-bind=\"page.number\"></span></a>\n" +
+    "                        <a ng-switch-when=\"next\" ng-click=\"params.page(page.number)\" href=\"\">&raquo;</a>\n" +
+    "                    </li>\n" +
+    "                </ul>\n" +
+    "                <div>\n" +
+    "                    <div ng-if=\"params.settings().counts.length\" class=\"ng-table-counts btn-group pull-right\">\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 1}\" ng-click=\"params.count(1)\" class=\"btn btn-default\">1</button>\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 10}\" ng-click=\"params.count(10)\" class=\"btn btn-default\">10</button>\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 25}\" ng-click=\"params.count(25)\" class=\"btn btn-default\">25</button>\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 50}\" ng-click=\"params.count(50)\" class=\"btn btn-default\">50</button>\n" +
+    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 100}\" ng-click=\"params.count(100)\" class=\"btn btn-default\">100</button>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </script>\n" +
     "    </div>\n" +
     "    <div ng-show=\"detail\">\n" +
     "        <form id=\"groupDetail\">\n" +
@@ -993,7 +1039,7 @@ angular.module("templates/group-view-dialog.tpl.html", []).run(["$templateCache"
     "\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <i class=\"glyphicon glyphicon-folder-open\"></i> <label for=\"inputGroups\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>\n" +
+    "                    <i class=\"glyphicon glyphicon-lock\"></i> <label for=\"inputGroups\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>\n" +
     "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\">\n" +
     "                        <option ng-repeat=\"member in group.members\" ng-show=\"member.type=='Group'\">{{member.display}}</option>\n" +
     "                    </select>\n" +
@@ -1171,7 +1217,7 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                <td data-title=\"'Date registered'\" class=\"center\">{{user.creationDate | date:'dd.MM.yyyy'}}</td>\n" +
     "                <td data-title=\"'Groups'\">\n" +
     "                    <div ng-repeat=\"group in user.groups\">\n" +
-    "                        <i class=\"glyphicon glyphicon-folder-open\"></i>\n" +
+    "                        <i class=\"glyphicon glyphicon-lock\"></i>\n" +
     "                        {{group.display}}\n" +
     "                    </div>\n" +
     "                </td>\n" +
@@ -1229,7 +1275,7 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                        <label for=\"inputLogin\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.LOGIN' | translate}}</label>\n" +
     "                        <input class=\"form-control\" id=\"inputLogin\"\n" +
     "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LOGIN' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                               ng-model=\"user.login\">\n" +
+    "                               ng-model=\"user.login\" required=\"true\">\n" +
     "                    </div>\n" +
     "                    <div class=\"form-group col-md-6\">\n" +
     "                        <label for=\"inputDisplay\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.DISPLAY' | translate}}</label>\n" +
@@ -1339,7 +1385,7 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                                  group-property=\"isGroup\"/>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\" ng-show=\"readOnly\">\n" +
-    "                    <i class=\"glyphicon glyphicon-folder-open\"></i> <label for=\"inputGroups\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.GROUPS'\n" +
+    "                    <i class=\"glyphicon glyphicon-lock\"></i> <label for=\"inputGroups\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.GROUPS'\n" +
     "                    | translate}}</label>\n" +
     "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\" ng-disabled=\"readOnly\">\n" +
     "                        <option ng-repeat=\"group in user.groups\">{{group.display}}</option>\n" +
@@ -1373,7 +1419,7 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                                                               class=\"glyphicon glyphicon-flag\"></i> {{user.status}}\n" +
     "                </li>\n" +
     "                <li style=\"color: #428bca; font-size: 11px\" ng-repeat=\"group in user.groups\"><i\n" +
-    "                        style=\"padding-right: 10px\" class=\"glyphicon glyphicon-folder-open\"></i> {{group.display}}\n" +
+    "                        style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i> {{group.display}}\n" +
     "                </li>\n" +
     "            </ul>\n" +
     "        </div>\n" +

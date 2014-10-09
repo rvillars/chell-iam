@@ -32,7 +32,7 @@
 
                 </div>
                 <div class="form-group">
-                    <i class="glyphicon glyphicon-folder-open"></i> <label for="inputGroups">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>
+                    <i class="glyphicon glyphicon-lock"></i> <label for="inputGroups">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>
                     <select id="inputGroups" size="5" class="form-control">
                         <option ng-repeat="member in group.members" ng-show="member.type=='Group'">{{member.display}}</option>
                     </select>
