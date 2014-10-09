@@ -153,7 +153,7 @@ var iamToExternalUser = function (iamUser) {
     externalUser.active = iamUser.active;
     externalUser.preferredLanguage = iamUser.language;
     if (!externalUser.meta){externalUser.meta = {};}
-    externalUser..meta.created = iamUser.creationDate;
+    externalUser.meta.created = iamUser.creationDate;
     externalUser.groups = iamUser.groups;
     return externalUser;
 };

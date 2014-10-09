@@ -70,6 +70,21 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
     };
 
     $scope.save = function () {
+
+        //add groups
+        $scope.editUser.groups = [];
+        angular.forEach( $scope.possibleGroups, function( possibleGroup, key ) {
+            if ( possibleGroup.ticked === true ) {
+                $scope.editUser.groups.push(
+                    {
+                        value: possibleGroup.id,
+                        display: possibleGroup.name,
+                        type: possibleGroup.type
+                    }
+                );
+            }
+        });
+
         var isNew = $scope.editUser.id == null;
         if (isNew) {
             IamUser.create($scope.editUser).then(function (user) {
@@ -77,6 +92,8 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
             });
         } else {
             IamUser.update($scope.editUser).then(function (user) {
+                var userToUpdate = _.findWhere($scope.users, { id: user.id });
+                $scope.users[$scope.users.indexOf(userToUpdate)] = user;
             });
         }
         $scope.cancel();
@@ -112,7 +129,7 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
                             }
                         }
                     }
-                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked};
+                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked, id: group.id, type: 'Group'};
                 }))
             .concat({isGroup: false});
         return possibleGroups;
@@ -210,6 +227,8 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
             });
         } else {
             IamGroup.update($scope.editGroup).then(function (group) {
+                var groupToUpdate = _.findWhere($scope.groups, { id: group.id });
+                $scope.groups[$scope.groups.indexOf(groupToUpdate)] = group;
             });
         }
         $scope.cancel();
@@ -237,26 +256,24 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
             .concat(users.slice(0)
                 .map(function (user) {
                     var ticked = false;
-                    var memberType = 'User';
                     angular.forEach(editGroup.members, function(groupMember, key) {
                         if (groupMember.type == 'User' && groupMember.value == user.id) {
                             ticked = true;
                         }
                     });
-                    return {icon: '<i class="glyphicon glyphicon-user"></i>', name: user.fullname, ticked: ticked, id: user.id, type: memberType};
+                    return {icon: '<i class="glyphicon glyphicon-user"></i>', name: user.fullname, ticked: ticked, id: user.id, type: 'User'};
                 }))
             .concat({isGroup: false})
             .concat({name: 'Groups', isGroup: true})
             .concat(groups.slice(0)
                 .map(function (group) {
                     var ticked = false;
-                    var memberType = 'Group';
                     angular.forEach(editGroup.members, function(groupMember, key) {
                         if (groupMember.type == 'Group' && groupMember.value == group.id) {
                             ticked = true;
                         }
                     });
-                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked, id: group.id, type: memberType};
+                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked, id: group.id, type: 'Group'};
                 }))
             .concat({isGroup: false});
         return possibleMembers;
