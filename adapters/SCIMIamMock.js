@@ -3,7 +3,8 @@ var chellIam = angular.module('chell-iam');
 chellIam.run([
   '$httpBackend',
   '$base64',
-  function ($httpBackend, $base64) {
+  'uuid',
+  function ($httpBackend, $base64, uuid) {
     var mockUserGroup = {
         schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
         id: 'e9e304ba-f08f-4409-8486-d5c6a43166ee',
@@ -159,7 +160,19 @@ chellIam.run([
       }
       return false;
     };
-    $httpBackend.whenGET(/iam\/Users\/[\d]/).respond(function (method, url, data, headers) {
+    $httpBackend.whenGET(/iam\/Users\/self/).respond(function (method, url, data, headers) {
+      var currentUser = {};
+      if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.login + ':' + mockAdmin.password)) {
+        currentUser = mockAdmin;
+      } else {
+        currentUser = mockUser;
+      }
+      return authenticated(headers) ? [
+        200,
+        currentUser
+      ] : [401];
+    });
+    $httpBackend.whenGET(/iam\/Users\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var id = url.split('/').pop();
         var existingUser = _.find(mockUsers, function (aUser) {
@@ -176,18 +189,6 @@ chellIam.run([
         return [401];
       }
     });
-    $httpBackend.whenGET(/iam\/Users\/self/).respond(function (method, url, data, headers) {
-      var currentUser = {};
-      if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.login + ':' + mockAdmin.password)) {
-        currentUser = mockAdmin;
-      } else {
-        currentUser = mockUser;
-      }
-      return authenticated(headers) ? [
-        200,
-        currentUser
-      ] : [401];
-    });
     $httpBackend.whenGET(/iam\/Users/).respond(function (method, url, data, headers) {
       return authenticated(headers) ? [
         200,
@@ -197,12 +198,14 @@ chellIam.run([
     $httpBackend.whenPOST(/iam\/Users/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var user = JSON.parse(data);
-        var currentMaxId = _.max(mockUsers, function (aUser) {
-            return aUser.id;
-          }).id;
-        user.id = ++currentMaxId;
-        user.creationDate = new Date();
-        user.fullname = user.firstname + ' ' + user.lastname;
+        user.id = uuid.create();
+        if (!user.meta) {
+          user.meta = {};
+        }
+        user.meta.created = new Date();
+        if (!user.displayName) {
+          user.displayName = user.givenName + ' ' + user.familyName;
+        }
         mockUsers.push(user);
         return [
           200,
@@ -212,7 +215,7 @@ chellIam.run([
         return [401];
       }
     });
-    $httpBackend.whenPUT(/iam\/Users\/[\d]/).respond(function (method, url, data, headers) {
+    $httpBackend.whenPUT(/iam\/Users\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var id = url.split('/').pop();
         var user = JSON.parse(data);
@@ -232,7 +235,7 @@ chellIam.run([
         return [401];
       }
     });
-    $httpBackend.whenDELETE(/iam\/Users\/[\d]/).respond(function (method, url, data, headers) {
+    $httpBackend.whenDELETE(/iam\/Users\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var id = url.split('/').pop();
         var existingUser = _.find(mockUsers, function (aUser) {
@@ -248,7 +251,7 @@ chellIam.run([
         return [401];
       }
     });
-    $httpBackend.whenGET(/iam\/Groups\/[\d]/).respond(function (method, url, data, headers) {
+    $httpBackend.whenGET(/iam\/Groups\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var id = url.split('/').pop();
         var existingGroup = _.find(mockGroups, function (aGroup) {
@@ -274,10 +277,11 @@ chellIam.run([
     $httpBackend.whenPOST(/iam\/Groups/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var group = JSON.parse(data);
-        var currentMaxId = _.max(mockGroups, function (aGroup) {
-            return aGroup.id;
-          }).id;
-        group.id = ++currentMaxId;
+        group.id = uuid.create();
+        if (!group.meta) {
+          group.meta = {};
+        }
+        group.meta.created = new Date();
         mockGroups.push(group);
         return [
           200,
@@ -287,7 +291,7 @@ chellIam.run([
         return [401];
       }
     });
-    $httpBackend.whenPUT(/iam\/Groups\/[\d]/).respond(function (method, url, data, headers) {
+    $httpBackend.whenPUT(/iam\/Groups\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var id = url.split('/').pop();
         var group = JSON.parse(data);
@@ -307,7 +311,7 @@ chellIam.run([
         return [401];
       }
     });
-    $httpBackend.whenDELETE(/iam\/Groups\/[\d]/).respond(function (method, url, data, headers) {
+    $httpBackend.whenDELETE(/iam\/Groups\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
       if (authenticated(headers)) {
         var id = url.split('/').pop();
         var existingGroup = _.find(mockGroups, function (aGroup) {

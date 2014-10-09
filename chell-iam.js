@@ -21,6 +21,8 @@ angular.module('translations').config(function ($translateProvider) {
         'DELETE_BUTTON': 'Delete',
         'GROUP_ID': 'Group ID',
         'PH_GENERATED': 'Generated',
+        'CREATION_DATE': 'Creation Date',
+        'PH_CREATION_DATE': 'Generated',
         'NAME': 'Name',
         'PH_NAME': 'Name',
         'MEMBERS': 'Members',
@@ -30,10 +32,12 @@ angular.module('translations').config(function ($translateProvider) {
       'GROUP_VIEW_DIALOG': {
         'X_BUTTON': 'x',
         'GROUP_TITLE': 'Group',
-        'NAME': 'Name',
-        'PH_NAME': 'Name',
         'GROUP_ID': 'Group ID',
         'PH_GROUP_ID': 'Generated',
+        'CREATION_DATE': 'Creation Date',
+        'PH_CREATION_DATE': 'Generated',
+        'NAME': 'Name',
+        'PH_NAME': 'Name',
         'USERS': 'Member users',
         'GROUPS': 'Member groups',
         'CLOSE_BUTTON': 'Close'
@@ -256,6 +260,20 @@ chellIam.factory('CurrentUserService', function () {
         return false;
       }
       return this.currentUser.primaryGroup.id == groupId;
+    }
+  };
+});
+chellIam.factory('uuid', function () {
+  return {
+    create: function () {
+      function _p8(s) {
+        var p = (Math.random().toString(16) + '000000000').substr(2, 8);
+        return s ? '-' + p.substr(0, 4) + '-' + p.substr(4, 4) : p;
+      }
+      return _p8() + _p8(true) + _p8(true) + _p8();
+    },
+    empty: function () {
+      return '00000000-0000-0000-0000-000000000000';
     }
   };
 });;// Source: build/models.js
@@ -709,6 +727,16 @@ chellIam.controller('GroupListController', [
       });
     };
     $scope.save = function () {
+      $scope.editGroup.members = [];
+      angular.forEach($scope.possibleMembers, function (possibleMember, key) {
+        if (possibleMember.ticked === true) {
+          $scope.editGroup.members.push({
+            value: possibleMember.id,
+            display: possibleMember.name,
+            type: possibleMember.type
+          });
+        }
+      });
       var isNew = $scope.editGroup.id == null;
       if (isNew) {
         IamGroup.create($scope.editGroup).then(function (group) {
@@ -735,40 +763,40 @@ chellIam.controller('GroupListController', [
     $scope.calculatePossibleMembers = function (editGroup, groups, users) {
       var possibleMembers = [];
       possibleMembers = possibleMembers.concat({
-        name: 'Groups',
-        isGroup: true
-      }).concat(groups.slice(0).map(function (group) {
-        var ticked = false;
-        for (var groupMemberIndex in editGroup.members) {
-          if (groupMemberIndex != null) {
-            var groupMember = editGroup.members[groupMemberIndex];
-            if (groupMember.type == 'Group' && groupMember.value == group.id) {
-              ticked = true;
-            }
-          }
-        }
-        return {
-          icon: '<i class="glyphicon glyphicon-folder-open"></i>',
-          name: group.name,
-          ticked: ticked
-        };
-      })).concat({ isGroup: false }).concat({
         name: 'Users',
         isGroup: true
       }).concat(users.slice(0).map(function (user) {
         var ticked = false;
-        for (var groupMemberIndex in editGroup.members) {
-          if (groupMemberIndex != null) {
-            var groupMember = editGroup.members[groupMemberIndex];
-            if (groupMember.type == 'User' && groupMember.value == user.id) {
-              ticked = true;
-            }
+        var memberType = 'User';
+        angular.forEach(editGroup.members, function (groupMember, key) {
+          if (groupMember.type == 'User' && groupMember.value == user.id) {
+            ticked = true;
           }
-        }
+        });
         return {
           icon: '<i class="glyphicon glyphicon-user"></i>',
           name: user.fullname,
-          ticked: ticked
+          ticked: ticked,
+          id: user.id,
+          type: memberType
+        };
+      })).concat({ isGroup: false }).concat({
+        name: 'Groups',
+        isGroup: true
+      }).concat(groups.slice(0).map(function (group) {
+        var ticked = false;
+        var memberType = 'Group';
+        angular.forEach(editGroup.members, function (groupMember, key) {
+          if (groupMember.type == 'Group' && groupMember.value == group.id) {
+            ticked = true;
+          }
+        });
+        return {
+          icon: '<i class="glyphicon glyphicon-folder-open"></i>',
+          name: group.name,
+          ticked: ticked,
+          id: group.id,
+          type: memberType
         };
       })).concat({ isGroup: false });
       return possibleMembers;
@@ -899,10 +927,17 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "    <div ng-show=\"detail\">\n" +
     "        <form id=\"groupDetail\">\n" +
     "            <fieldset>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label for=\"inputGroupId\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}\" readonly=\"true\"\n" +
-    "                           ng-model=\"editGroup.id\"/>\n" +
+    "                <div class=\"row\">\n" +
+    "                    <div class=\"form-group col-md-6\">\n" +
+    "                        <label for=\"inputGroupId\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>\n" +
+    "                        <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}\" readonly=\"true\"\n" +
+    "                               ng-model=\"editGroup.id\"/>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"form-group col-md-6\">\n" +
+    "                        <label for=\"inputCreationDate\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.CREATION_DATE' | translate}}</label>\n" +
+    "                        <input class=\"form-control\" id=\"inputCreationDate\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_CREATION_DATE' | translate}}\" readonly=\"true\"\n" +
+    "                               ng-model=\"editGroup.meta.created\"/>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputGroupname\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>\n" +
@@ -911,7 +946,8 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputMembers\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>\n" +
-    "                    <multi-select id=\"inputMembers\" input-model=\"possibleMembers\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\" group-property=\"isGroup\"/>\n" +
+    "                    <multi-select id=\"inputMembers\" input-model=\"possibleMembers\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\"\n" +
+    "                                  group-property=\"isGroup\" ng-model=\"editGroup.members\"/>\n" +
     "                </div>\n" +
     "            </fieldset>\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"save()\">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>\n" +
@@ -930,17 +966,25 @@ angular.module("templates/group-view-dialog.tpl.html", []).run(["$templateCache"
     "<div class=\"modal-body\">\n" +
     "    <form id=\"groupDetail\">\n" +
     "        <fieldset>\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputGroupId\" class=\"control-label\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUP_ID' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_GROUP_ID' | translate}}\" readonly=\"true\"\n" +
+    "                           ng-model=\"group.id\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputCreationDate\" class=\"control-label\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.CREATION_DATE' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputCreationDate\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_CREATION_DATE' | translate}}\"\n" +
+    "                           readonly=\"true\"\n" +
+    "                           ng-model=\"group.meta.created\"/>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
     "            <div class=\"form-group\">\n" +
-    "                <label for=\"inputGroupName\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.NAME' | translate}}</label>\n" +
+    "                <label for=\"inputGroupName\" class=\"control-label\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.NAME' | translate}}</label>\n" +
     "                <input class=\"form-control\" id=\"inputGroupName\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_NAME' | translate}}\" readonly=\"true\"\n" +
     "                       ng-model=\"group.name\">\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\">\n" +
-    "                <label for=\"inputGroupId\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUP_ID' | translate}}</label>\n" +
-    "                <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_VIEW_DIALOG.PH_GROUP_ID' | translate}}\" readonly=\"true\"\n" +
-    "                       ng-model=\"group.id\">\n" +
-    "            </div>\n" +
-    "            <div >\n" +
+    "            <div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <i class=\"glyphicon glyphicon-user\"></i> <label for=\"inputUsers\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.USERS' | translate}}</label>\n" +
     "                    <select id=\"inputUsers\" size=\"5\" class=\"form-control\">\n" +
@@ -949,7 +993,7 @@ angular.module("templates/group-view-dialog.tpl.html", []).run(["$templateCache"
     "\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <i class=\"glyphicon glyphicon-folder-open\"></i>  <label for=\"inputGroups\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>\n" +
+    "                    <i class=\"glyphicon glyphicon-folder-open\"></i> <label for=\"inputGroups\">{{'CHELL_IAM.GROUP_VIEW_DIALOG.GROUPS' | translate}}</label>\n" +
     "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\">\n" +
     "                        <option ng-repeat=\"member in group.members\" ng-show=\"member.type=='Group'\">{{member.display}}</option>\n" +
     "                    </select>\n" +

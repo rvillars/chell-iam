@@ -139,17 +139,42 @@ var externalToIamUser = function (externalUser) {
     return iamUser;
 };
 var iamToExternalUser = function (iamUser) {
-    var externalUser = iamUser;
+    var externalUser = {};
+    externalUser.schemas = ['urn:ietf:params:scim:schemas:core:2.0:User'];
+    externalUser.id = iamUser.id;
+    externalUser.externalId = iamUser.externalId;
+    externalUser.userName = iamUser.login;
+    externalUser.displayName = iamUser.fullname;
+    if (!externalUser.name){externalUser.name = {};}
+    externalUser.name.givenName = iamUser.firstname;
+    externalUser.name.familyName = iamUser.lastname;
+    externalUser.title = iamUser.title;
+    externalUser.emails = iamUser.emails;
+    externalUser.addresses = iamUser.addresses;
+    externalUser.phoneNumbers = iamUser.phones;
+    externalUser.ims = iamUser.ims;
+    externalUser.active = iamUser.active;
+    externalUser.preferredLanguage = iamUser.language;
+    if (!externalUser.meta){externalUser.meta = {};}
+    externalUser..meta.created = iamUser.creationDate;
+    externalUser.groups = iamUser.groups;
     return externalUser;
 };
 var externalToIamGroup = function (externalGroup) {
     var iamGroup = {};
+    iamGroup.schemas = externalGroup.schemas;
     iamGroup.id = externalGroup.id;
     iamGroup.name = externalGroup.displayName;
     iamGroup.members = externalGroup.members;
+    iamGroup.meta = externalGroup.meta;
     return iamGroup;
 };
 var iamToExternalGroup = function (iamGroup) {
-    var externalGroup = iamGroup;
+    var externalGroup = {};
+    externalGroup.schemas = ['urn:ietf:params:scim:schemas:core:2.0:Group'];
+    externalGroup.id = iamGroup.id;
+    externalGroup.displayName = iamGroup.name;
+    externalGroup.members = iamGroup.members;
+    externalGroup.meta = iamGroup.meta;
     return externalGroup;
 };

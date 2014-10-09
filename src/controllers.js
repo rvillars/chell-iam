@@ -188,6 +188,21 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
     };
 
     $scope.save = function () {
+
+        //add members
+        $scope.editGroup.members = [];
+        angular.forEach( $scope.possibleMembers, function( possibleMember, key ) {
+            if ( possibleMember.ticked === true ) {
+                $scope.editGroup.members.push(
+                    {
+                        value: possibleMember.id,
+                        display: possibleMember.name,
+                        type: possibleMember.type
+                    }
+                );
+            }
+        });
+
         var isNew = $scope.editGroup.id == null;
         if (isNew) {
             IamGroup.create($scope.editGroup).then(function (group) {
@@ -218,34 +233,30 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
     $scope.calculatePossibleMembers = function (editGroup, groups, users) {
         var possibleMembers = [];
         possibleMembers = possibleMembers
-            .concat({name: 'Groups', isGroup: true})
-            .concat(groups.slice(0)
-                .map(function (group) {
-                    var ticked = false;
-                    for (var groupMemberIndex in editGroup.members) {
-                        if (groupMemberIndex != null) {
-                            var groupMember = editGroup.members[groupMemberIndex];
-                            if (groupMember.type == 'Group' && groupMember.value == group.id) {
-                                ticked = true;
-                            }
-                        }
-                    }
-                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked};
-                }))
-            .concat({isGroup: false})
             .concat({name: 'Users', isGroup: true})
             .concat(users.slice(0)
                 .map(function (user) {
                     var ticked = false;
-                    for (var groupMemberIndex in editGroup.members) {
-                        if (groupMemberIndex != null) {
-                            var groupMember = editGroup.members[groupMemberIndex];
-                            if (groupMember.type == 'User' && groupMember.value == user.id) {
-                                ticked = true;
-                            }
+                    var memberType = 'User';
+                    angular.forEach(editGroup.members, function(groupMember, key) {
+                        if (groupMember.type == 'User' && groupMember.value == user.id) {
+                            ticked = true;
                         }
-                    }
-                    return {icon: '<i class="glyphicon glyphicon-user"></i>', name: user.fullname, ticked: ticked};
+                    });
+                    return {icon: '<i class="glyphicon glyphicon-user"></i>', name: user.fullname, ticked: ticked, id: user.id, type: memberType};
+                }))
+            .concat({isGroup: false})
+            .concat({name: 'Groups', isGroup: true})
+            .concat(groups.slice(0)
+                .map(function (group) {
+                    var ticked = false;
+                    var memberType = 'Group';
+                    angular.forEach(editGroup.members, function(groupMember, key) {
+                        if (groupMember.type == 'Group' && groupMember.value == group.id) {
+                            ticked = true;
+                        }
+                    });
+                    return {icon: '<i class="glyphicon glyphicon-folder-open"></i>', name: group.name, ticked: ticked, id: group.id, type: memberType};
                 }))
             .concat({isGroup: false});
         return possibleMembers;
