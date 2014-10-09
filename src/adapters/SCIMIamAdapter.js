@@ -1,10 +1,7 @@
 'use strict';
 var chellIam = angular.module('chell-iam');
 var host = 'undefined';
-chellIam.factory('IamAdapter', [
-    '$http',
-    '$q',
-    '_',
+chellIam.factory('IamAdapter',
     function ($http, $q, _) {
         return {
             getUserList: function () {
@@ -114,7 +111,7 @@ chellIam.factory('IamAdapter', [
             }
         };
     }
-]);
+);
 var externalToIamUser = function (externalUser) {
     var iamUser = {};
     iamUser.id = externalUser.id;
