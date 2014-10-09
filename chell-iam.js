@@ -53,14 +53,6 @@ angular.module('translations').config(function ($translateProvider) {
         'RESET_BUTTON': 'Reset'
       },
       'USER_LIST': {
-        'COLUMN_TITLE': {
-          'NAME': 'Name',
-          'LOGIN': 'Login',
-          'DATE_REGISTERED': 'Date registered',
-          'GROUPS': 'Groups',
-          'STATE': 'Status',
-          'ACTIONS': 'Actions'
-        },
         'VIEW_BUTTON': 'View',
         'EDIT_BUTTON': 'Edit',
         'DELETE_BUTTON': 'Delete',
@@ -544,11 +536,12 @@ angular.module('ui.bootstrap.modal').directive('modalWindow', [
 var chellIam = angular.module('chell-iam');
 chellIam.controller('UserListController', [
   '$scope',
+  '$filter',
   '$modal',
   'IamUser',
   'IamGroup',
   'ngTableParams',
-  function ($scope, $modal, IamUser, IamGroup, ngTableParams) {
+  function ($scope, $filter, $modal, IamUser, IamGroup, ngTableParams) {
     $scope.list = true;
     $scope.detail = false;
     $scope.users = [];
@@ -566,12 +559,15 @@ chellIam.controller('UserListController', [
       $scope.users = users;
       $scope.tableParams = new ngTableParams({
         page: 1,
-        count: 10
+        count: 10,
+        sorting: { login: 'asc' }
       }, {
         total: $scope.users.length,
         getData: function ($defer, params) {
-          params.total($scope.users.length);
-          $defer.resolve($scope.users.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          var filteredData = params.filter() ? $filter('filter')($scope.users, params.filter()) : $scope.users;
+          var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
+          params.total(orderedData.length);
+          $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         },
         $scope: {
           $data: {},
@@ -1203,29 +1199,19 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
   $templateCache.put("templates/user-list.tpl.html",
     "<div ng-controller=\"UserListController\">\n" +
     "    <div ng-show=\"list\">\n" +
-    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/user\" class=\"table table-striped table-bordered\" id=\"datatable\">\n" +
-    "            <thead>\n" +
-    "            <tr>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.NAME' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATE' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>\n" +
-    "            </tr>\n" +
-    "            </thead>\n" +
+    "        <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/user\" class=\"table table-striped table-bordered\" id=\"datatable\">\n" +
     "            <tbody>\n" +
     "            <tr ng-repeat=\"user in $data\">\n" +
-    "                <td data-title=\"'Name'\">{{user.fullname}}</td>\n" +
-    "                <td data-title=\"'Login'\">{{user.login}}</td>\n" +
-    "                <td data-title=\"'Date registered'\" class=\"center\">{{user.creationDate | date:'dd.MM.yyyy'}}</td>\n" +
+    "                <td data-title=\"'Name'\" filter=\"{'fullname': 'text'}\" sortable=\"'fullname'\">{{user.fullname}}</td>\n" +
+    "                <td data-title=\"'Login'\" filter=\"{'login': 'text'}\" sortable=\"'login'\">{{user.login}}</td>\n" +
+    "                <td data-title=\"'Date registered'\" sortable=\"'creationDate'\" class=\"center\">{{user.creationDate | date:'dd.MM.yyyy'}}</td>\n" +
     "                <td data-title=\"'Groups'\">\n" +
     "                    <div ng-repeat=\"group in user.groups\">\n" +
     "                        <i class=\"glyphicon glyphicon-lock\"></i>\n" +
     "                        {{group.display}}\n" +
     "                    </div>\n" +
     "                </td>\n" +
-    "                <td data-title=\"'State'\" class=\"center\">\n" +
+    "                <td data-title=\"'State'\" sortable=\"'status'\" class=\"center\">\n" +
     "                    <span class=\"label\" ng-class=\"{'label-success': user.status=='active', 'label-danger': user.status!='active'}\">{{user.status}}</span>\n" +
     "                </td>\n" +
     "                <td data-title=\"'Actions'\" class=\"center\">\n" +

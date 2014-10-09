@@ -1,28 +1,18 @@
 <div ng-controller="UserListController">
     <div ng-show="list">
-        <table ng-table="tableParams" cellpadding="0" cellspacing="0" border="0" template-pagination="custom/pager/user" class="table table-striped table-bordered" id="datatable">
-            <thead>
-            <tr>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.NAME' | translate}}</th>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate}}</th>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate}}</th>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate}}</th>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATE' | translate}}</th>
-                <th>{{'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>
-            </tr>
-            </thead>
+        <table ng-table="tableParams" show-filter="true" cellpadding="0" cellspacing="0" border="0" template-pagination="custom/pager/user" class="table table-striped table-bordered" id="datatable">
             <tbody>
             <tr ng-repeat="user in $data">
-                <td data-title="'Name'">{{user.fullname}}</td>
-                <td data-title="'Login'">{{user.login}}</td>
-                <td data-title="'Date registered'" class="center">{{user.creationDate | date:'dd.MM.yyyy'}}</td>
+                <td data-title="'Name'" filter="{'fullname': 'text'}" sortable="'fullname'">{{user.fullname}}</td>
+                <td data-title="'Login'" filter="{'login': 'text'}" sortable="'login'">{{user.login}}</td>
+                <td data-title="'Date registered'" sortable="'creationDate'" class="center">{{user.creationDate | date:'dd.MM.yyyy'}}</td>
                 <td data-title="'Groups'">
                     <div ng-repeat="group in user.groups">
                         <i class="glyphicon glyphicon-lock"></i>
                         {{group.display}}
                     </div>
                 </td>
-                <td data-title="'State'" class="center">
+                <td data-title="'State'" sortable="'status'" class="center">
                     <span class="label" ng-class="{'label-success': user.status=='active', 'label-danger': user.status!='active'}">{{user.status}}</span>
                 </td>
                 <td data-title="'Actions'" class="center">

@@ -32,6 +32,7 @@ module.exports = {
             'bower-components/isteven-angular-multiselect/angular-multi-select.js'
         ],
         css: [
+            'bower-components/ng-table/ng-table.css',
             'bower-components/bootstrap/dist/css/bootstrap.css',
             'bower-components/isteven-angular-multiselect/angular-multi-select.css'
         ]

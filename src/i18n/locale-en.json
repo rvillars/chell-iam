@@ -44,14 +44,6 @@
             "RESET_BUTTON": "Reset"
         },
         "USER_LIST": {
-            "COLUMN_TITLE": {
-                "NAME": "Name",
-                "LOGIN": "Login",
-                "DATE_REGISTERED": "Date registered",
-                "GROUPS": "Groups",
-                "STATE": "Status",
-                "ACTIONS": "Actions"
-            },
             "VIEW_BUTTON": "View",
             "EDIT_BUTTON": "Edit",
             "DELETE_BUTTON": "Delete",

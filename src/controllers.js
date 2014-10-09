@@ -2,7 +2,7 @@
 
 var chellIam = angular.module('chell-iam');
 
-chellIam.controller('UserListController', function ($scope, $modal, IamUser, IamGroup, ngTableParams) {
+chellIam.controller('UserListController', function ($scope, $filter, $modal, IamUser, IamGroup, ngTableParams) {
 
     $scope.list = true;
     $scope.detail = false;
@@ -25,12 +25,17 @@ chellIam.controller('UserListController', function ($scope, $modal, IamUser, Iam
         $scope.users = users;
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
-            count: 10           // count per page
+            count: 10,          // count per page
+            sorting: {
+                login: 'asc'
+            }
         }, {
             total: $scope.users.length, // length of data
             getData: function ($defer, params) {
-                params.total($scope.users.length); // used to update paginator
-                $defer.resolve($scope.users.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                var filteredData = params.filter() ? $filter('filter')($scope.users, params.filter()) : $scope.users;
+                var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
+                params.total(orderedData.length); // used to update paginator
+                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             },
             $scope: { $data: {}, $emit: function () {
             } }
