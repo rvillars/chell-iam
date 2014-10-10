@@ -1,11 +1,6 @@
 {
     "CHELL_IAM": {
         "GROUP_LIST": {
-            "COLUMN_TITLE": {
-                "NAME": "Name",
-                "MEMBERS": "Members",
-                "ACTIONS": "Actions"
-            },
             "VIEW_BUTTON": "View",
             "EDIT_BUTTON": "Edit",
             "DELETE_BUTTON": "Delete",
@@ -18,7 +13,12 @@
             "PH_NAME": "Name",
             "MEMBERS": "Members",
             "SAVE_BUTTON": "Save",
-            "CANCEL_BUTTON": "Cancel"
+            "CANCEL_BUTTON": "Cancel",
+            "COLUMN_TITLE": {
+                "NAME": "Name",
+                "MEMBERS": "Members",
+                "ACTIONS": "Actions"
+            }
         },
         "GROUP_VIEW_DIALOG": {
             "X_BUTTON": "x",
@@ -48,8 +48,18 @@
             "EDIT_BUTTON": "Edit",
             "DELETE_BUTTON": "Delete",
             "CREATE_USER_BUTTON": "New User",
+            "FILTER_ACTIVE": "Activated",
+            "FILTER_INACTIVE": "Inactive",
             "SAVE_BUTTON": "Save",
-            "CANCEL_BUTTON": "Cancel"
+            "CANCEL_BUTTON": "Cancel",
+            "COLUMN_TITLE": {
+                "NAME": "Name",
+                "LOGIN": "Login",
+                "DATE_REGISTERED": "Creation Date",
+                "GROUPS": "Groups",
+                "STATUS": "Status",
+                "ACTIONS": "Actions"
+            }
         },
         "USER_PROFILE": {
             "USER_ID": "User ID",

@@ -168,7 +168,8 @@ module.exports = function (grunt) {
                 prefix: 'locale-',
                 dest: 'src/i18n',
                 namespace: true,
-                nullEmpty: true
+                nullEmpty: true,
+                safeMode: true
             }
         },
         jsonAngularTranslate: {

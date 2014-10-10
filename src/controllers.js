@@ -27,7 +27,7 @@ chellIam.controller('UserListController', function ($scope, $filter, $modal, Iam
             page: 1,            // show first page
             count: 10,          // count per page
             sorting: {
-                login: 'asc'
+                fullname: 'asc'
             }
         }, {
             total: $scope.users.length, // length of data
@@ -146,7 +146,7 @@ chellIam.controller('UserListController', function ($scope, $filter, $modal, Iam
     };
 });
 
-chellIam.controller('GroupListController', function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
+chellIam.controller('GroupListController', function ($scope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
 
     $scope.list = true;
     $scope.detail = false;
@@ -169,12 +169,17 @@ chellIam.controller('GroupListController', function ($scope, $timeout, $modal, I
         $scope.groups = groups;
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
-            count: 10           // count per page
+            count: 10,          // count per page
+            sorting: {
+                name: 'asc'
+            }
         }, {
             total: $scope.groups.length, // length of data
             getData: function ($defer, params) {
-                params.total($scope.groups.length); // used to update paginator
-                $defer.resolve($scope.groups.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                var filteredData = params.filter() ? $filter('filter')($scope.groups, params.filter()) : $scope.groups;
+                var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
+                params.total(orderedData.length); // used to update paginator
+                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             },
             $scope: { $data: {}, $emit: function () {
             } }

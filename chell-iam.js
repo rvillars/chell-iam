@@ -10,11 +10,6 @@ angular.module('translations').config(function ($translateProvider) {
   $translateProvider.translations('en', {
     'CHELL_IAM': {
       'GROUP_LIST': {
-        'COLUMN_TITLE': {
-          'NAME': 'Name',
-          'MEMBERS': 'Members',
-          'ACTIONS': 'Actions'
-        },
         'VIEW_BUTTON': 'View',
         'EDIT_BUTTON': 'Edit',
         'DELETE_BUTTON': 'Delete',
@@ -27,7 +22,12 @@ angular.module('translations').config(function ($translateProvider) {
         'PH_NAME': 'Name',
         'MEMBERS': 'Members',
         'SAVE_BUTTON': 'Save',
-        'CANCEL_BUTTON': 'Cancel'
+        'CANCEL_BUTTON': 'Cancel',
+        'COLUMN_TITLE': {
+          'NAME': 'Name',
+          'MEMBERS': 'Members',
+          'ACTIONS': 'Actions'
+        }
       },
       'GROUP_VIEW_DIALOG': {
         'X_BUTTON': 'x',
@@ -57,8 +57,18 @@ angular.module('translations').config(function ($translateProvider) {
         'EDIT_BUTTON': 'Edit',
         'DELETE_BUTTON': 'Delete',
         'CREATE_USER_BUTTON': 'New User',
+        'FILTER_ACTIVE': 'Activated',
+        'FILTER_INACTIVE': 'Inactive',
         'SAVE_BUTTON': 'Save',
-        'CANCEL_BUTTON': 'Cancel'
+        'CANCEL_BUTTON': 'Cancel',
+        'COLUMN_TITLE': {
+          'NAME': 'Name',
+          'LOGIN': 'Login',
+          'DATE_REGISTERED': 'Creation Date',
+          'GROUPS': 'Groups',
+          'STATUS': 'Status',
+          'ACTIONS': 'Actions'
+        }
       },
       'USER_PROFILE': {
         'USER_ID': 'User ID',
@@ -560,7 +570,7 @@ chellIam.controller('UserListController', [
       $scope.tableParams = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: { login: 'asc' }
+        sorting: { fullname: 'asc' }
       }, {
         total: $scope.users.length,
         getData: function ($defer, params) {
@@ -675,12 +685,13 @@ chellIam.controller('UserListController', [
 ]);
 chellIam.controller('GroupListController', [
   '$scope',
+  '$filter',
   '$timeout',
   '$modal',
   'IamGroup',
   'IamUser',
   'ngTableParams',
-  function ($scope, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
+  function ($scope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
     $scope.list = true;
     $scope.detail = false;
     $scope.users = {};
@@ -698,12 +709,15 @@ chellIam.controller('GroupListController', [
       $scope.groups = groups;
       $scope.tableParams = new ngTableParams({
         page: 1,
-        count: 10
+        count: 10,
+        sorting: { name: 'asc' }
       }, {
         total: $scope.groups.length,
         getData: function ($defer, params) {
-          params.total($scope.groups.length);
-          $defer.resolve($scope.groups.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          var filteredData = params.filter() ? $filter('filter')($scope.groups, params.filter()) : $scope.groups;
+          var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
+          params.total(orderedData.length);
+          $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         },
         $scope: {
           $data: {},
@@ -906,26 +920,19 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
   $templateCache.put("templates/group-list.tpl.html",
     "<div ng-controller=\"GroupListController\">\n" +
     "    <div ng-show=\"list\">\n" +
-    "        <table ng-table=\"tableParams\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/group\" class=\"table table-striped table-bordered\"\n" +
+    "        <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/group\" class=\"table table-striped table-bordered\"\n" +
     "               id=\"datatable\">\n" +
-    "            <thead>\n" +
-    "            <tr>\n" +
-    "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate}}</th>\n" +
-    "                <th>{{'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate}}</th>\n" +
-    "            </tr>\n" +
-    "            </thead>\n" +
     "            <tbody>\n" +
     "            <tr ng-repeat=\"group in $data\">\n" +
-    "                <td>{{group.name}}</td>\n" +
-    "                <td>\n" +
+    "                <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate\" filter=\"{'name': 'text'}\" sortable=\"'name'\" ng-bind=\"group.name\" width=\"300px\"></td>\n" +
+    "                <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate\">\n" +
     "                    <div ng-repeat=\"member in group.members\">\n" +
     "                        <i ng-show=\"member.type == 'User'\" class=\"glyphicon glyphicon-user\"></i>\n" +
     "                        <i ng-show=\"member.type == 'Group'\" class=\"glyphicon glyphicon-lock\"></i>\n" +
     "                        {{member.display}}\n" +
     "                    </div>\n" +
     "                </td>\n" +
-    "                <td class=\"center\">\n" +
+    "                <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate\" class=\"center\">\n" +
     "                    <div class=\"btn-group btn-group-sm\">\n" +
     "                        <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}\" ng-click=\"view(group)\">\n" +
     "                            <i class=\"glyphicon glyphicon-zoom-in icon-white\"></i>\n" +
@@ -1199,22 +1206,22 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
   $templateCache.put("templates/user-list.tpl.html",
     "<div ng-controller=\"UserListController\">\n" +
     "    <div ng-show=\"list\">\n" +
-    "        <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/user\" class=\"table table-striped table-bordered\" id=\"datatable\">\n" +
+    "        <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"chell-iam/user-list/pager\" class=\"table table-striped table-bordered\" id=\"datatable\">\n" +
     "            <tbody>\n" +
     "            <tr ng-repeat=\"user in $data\">\n" +
-    "                <td data-title=\"'Name'\" filter=\"{'fullname': 'text'}\" sortable=\"'fullname'\">{{user.fullname}}</td>\n" +
-    "                <td data-title=\"'Login'\" filter=\"{'login': 'text'}\" sortable=\"'login'\">{{user.login}}</td>\n" +
-    "                <td data-title=\"'Date registered'\" sortable=\"'creationDate'\" class=\"center\">{{user.creationDate | date:'dd.MM.yyyy'}}</td>\n" +
-    "                <td data-title=\"'Groups'\">\n" +
+    "                <td data-title=\"'CHELL_IAM.USER_LIST.COLUMN_TITLE.NAME' | translate\" filter=\"{'fullname': 'text'}\" sortable=\"'fullname'\" ng-bind=\"user.fullname\" width=\"150px\"></td>\n" +
+    "                <td data-title=\"'CHELL_IAM.USER_LIST.COLUMN_TITLE.LOGIN' | translate\" filter=\"{'login': 'text'}\" sortable=\"'login'\" ng-bind=\"user.login\" width=\"150px\"></td>\n" +
+    "                <td data-title=\"'CHELL_IAM.USER_LIST.COLUMN_TITLE.DATE_REGISTERED' | translate\" sortable=\"'creationDate'\" class=\"center\" ng-bind=\"user.creationDate | date:'dd.MM.yyyy'\"></td>\n" +
+    "                <td data-title=\"'CHELL_IAM.USER_LIST.COLUMN_TITLE.GROUPS' | translate\" style=\"min-width: 20px;\">\n" +
     "                    <div ng-repeat=\"group in user.groups\">\n" +
     "                        <i class=\"glyphicon glyphicon-lock\"></i>\n" +
     "                        {{group.display}}\n" +
     "                    </div>\n" +
     "                </td>\n" +
-    "                <td data-title=\"'State'\" sortable=\"'status'\" class=\"center\">\n" +
-    "                    <span class=\"label\" ng-class=\"{'label-success': user.status=='active', 'label-danger': user.status!='active'}\">{{user.status}}</span>\n" +
+    "                <td data-title=\"'CHELL_IAM.USER_LIST.COLUMN_TITLE.STATUS' | translate\" sortable=\"'status'\" filter=\"{ 'status': 'status' }\" class=\"center\">\n" +
+    "                    <span class=\"label\" ng-class=\"{'label-success': user.status=='activated', 'label-danger': user.status!='activated'}\">{{user.status}}</span>\n" +
     "                </td>\n" +
-    "                <td data-title=\"'Actions'\" class=\"center\">\n" +
+    "                <td data-title=\"'CHELL_IAM.USER_LIST.COLUMN_TITLE.ACTIONS' | translate\" class=\"center\">\n" +
     "                    <div class=\"btn-group btn-group-sm\">\n" +
     "                        <button class=\"btn btn-default\" title=\"{{'CHELL_IAM.USER_LIST.VIEW_BUTTON' | translate}}\">\n" +
     "                            <i class=\"glyphicon glyphicon-zoom-in icon-white\" ng-click=\"view(user)\"></i>\n" +
@@ -1230,7 +1237,7 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "            </tr>\n" +
     "            </tbody>\n" +
     "        </table>\n" +
-    "        <script type=\"text/ng-template\" id=\"custom/pager/user\">\n" +
+    "        <script type=\"text/ng-template\" id=\"chell-iam/user-list/pager\">\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-md-4\">\n" +
     "                    <button class=\"btn btn-default\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-user\"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>\n" +
@@ -1256,6 +1263,13 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
+    "        </script>\n" +
+    "        <script type=\"text/ng-template\" id=\"ng-table/filters/status.html\">\n" +
+    "            <select id=\"filter-status\" class=\"form-control\" ng-model=\"params.filter()['status']\">\n" +
+    "                <option value=\"\"></option>\n" +
+    "                <option value=\"activated\">{{'CHELL_IAM.USER_LIST.FILTER_ACTIVE' | translate}}</option>\n" +
+    "                <option value=\"inactive\">{{'CHELL_IAM.USER_LIST.FILTER_INACTIVE' | translate}}</option>\n" +
+    "            </select>\n" +
     "        </script>\n" +
     "    </div>\n" +
     "    <div ng-show=\"detail\">\n" +
