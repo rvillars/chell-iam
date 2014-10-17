@@ -20,6 +20,10 @@
 </head>
 <body class="chell-login-required">
 <div style="width: 928px; margin: 0 auto;">
+    <div ng-controller="CurrentUserController">
+        <button ng-click="logout()" class="btn btn-default pull-right">Logout</button>
+        <button ng-click="logout()" class="btn btn-default pull-right">Change Password</button>
+    </div>
     <div>
         <h2>User List</h2>
         <chell-user-list/>
