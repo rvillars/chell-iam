@@ -318,7 +318,26 @@ chellIam.controller('UserViewModalController', function ($scope, $modalInstance,
     };
 });
 
-chellIam.controller('AuthenticationController', function ($scope, IamAdapter, authService, $base64, $http, $window) {
+chellIam.controller('ChangePasswordModalController', function ($scope, $modalInstance, user, $base64, $window) {
+
+    $scope.user = user;
+    $scope.wrongCredentials = false;
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.changePassword = function () {
+        var base64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.oldPassword);
+        if ($window.sessionStorage.token == base64Credential && $scope.newPassword == $scope.repeatPassword) {
+            $modalInstance.close($scope.newPassword);
+        } else {
+            $scope.wrongCredentials = true;
+        }
+    };
+});
+
+chellIam.controller('AuthenticationController', function ($scope, IamAdapter, authService, $base64, $http, $window, $modal) {
 
     $scope.wrongCredentials = authService.wrongCredentials;
 
@@ -335,9 +354,23 @@ chellIam.controller('AuthenticationController', function ($scope, IamAdapter, au
         authService.loginConfirmed(null, configUpdater);
     };
 
+    $scope.changePassword = function () {
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'templates/change-password-dialog.tpl.html',
+            backdrop: false,
+            controller: 'ChangePasswordModalController',
+            windowClass: 'modal-wide'
+        });
+
+        $scope.modalInstance.result.then(function (newPassword) {
+            console.log(newPassword);
+        });
+    };
+
     $scope.$on('event:auth-logoutConfirmed', function () {
         authService.wrongCredentials = false;
     });
+
 });
 
 chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $rootScope, $window, CurrentUserService) {

@@ -1,5 +1,14 @@
 {
     "CHELL_IAM": {
+        "CHANGE_PASSWORD_DIALOG": {
+            "X_BUTTON": "x",
+            "TITLE": "Change Password",
+            "INCORRECT_OLD_PW": "Incorrect old Password",
+            "PH_OLD_PASSWORD": "Old Password",
+            "PH_NEW_PASSWORD": "New Password",
+            "PH_REPEAT_PASSWORD": "Repeat Password",
+            "CLOSE_BUTTON": "Change Password"
+        },
         "GROUP_LIST": {
             "VIEW_BUTTON": "View",
             "EDIT_BUTTON": "Edit",

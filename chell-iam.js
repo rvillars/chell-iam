@@ -9,6 +9,15 @@ try {
 angular.module('translations').config(function ($translateProvider) {
   $translateProvider.translations('en', {
     'CHELL_IAM': {
+      'CHANGE_PASSWORD_DIALOG': {
+        'X_BUTTON': 'x',
+        'TITLE': 'Change Password',
+        'INCORRECT_OLD_PW': 'Incorrect old Password',
+        'PH_OLD_PASSWORD': 'Old Password',
+        'PH_NEW_PASSWORD': 'New Password',
+        'PH_REPEAT_PASSWORD': 'Repeat Password',
+        'CLOSE_BUTTON': 'Change Password'
+      },
       'GROUP_LIST': {
         'VIEW_BUTTON': 'View',
         'EDIT_BUTTON': 'Edit',
@@ -859,6 +868,28 @@ chellIam.controller('UserViewModalController', [
     };
   }
 ]);
+chellIam.controller('ChangePasswordModalController', [
+  '$scope',
+  '$modalInstance',
+  'user',
+  '$base64',
+  '$window',
+  function ($scope, $modalInstance, user, $base64, $window) {
+    $scope.user = user;
+    $scope.wrongCredentials = false;
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+    $scope.changePassword = function () {
+      var base64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.oldPassword);
+      if ($window.sessionStorage.token == base64Credential && $scope.newPassword == $scope.repeatPassword) {
+        $modalInstance.close($scope.newPassword);
+      } else {
+        $scope.wrongCredentials = true;
+      }
+    };
+  }
+]);
 chellIam.controller('AuthenticationController', [
   '$scope',
   'IamAdapter',
@@ -866,7 +897,8 @@ chellIam.controller('AuthenticationController', [
   '$base64',
   '$http',
   '$window',
-  function ($scope, IamAdapter, authService, $base64, $http, $window) {
+  '$modal',
+  function ($scope, IamAdapter, authService, $base64, $http, $window, $modal) {
     $scope.wrongCredentials = authService.wrongCredentials;
     $scope.signin = function () {
       var base64Credential = 'Basic ' + $base64.encode($scope.login + ':' + $scope.password);
@@ -877,6 +909,17 @@ chellIam.controller('AuthenticationController', [
         return config;
       };
       authService.loginConfirmed(null, configUpdater);
+    };
+    $scope.changePassword = function () {
+      $scope.modalInstance = $modal.open({
+        templateUrl: 'templates/change-password-dialog.tpl.html',
+        backdrop: false,
+        controller: 'ChangePasswordModalController',
+        windowClass: 'modal-wide'
+      });
+      $scope.modalInstance.result.then(function (newPassword) {
+        console.log(newPassword);
+      });
     };
     $scope.$on('event:auth-logoutConfirmed', function () {
       authService.wrongCredentials = false;
@@ -914,7 +957,54 @@ chellIam.controller('CurrentUserController', [
     };
   }
 ]);;// Source: build/templates.js
-angular.module('templates-chell-iam', ['templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/multi-value.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
+angular.module('templates-chell-iam', ['templates/change-password-dialog.tpl.html', 'templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/multi-value.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
+
+angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/change-password-dialog.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "    <button class=\"close\" ng-click=\"cancel()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.X_BUTTON' | translate}}</button>\n" +
+    "    <h3>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.TITLE' | translate}}</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "    <form role=\"form\">\n" +
+    "        <div class=\"alert alert-danger\" ng-show=\"wrongCredentials\">\n" +
+    "            <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.INCORRECT_OLD_PW' | translate}}\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
+    "                    <input type=\"password\" class=\"form-control\" id=\"inputOldPassoword\" placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_OLD_PASSWORD' | translate}}\" \n" +
+    "                        required ng-model=\"$parent.oldPassword\" autofocus>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-asterisk\"></i></span>\n" +
+    "                    <input type=\"password\" class=\"form-control\" id=\"inputNewPassword\" placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_NEW_PASSWORD' | translate}}\" required\n" +
+    "                        ng-model=\"$parent.newPassword\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "         <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-repeat\"></i></span>\n" +
+    "                    <input type=\"password\" class=\"form-control\" id=\"inputRepeatPassword\" placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_REPEAT_PASSWORD' | translate}}\" required\n" +
+    "                        ng-model=\"$parent.repeatPassword\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button class=\"btn btn-primary\" ng-click=\"changePassword()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CLOSE_BUTTON' | translate}}</button>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
 
 angular.module("templates/group-list.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/group-list.tpl.html",
