@@ -155,18 +155,18 @@ chellIam.run([
         mockUser
       ];
     var authenticated = function (headers) {
-      if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.userName + ':' + mockAdmin.password) || headers.Authorization == 'Basic ' + $base64.encode(mockUser.userName + ':' + mockUser.password)) {
-        return true;
-      }
-      return false;
+      if (headers.Authorization == null)
+        return false;
+      var userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
+      var currentUser = _.findWhere(mockUsers, { userName: userName });
+      var validUserCredentials = 'Basic ' + $base64.encode(currentUser.userName + ':' + currentUser.password);
+      return headers.Authorization == validUserCredentials;
     };
     $httpBackend.whenGET(/iam\/Users\/self/).respond(function (method, url, data, headers) {
-      var currentUser = {};
-      if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.login + ':' + mockAdmin.password)) {
-        currentUser = mockAdmin;
-      } else {
-        currentUser = mockUser;
-      }
+      if (headers.Authorization == null)
+        return [401];
+      var userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
+      var currentUser = _.findWhere(mockUsers, { userName: userName });
       return authenticated(headers) ? [
         200,
         currentUser
