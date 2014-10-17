@@ -169,7 +169,7 @@ chellIam.run(
         };
         $httpBackend.whenGET(/iam\/Users\/self/).respond(function (method, url, data, headers) {
             var currentUser = {};
-            if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.login + ':' + mockAdmin.password)) {
+            if (headers.Authorization == 'Basic ' + $base64.encode(mockAdmin.userName + ':' + mockAdmin.password)) {
                 currentUser = mockAdmin;
             } else {
                 currentUser = mockUser;

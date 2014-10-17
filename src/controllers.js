@@ -83,8 +83,8 @@ chellIam.controller('UserListController', function ($scope, $filter, $modal, Iam
 
         //add groups
         $scope.editUser.groups = [];
-        angular.forEach( $scope.possibleGroups, function( possibleGroup, key ) {
-            if ( possibleGroup.ticked === true ) {
+        angular.forEach($scope.possibleGroups, function (possibleGroup, key) {
+            if (possibleGroup.ticked === true) {
                 $scope.editUser.groups.push(
                     {
                         value: possibleGroup.id,
@@ -228,8 +228,8 @@ chellIam.controller('GroupListController', function ($scope, $filter, $timeout, 
 
         //add members
         $scope.editGroup.members = [];
-        angular.forEach( $scope.possibleMembers, function( possibleMember, key ) {
-            if ( possibleMember.ticked === true ) {
+        angular.forEach($scope.possibleMembers, function (possibleMember, key) {
+            if (possibleMember.ticked === true) {
                 $scope.editGroup.members.push(
                     {
                         value: possibleMember.id,
@@ -276,7 +276,7 @@ chellIam.controller('GroupListController', function ($scope, $filter, $timeout, 
             .concat(users.slice(0)
                 .map(function (user) {
                     var ticked = false;
-                    angular.forEach(editGroup.members, function(groupMember, key) {
+                    angular.forEach(editGroup.members, function (groupMember, key) {
                         if (groupMember.type == 'User' && groupMember.value == user.id) {
                             ticked = true;
                         }
@@ -288,7 +288,7 @@ chellIam.controller('GroupListController', function ($scope, $filter, $timeout, 
             .concat(groups.slice(0)
                 .map(function (group) {
                     var ticked = false;
-                    angular.forEach(editGroup.members, function(groupMember, key) {
+                    angular.forEach(editGroup.members, function (groupMember, key) {
                         if (groupMember.type == 'Group' && groupMember.value == group.id) {
                             ticked = true;
                         }
@@ -322,6 +322,7 @@ chellIam.controller('ChangePasswordModalController', function ($scope, $modalIns
 
     $scope.user = user;
     $scope.wrongCredentials = false;
+    $scope.notMatching = false;
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
@@ -329,15 +330,16 @@ chellIam.controller('ChangePasswordModalController', function ($scope, $modalIns
 
     $scope.changePassword = function () {
         var base64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.oldPassword);
-        if ($window.sessionStorage.token == base64Credential && $scope.newPassword == $scope.repeatPassword) {
+        $scope.wrongCredentials = $window.sessionStorage.token != base64Credential;
+        $scope.notMatching = $scope.newPassword != $scope.repeatPassword;
+
+        if (!$scope.wrongCredentials && !$scope.notMatching) {
             $modalInstance.close($scope.newPassword);
-        } else {
-            $scope.wrongCredentials = true;
         }
     };
 });
 
-chellIam.controller('AuthenticationController', function ($scope, IamAdapter, authService, $base64, $http, $window, $modal) {
+chellIam.controller('AuthenticationController', function ($scope, IamAdapter, authService, $base64, $http, $window) {
 
     $scope.wrongCredentials = authService.wrongCredentials;
 
@@ -354,26 +356,13 @@ chellIam.controller('AuthenticationController', function ($scope, IamAdapter, au
         authService.loginConfirmed(null, configUpdater);
     };
 
-    $scope.changePassword = function () {
-        $scope.modalInstance = $modal.open({
-            templateUrl: 'templates/change-password-dialog.tpl.html',
-            backdrop: false,
-            controller: 'ChangePasswordModalController',
-            windowClass: 'modal-wide'
-        });
-
-        $scope.modalInstance.result.then(function (newPassword) {
-            console.log(newPassword);
-        });
-    };
-
     $scope.$on('event:auth-logoutConfirmed', function () {
         authService.wrongCredentials = false;
     });
 
 });
 
-chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $rootScope, $window, CurrentUserService) {
+chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $rootScope, $window, CurrentUserService, $modal) {
 
     CurrentUserService.authPromise.then(function (user) {
         $scope.currentUser = user;
@@ -399,5 +388,22 @@ chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $
 
     $scope.logout = function () {
         $rootScope.$broadcast('event:auth-logoutConfirmed');
+    };
+
+    $scope.changePassword = function () {
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'templates/change-password-dialog.tpl.html',
+            backdrop: false,
+            controller: 'ChangePasswordModalController',
+            resolve: {
+                user: function () {
+                    return $scope.currentUser;
+                }
+            }
+        });
+
+        $scope.modalInstance.result.then(function (newPassword) {
+            console.log(newPassword);
+        });
     };
 });
