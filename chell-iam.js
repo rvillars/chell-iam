@@ -494,10 +494,11 @@ chellIam.directive('multiValue', function () {
     controller: [
       '$scope',
       '$element',
-      function ($scope, $element) {
-        $scope.newType = 'None';
-        $scope.newValue = '';
+      '$timeout',
+      function ($scope, $element, $timeout) {
         $scope.possibleTypeList = $scope.possibleTypes.split(',');
+        $scope.newType = $scope.possibleTypeList[0];
+        $scope.newValue = '';
         $scope.addValue = function () {
           if (!$scope.valueList) {
             $scope.valueList = [];
@@ -506,8 +507,11 @@ chellIam.directive('multiValue', function () {
             value: $scope.newValue,
             type: $scope.newType
           });
-          $scope.newType = 'None';
+          $scope.newType = $scope.possibleTypeList[0];
           $scope.newValue = '';
+          $timeout(function () {
+            $element[0].children[0].children[$scope.valueList.length - 1].children[1].focus();
+          });
         };
         $scope.removeValue = function (value) {
           $scope.valueList.splice($scope.valueList.indexOf(value), 1);
@@ -519,6 +523,25 @@ chellIam.directive('multiValue', function () {
             $scope.newType = type;
           }
         };
+        $scope.$watch('newValue', function (value) {
+          if (!$scope.valueList) {
+            $scope.valueList = [];
+          }
+          $scope.valueList = $scope.valueList.concat({
+            value: $scope.newValue,
+            type: $scope.newType
+          });
+          $scope.newType = $scope.possibleTypeList[0];
+          $scope.newValue = '';
+          for (var i = 0; $scope.$$watchers.length > i; i++) {
+            if ($scope.$$watchers[i].exp === 'newValue') {
+              $scope.$$watchers[i].last = $scope.newValue;
+            }
+          }
+          $timeout(function () {
+            $element[0].children[0].children[$scope.valueList.length - 1].children[1].focus();
+          });
+        });
       }
     ],
     templateUrl: 'templates/multi-value.tpl.html'
@@ -1252,10 +1275,7 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
     "                <li ng-repeat=\"possibleType in possibleTypeList\"><a ng-click=\"selectType(possibleType)\">{{possibleType}}</a></li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
-    "        <input type=\"text\" class=\"form-control\" ng-model=\"newValue\">\n" +
-    "        <span class=\"input-group-btn\">\n" +
-    "            <button type=\"button\" class=\"btn btn-success btn-add\" ng-click=\"addValue()\">+</button>\n" +
-    "        </span>\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"newValue\" >\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div ng-show=\"panel\">\n" +
@@ -1470,20 +1490,20 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                            <label for=\"inputStreetAddress\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.STREET' | translate}}</label>\n" +
     "                            <input class=\"form-control\" id=\"inputStreetAddress\"\n" +
     "                                   placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_STREET' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                   ng-model=\"$parent.value.streetAddress\">\n" +
+    "                                   ng-model=\"$parent.newValue.streetAddress\">\n" +
     "                        </div>\n" +
     "                        <div class=\"row\">\n" +
     "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.postalCode\">\n" +
     "                                <label for=\"inputZip\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.ZIP' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputZip\"\n" +
     "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_ZIP' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"value.postalCode\">\n" +
+    "                                       ng-model=\"$parent.newValue.postalCode\">\n" +
     "                            </div>\n" +
     "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.locality\">\n" +
     "                                <label for=\"inputCity\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.CITY' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputCity\"\n" +
     "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_CITY' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"value.locality\">\n" +
+    "                                       ng-model=\"$parent.newValue.locality\">\n" +
     "                            </div>\n" +
     "                        </div>\n" +
     "                        <div class=\"row\">\n" +
@@ -1491,13 +1511,13 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                                <label for=\"inputRegion\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.REGION' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputRegion\"\n" +
     "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_REGION' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"value.region\">\n" +
+    "                                       ng-model=\"$parent.newValue.region\">\n" +
     "                            </div>\n" +
     "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.country\">\n" +
     "                                <label for=\"inputCountry\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.COUNTRY' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputCountry\"\n" +
     "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_COUNTRY' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"value.country\">\n" +
+    "                                       ng-model=\"$parent.newValue.country\">\n" +
     "                            </div>\n" +
     "                        </div>\n" +
     "                    </multi-value>\n" +

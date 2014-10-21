@@ -207,7 +207,7 @@ chellIam.run([
           if (!user.name || _.isEmpty(user.name)) {
             user.displayName = user.userName;
           } else if (user.name.givenName && user.name.familyName) {
-            user.displayName = user.givenName + ' ' + user.familyName;
+            user.displayName = user.name.givenName + ' ' + user.name.familyName;
           } else if (user.name.familyName) {
             user.displayName = user.familyName;
           } else if (user.name.givenName) {

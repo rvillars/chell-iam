@@ -23,10 +23,7 @@
                 <li ng-repeat="possibleType in possibleTypeList"><a ng-click="selectType(possibleType)">{{possibleType}}</a></li>
             </ul>
         </div>
-        <input type="text" class="form-control" ng-model="newValue">
-        <span class="input-group-btn">
-            <button type="button" class="btn btn-success btn-add" ng-click="addValue()">+</button>
-        </span>
+        <input type="text" class="form-control" ng-model="newValue" >
     </div>
 </div>
 <div ng-show="panel">
