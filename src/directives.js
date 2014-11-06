@@ -136,28 +136,19 @@ chellIam.directive('multiValue', function () {
         transclude: true,
         scope: {
             valueList: '=',
-            labelProperty: '=',
-            valueProperty: '=',
+            labelProperty: '@', // not used yet
+            valueProperty: '@', // not used yet
             readOnly: '=',
             panel: '=',
             possibleTypes: '@'
         },
-        controller: function ($scope, $element, $timeout) {
+        controller: function ($scope, $element) {
             $scope.possibleTypeList = $scope.possibleTypes.split(',');
-            $scope.newType = $scope.possibleTypeList[0];
-            $scope.newValue = '';
-
             $scope.addValue = function () {
-                if (!$scope.valueList) {
+                if ($scope.valueList == null) {
                     $scope.valueList = [];
                 }
-                $scope.valueList = $scope.valueList.concat({value: $scope.newValue, type: $scope.newType});
-                $scope.newType = $scope.possibleTypeList[0];
-                $scope.newValue = '';
-                $timeout(function(){
-                    $element[0].children[0].children[$scope.valueList.length-1].children[1].focus();
-                });
-
+                $scope.valueList[$scope.valueList.length] = {type: $scope.possibleTypeList[0], value: ''};
             };
 
             $scope.removeValue = function (value) {
@@ -171,27 +162,15 @@ chellIam.directive('multiValue', function () {
                     $scope.newType = type;
                 }
             };
-            $scope.$watch('newValue', function(value) {
-                if (!$scope.valueList) {
-                    $scope.valueList = [];
-                }
-                $scope.valueList = $scope.valueList.concat({value: $scope.newValue, type: $scope.newType});
-                $scope.newType = $scope.possibleTypeList[0];
-                $scope.newValue = '';
-
-                //just a hack to prevert recursive call of the watch function
-                for(var i=0; $scope.$$watchers.length>i; i++) {
-                    if ($scope.$$watchers[i].exp==='newValue') {
-                        $scope.$$watchers[i].last = $scope.newValue;
-                    }
-                }
-
-                // set focus to previos element
-                $timeout(function(){
-                    $element[0].children[0].children[$scope.valueList.length-1].children[1].focus();
-                });
-            });
         },
+//        link: function (scope, element, attributes) {
+//            scope.$watch('valueList', function (value) {
+//                if (value == null) {
+//                    scope.valueList = [];
+//                    scope.valueList[0] = {type: scope.possibleTypes.split(',')[0], value: ''};
+//                }
+//            });
+//        },
         templateUrl: 'templates/multi-value.tpl.html'
     };
 });

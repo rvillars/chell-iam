@@ -58,6 +58,7 @@ chellIam.controller('UserListController', function ($scope, $filter, $modal, Iam
 
     $scope.create = function () {
         $scope.editUser = {};
+
         IamGroup.query().then(function (groups) {
             $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, groups);
         });
