@@ -59,7 +59,7 @@
         </script>
     </div>
     <div ng-show="detail">
-        <form id="groupDetail">
+        <form id="groupDetail" name="groupDetail" ng-submit="save()" novalidate>
             <fieldset>
                 <div class="row">
                     <div class="form-group col-md-6">
@@ -73,10 +73,11 @@
                                ng-model="editGroup.meta.created"/>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group required" ng-class="{ 'has-error' : groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine }">
                     <label for="inputGroupname" class="control-label">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>
-                    <input class="form-control" id="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}" required="true"
+                    <input class="form-control" id="inputGroupname" name="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}" required
                            ng-model="editGroup.name"/>
+                    <p ng-show="groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine" class="help-block">A group name is required.</p>
                 </div>
                 <div class="form-group">
                     <label for="inputMembers" class="control-label">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>
@@ -84,7 +85,7 @@
                                   group-property="isGroup" ng-model="editGroup.members"/>
                 </div>
             </fieldset>
-            <button class="btn btn-primary" ng-click="save()">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>
+            <button type="submit" class="btn btn-primary" ng-disabled="groupDetail.inputGroupname.$invalid">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>
             <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.GROUP_LIST.CANCEL_BUTTON' | translate}}</button>
         </form>
     </div>

@@ -1079,7 +1079,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "        </script>\n" +
     "    </div>\n" +
     "    <div ng-show=\"detail\">\n" +
-    "        <form id=\"groupDetail\">\n" +
+    "        <form id=\"groupDetail\" name=\"groupDetail\" ng-submit=\"save()\" novalidate>\n" +
     "            <fieldset>\n" +
     "                <div class=\"row\">\n" +
     "                    <div class=\"form-group col-md-6\">\n" +
@@ -1093,10 +1093,11 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "                               ng-model=\"editGroup.meta.created\"/>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
+    "                <div class=\"form-group required\" ng-class=\"{ 'has-error' : groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine }\">\n" +
     "                    <label for=\"inputGroupname\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputGroupname\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}\" required=\"true\"\n" +
+    "                    <input class=\"form-control\" id=\"inputGroupname\" name=\"inputGroupname\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}\" required\n" +
     "                           ng-model=\"editGroup.name\"/>\n" +
+    "                    <p ng-show=\"groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine\" class=\"help-block\">A group name is required.</p>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"inputMembers\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>\n" +
@@ -1104,7 +1105,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "                                  group-property=\"isGroup\" ng-model=\"editGroup.members\"/>\n" +
     "                </div>\n" +
     "            </fieldset>\n" +
-    "            <button class=\"btn btn-primary\" ng-click=\"save()\">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>\n" +
+    "            <button type=\"submit\" class=\"btn btn-primary\" ng-disabled=\"groupDetail.inputGroupname.$invalid\">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>\n" +
     "            <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.GROUP_LIST.CANCEL_BUTTON' | translate}}</button>\n" +
     "        </form>\n" +
     "    </div>\n" +

@@ -163,14 +163,6 @@ chellIam.directive('multiValue', function () {
                 }
             };
         },
-//        link: function (scope, element, attributes) {
-//            scope.$watch('valueList', function (value) {
-//                if (value == null) {
-//                    scope.valueList = [];
-//                    scope.valueList[0] = {type: scope.possibleTypes.split(',')[0], value: ''};
-//                }
-//            });
-//        },
         templateUrl: 'templates/multi-value.tpl.html'
     };
 });
