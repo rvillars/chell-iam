@@ -1079,7 +1079,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "        </script>\n" +
     "    </div>\n" +
     "    <div ng-show=\"detail\">\n" +
-    "        <form id=\"groupDetail\" name=\"groupDetail\" ng-submit=\"save()\" novalidate>\n" +
+    "        <form id=\"groupDetail\" name=\"groupDetail\" ng-submit=\"save()\">\n" +
     "            <fieldset>\n" +
     "                <div class=\"row\">\n" +
     "                    <div class=\"form-group col-md-6\">\n" +
