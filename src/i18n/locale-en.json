@@ -12,10 +12,6 @@
             "CLOSE_BUTTON": "Change Password"
         },
         "GROUP_LIST": {
-            "VIEW_BUTTON": "View",
-            "EDIT_BUTTON": "Edit",
-            "DELETE_BUTTON": "Delete",
-            "CREATE_GROUP_BUTTON": "New Group",
             "GROUP_ID": "Group ID",
             "PH_GENERATED": "Generated",
             "CREATION_DATE": "Creation Date",
@@ -25,6 +21,10 @@
             "MEMBERS": "Members",
             "SAVE_BUTTON": "Save",
             "CANCEL_BUTTON": "Cancel",
+            "VIEW_BUTTON": "View",
+            "EDIT_BUTTON": "Edit",
+            "DELETE_BUTTON": "Delete",
+            "CREATE_GROUP_BUTTON": "New Group",
             "COLUMN_TITLE": {
                 "NAME": "Name",
                 "MEMBERS": "Members",
@@ -105,7 +105,8 @@
             "STATUS": "Status",
             "ACTIVE": "Active",
             "GROUPS": "Groups",
-            "PROFILE_PREVIEW": "Profile preview"
+            "PROFILE_PREVIEW": "Profile preview",
+            "LOGIN_REQUIRED_ERROR": null
         },
         "USER_VIEW_DIALOG": {
             "X_BUTTON": "x",

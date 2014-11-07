@@ -149,17 +149,6 @@ chellIam.controller('UserListController', function ($scope, $filter, $modal, Iam
 
 chellIam.controller('GroupListController', function ($scope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
 
-    $scope.list = true;
-    $scope.detail = false;
-
-    $scope.users = {};
-    $scope.groups = [];
-    $scope.editGroup = {};
-
-    IamUser.query().then(function (users) {
-        $scope.users = users;
-    });
-
     $scope.$watchCollection('groups', function () {
         if ($scope.tableParams) {
             $scope.tableParams.reload();
@@ -202,26 +191,32 @@ chellIam.controller('GroupListController', function ($scope, $filter, $timeout, 
         });
     };
 
-    $scope.create = function () {
-        $scope.editGroup = {};
-        IamUser.query().then(function (users) {
-            $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
-        });
-        $scope.showDetail();
-    };
-
     $scope.edit = function (group) {
-        $scope.editGroup = group;
-        IamUser.query().then(function (users) {
-            $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
-        });
-        $scope.showDetail();
+
     };
 
     $scope.remove = function (group) {
         if (!confirm('Are you sure?')) return;
         IamGroup.remove(group).then(function () {
             $scope.groups.splice($scope.groups.indexOf(group), 1);
+        });
+    };
+});
+
+chellIam.controller('GroupFormController', function ($scope, $filter, $timeout, $modal, IamGroup, IamUser) {
+
+    $scope.editGroup = {};
+
+    $scope.create = function () {
+
+        $scope.editGroup = {};
+
+        IamUser.query().then(function (possibleUsers) {
+            $scope.possibleUsers = possibleUsers;
+            IamGroup.query().then(function (possibleGroups) {
+                $scope.possibleGroups = possibleGroups;
+                $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
+            });
         });
     };
 
@@ -252,22 +247,12 @@ chellIam.controller('GroupListController', function ($scope, $filter, $timeout, 
                 $scope.groups[$scope.groups.indexOf(groupToUpdate)] = group;
             });
         }
-        $scope.cancel();
+        $scope.create();
+        $scope.groupForm.$setPristine();
     };
 
     $scope.cancel = function () {
-        $scope.editGroup = {};
-        $scope.showList();
-    };
-
-    $scope.showList = function () {
-        $scope.list = true;
-        $scope.detail = false;
-    };
-
-    $scope.showDetail = function () {
-        $scope.list = false;
-        $scope.detail = true;
+        $scope.create();
     };
 
     $scope.calculatePossibleMembers = function (editGroup, groups, users) {

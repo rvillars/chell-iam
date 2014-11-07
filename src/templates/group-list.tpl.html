@@ -1,92 +1,59 @@
-<div ng-controller="GroupListController">
-    <div ng-show="list">
-        <table ng-table="tableParams" show-filter="true" cellpadding="0" cellspacing="0" border="0" template-pagination="custom/pager/group" class="table table-striped table-bordered"
-               id="datatable">
-            <tbody>
-            <tr ng-repeat="group in $data">
-                <td data-title="'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate" filter="{'name': 'text'}" sortable="'name'" ng-bind="group.name" width="300px"></td>
-                <td data-title="'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate">
-                    <div ng-repeat="member in group.members">
-                        <i ng-show="member.type == 'User'" class="glyphicon glyphicon-user"></i>
-                        <i ng-show="member.type == 'Group'" class="glyphicon glyphicon-lock"></i>
-                        {{member.display}}
-                    </div>
-                </td>
-                <td data-title="'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate" class="center">
-                    <div class="btn-group btn-group-sm">
-                        <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}" ng-click="view(group)">
-                            <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                        </a>
-                        <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(group)">
-                            <i class="glyphicon glyphicon-edit icon-white"></i>
-                        </a>
-                        <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(group)">
-                            <i class="glyphicon glyphicon-trash icon-white"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <script type="text/ng-template" id="custom/pager/group">
-            <div class="row">
-                <div class="col-md-4">
-                    <button class="btn btn-default" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'
-                        | translate}}
+<div>
+    <table ng-table="tableParams" show-filter="true" cellpadding="0" cellspacing="0" border="0" template-pagination="custom/pager/group" class="table table-striped table-bordered"
+           id="datatable">
+        <tbody>
+        <tr ng-repeat="group in $data">
+            <td data-title="'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate" filter="{'name': 'text'}" sortable="'name'" ng-bind="group.name" width="300px"></td>
+            <td data-title="'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate">
+                <div ng-repeat="member in group.members">
+                    <i ng-show="member.type == 'User'" class="glyphicon glyphicon-user"></i>
+                    <i ng-show="member.type == 'Group'" class="glyphicon glyphicon-lock"></i>
+                    {{member.display}}
+                </div>
+            </td>
+            <td data-title="'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate" class="center">
+                <div class="btn-group btn-group-sm">
+                    <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}" ng-click="view(group)">
+                        <i class="glyphicon glyphicon-zoom-in icon-white"></i>
+                    </a>
+                    <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(group)">
+                        <i class="glyphicon glyphicon-edit icon-white"></i>
+                    </a>
+                    <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(group)">
+                        <i class="glyphicon glyphicon-trash icon-white"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <script type="text/ng-template" id="custom/pager/group">
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-default" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'
+                    | translate}}
+                </button>
+            </div>
+            <div class="col-md-4">
+                <div class="btn-group center-block">
+                    <button class="btn btn-default center-block" ng-click="params.page(page.number)" ng-class="{'disabled': !page.active}" ng-repeat="page in pages" ng-switch="page.type">
+                        <div ng-switch-when="prev" ng-click="params.page(page.number)">&laquo;</div>
+                        <div ng-switch-when="first" ng-click="params.page(page.number)"><span ng-bind="page.number"></span></div>
+                        <div ng-switch-when="page" ng-click="params.page(page.number)"><span ng-bind="page.number"></span></div>
+                        <div ng-switch-when="more" ng-click="params.page(page.number)">&#8230;</div>
+                        <div ng-switch-when="last" ng-click="params.page(page.number)"><span ng-bind="page.number"></span></div>
+                        <div ng-switch-when="next" ng-click="params.page(page.number)">&raquo;</div>
                     </button>
                 </div>
-                <div class="col-md-4">
-                    <div class="btn-group center-block">
-                        <button class="btn btn-default center-block" ng-click="params.page(page.number)" ng-class="{'disabled': !page.active}" ng-repeat="page in pages" ng-switch="page.type">
-                            <div ng-switch-when="prev" ng-click="params.page(page.number)">&laquo;</div>
-                            <div ng-switch-when="first" ng-click="params.page(page.number)"><span ng-bind="page.number"></span></div>
-                            <div ng-switch-when="page" ng-click="params.page(page.number)"><span ng-bind="page.number"></span></div>
-                            <div ng-switch-when="more" ng-click="params.page(page.number)">&#8230;</div>
-                            <div ng-switch-when="last" ng-click="params.page(page.number)"><span ng-bind="page.number"></span></div>
-                            <div ng-switch-when="next" ng-click="params.page(page.number)">&raquo;</div>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div ng-if="params.settings().counts.length" class="ng-table-counts btn-group pull-right">
-                        <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                        <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                        <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                        <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div ng-if="params.settings().counts.length" class="ng-table-counts btn-group pull-right">
+                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                    <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
+                    <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
+                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
                 </div>
             </div>
-        </script>
-    </div>
-    <div ng-show="detail">
-        <form id="groupDetail" name="groupDetail" ng-submit="save()">
-            <fieldset>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label for="inputGroupId" class="control-label">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>
-                        <input class="form-control" id="inputGroupId" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}" readonly="true"
-                               ng-model="editGroup.id"/>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="inputCreationDate" class="control-label">{{'CHELL_IAM.GROUP_LIST.CREATION_DATE' | translate}}</label>
-                        <input class="form-control" id="inputCreationDate" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_CREATION_DATE' | translate}}" readonly="true"
-                               ng-model="editGroup.meta.created"/>
-                    </div>
-                </div>
-                <div class="form-group required" ng-class="{ 'has-error' : groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine }">
-                    <label for="inputGroupname" class="control-label">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>
-                    <input class="form-control" id="inputGroupname" name="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}" required
-                           ng-model="editGroup.name"/>
-                    <p ng-show="groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine" class="help-block">A group name is required.</p>
-                </div>
-                <div class="form-group">
-                    <label for="inputMembers" class="control-label">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>
-                    <multi-select id="inputMembers" input-model="possibleMembers" button-label="icon name" item-label="icon name" tick-property="ticked"
-                                  group-property="isGroup" ng-model="editGroup.members"/>
-                </div>
-            </fieldset>
-            <button type="submit" class="btn btn-primary" ng-disabled="groupDetail.inputGroupname.$invalid">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>
-            <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.GROUP_LIST.CANCEL_BUTTON' | translate}}</button>
-        </form>
-    </div>
+        </div>
+    </script>
 </div>

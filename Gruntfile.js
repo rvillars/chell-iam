@@ -218,7 +218,7 @@ module.exports = function (grunt) {
 
     grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
-    grunt.registerTask('build', ['jshint', 'ngmin', 'html2js:build', 'i18nextract', 'jsonAngularTranslate', 'concat', 'uglify:src', 'copy', 'less:build', 'example']);
+    grunt.registerTask('build', ['jshint', 'ngmin', 'html2js:build', 'i18nextract', 'jsonAngularTranslate', 'concat', 'uglify:src', 'copy', 'less:build', 'example', 'example2']);
     grunt.registerTask('default', ['watch:hint']);
 
     grunt.registerTask('example', 'Process example .html template', function () {
@@ -233,6 +233,20 @@ module.exports = function (grunt) {
             }
         });
         grunt.file.copy('src/examples/example1.js', 'examples/example1.js');
+    });
+
+    grunt.registerTask('example2', 'Process example2 .html template', function () {
+        grunt.file.copy('src/examples/example2.html', 'examples/example2.html', {
+            process: function (contents, path) {
+                return grunt.template.process(contents, {
+                    data: {
+                        scripts: userConfig.module_dependencies.js,
+                        styles: userConfig.module_dependencies.css
+                    }
+                });
+            }
+        });
+        grunt.file.copy('src/examples/example2.js', 'examples/example2.js');
     });
 
 };

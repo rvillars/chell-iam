@@ -12,7 +12,16 @@ chellIam.directive('chellUserList', function () {
 chellIam.directive('chellGroupList', function () {
     return {
         restrict: 'E',
+        controller: 'GroupListController',
         templateUrl: 'templates/group-list.tpl.html'
+    };
+});
+
+chellIam.directive('chellGroupForm', function () {
+    return {
+        restrict: 'E',
+        controller: 'GroupFormController',
+        templateUrl: 'templates/group-form.tpl.html'
     };
 });
 

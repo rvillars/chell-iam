@@ -21,10 +21,6 @@ angular.module('translations').config(function ($translateProvider) {
         'CLOSE_BUTTON': 'Change Password'
       },
       'GROUP_LIST': {
-        'VIEW_BUTTON': 'View',
-        'EDIT_BUTTON': 'Edit',
-        'DELETE_BUTTON': 'Delete',
-        'CREATE_GROUP_BUTTON': 'New Group',
         'GROUP_ID': 'Group ID',
         'PH_GENERATED': 'Generated',
         'CREATION_DATE': 'Creation Date',
@@ -34,6 +30,10 @@ angular.module('translations').config(function ($translateProvider) {
         'MEMBERS': 'Members',
         'SAVE_BUTTON': 'Save',
         'CANCEL_BUTTON': 'Cancel',
+        'VIEW_BUTTON': 'View',
+        'EDIT_BUTTON': 'Edit',
+        'DELETE_BUTTON': 'Delete',
+        'CREATE_GROUP_BUTTON': 'New Group',
         'COLUMN_TITLE': {
           'NAME': 'Name',
           'MEMBERS': 'Members',
@@ -114,7 +114,8 @@ angular.module('translations').config(function ($translateProvider) {
         'STATUS': 'Status',
         'ACTIVE': 'Active',
         'GROUPS': 'Groups',
-        'PROFILE_PREVIEW': 'Profile preview'
+        'PROFILE_PREVIEW': 'Profile preview',
+        'LOGIN_REQUIRED_ERROR': null
       },
       'USER_VIEW_DIALOG': {
         'X_BUTTON': 'x',
@@ -348,7 +349,15 @@ chellIam.directive('chellUserList', function () {
 chellIam.directive('chellGroupList', function () {
   return {
     restrict: 'E',
+    controller: 'GroupListController',
     templateUrl: 'templates/group-list.tpl.html'
+  };
+});
+chellIam.directive('chellGroupForm', function () {
+  return {
+    restrict: 'E',
+    controller: 'GroupFormController',
+    templateUrl: 'templates/group-form.tpl.html'
   };
 });
 chellIam.directive('chellUserProfile', function () {
@@ -699,14 +708,6 @@ chellIam.controller('GroupListController', [
   'IamUser',
   'ngTableParams',
   function ($scope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
-    $scope.list = true;
-    $scope.detail = false;
-    $scope.users = {};
-    $scope.groups = [];
-    $scope.editGroup = {};
-    IamUser.query().then(function (users) {
-      $scope.users = users;
-    });
     $scope.$watchCollection('groups', function () {
       if ($scope.tableParams) {
         $scope.tableParams.reload();
@@ -746,25 +747,34 @@ chellIam.controller('GroupListController', [
         }
       });
     };
-    $scope.create = function () {
-      $scope.editGroup = {};
-      IamUser.query().then(function (users) {
-        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
-      });
-      $scope.showDetail();
-    };
     $scope.edit = function (group) {
-      $scope.editGroup = group;
-      IamUser.query().then(function (users) {
-        $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.groups, users);
-      });
-      $scope.showDetail();
     };
     $scope.remove = function (group) {
       if (!confirm('Are you sure?'))
         return;
       IamGroup.remove(group).then(function () {
         $scope.groups.splice($scope.groups.indexOf(group), 1);
+      });
+    };
+  }
+]);
+chellIam.controller('GroupFormController', [
+  '$scope',
+  '$filter',
+  '$timeout',
+  '$modal',
+  'IamGroup',
+  'IamUser',
+  function ($scope, $filter, $timeout, $modal, IamGroup, IamUser) {
+    $scope.editGroup = {};
+    $scope.create = function () {
+      $scope.editGroup = {};
+      IamUser.query().then(function (possibleUsers) {
+        $scope.possibleUsers = possibleUsers;
+        IamGroup.query().then(function (possibleGroups) {
+          $scope.possibleGroups = possibleGroups;
+          $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
+        });
       });
     };
     $scope.save = function () {
@@ -789,19 +799,11 @@ chellIam.controller('GroupListController', [
           $scope.groups[$scope.groups.indexOf(groupToUpdate)] = group;
         });
       }
-      $scope.cancel();
+      $scope.create();
+      $scope.groupForm.$setPristine();
     };
     $scope.cancel = function () {
-      $scope.editGroup = {};
-      $scope.showList();
-    };
-    $scope.showList = function () {
-      $scope.list = true;
-      $scope.detail = false;
-    };
-    $scope.showDetail = function () {
-      $scope.list = false;
-      $scope.detail = true;
+      $scope.create();
     };
     $scope.calculatePossibleMembers = function (editGroup, groups, users) {
       var possibleMembers = [];
@@ -960,7 +962,7 @@ chellIam.controller('CurrentUserController', [
     };
   }
 ]);;// Source: build/templates.js
-angular.module('templates-chell-iam', ['templates/change-password-dialog.tpl.html', 'templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/multi-value.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
+angular.module('templates-chell-iam', ['templates/change-password-dialog.tpl.html', 'templates/group-form.tpl.html', 'templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/multi-value.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
 
 angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/change-password-dialog.tpl.html",
@@ -1016,99 +1018,101 @@ angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateC
     "");
 }]);
 
-angular.module("templates/group-list.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("templates/group-list.tpl.html",
-    "<div ng-controller=\"GroupListController\">\n" +
-    "    <div ng-show=\"list\">\n" +
-    "        <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/group\" class=\"table table-striped table-bordered\"\n" +
-    "               id=\"datatable\">\n" +
-    "            <tbody>\n" +
-    "            <tr ng-repeat=\"group in $data\">\n" +
-    "                <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate\" filter=\"{'name': 'text'}\" sortable=\"'name'\" ng-bind=\"group.name\" width=\"300px\"></td>\n" +
-    "                <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate\">\n" +
-    "                    <div ng-repeat=\"member in group.members\">\n" +
-    "                        <i ng-show=\"member.type == 'User'\" class=\"glyphicon glyphicon-user\"></i>\n" +
-    "                        <i ng-show=\"member.type == 'Group'\" class=\"glyphicon glyphicon-lock\"></i>\n" +
-    "                        {{member.display}}\n" +
-    "                    </div>\n" +
-    "                </td>\n" +
-    "                <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate\" class=\"center\">\n" +
-    "                    <div class=\"btn-group btn-group-sm\">\n" +
-    "                        <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}\" ng-click=\"view(group)\">\n" +
-    "                            <i class=\"glyphicon glyphicon-zoom-in icon-white\"></i>\n" +
-    "                        </a>\n" +
-    "                        <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}\" ng-click=\"edit(group)\">\n" +
-    "                            <i class=\"glyphicon glyphicon-edit icon-white\"></i>\n" +
-    "                        </a>\n" +
-    "                        <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}\" ng-click=\"remove(group)\">\n" +
-    "                            <i class=\"glyphicon glyphicon-trash icon-white\"></i>\n" +
-    "                        </a>\n" +
-    "                    </div>\n" +
-    "                </td>\n" +
-    "            </tr>\n" +
-    "            </tbody>\n" +
-    "        </table>\n" +
-    "        <script type=\"text/ng-template\" id=\"custom/pager/group\">\n" +
+angular.module("templates/group-form.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/group-form.tpl.html",
+    "<div>\n" +
+    "    <form id=\"groupForm\" name=\"groupForm\" ng-submit=\"save()\" ng-init=\"create()\">\n" +
+    "        <fieldset>\n" +
     "            <div class=\"row\">\n" +
-    "                <div class=\"col-md-4\">\n" +
-    "                    <button class=\"btn btn-default\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
-    "                        | translate}}\n" +
-    "                    </button>\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputGroupId\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}\" readonly=\"true\"\n" +
+    "                           ng-model=\"editGroup.id\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"col-md-4\">\n" +
-    "                    <div class=\"btn-group center-block\">\n" +
-    "                        <button class=\"btn btn-default center-block\" ng-click=\"params.page(page.number)\" ng-class=\"{'disabled': !page.active}\" ng-repeat=\"page in pages\" ng-switch=\"page.type\">\n" +
-    "                            <div ng-switch-when=\"prev\" ng-click=\"params.page(page.number)\">&laquo;</div>\n" +
-    "                            <div ng-switch-when=\"first\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
-    "                            <div ng-switch-when=\"page\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
-    "                            <div ng-switch-when=\"more\" ng-click=\"params.page(page.number)\">&#8230;</div>\n" +
-    "                            <div ng-switch-when=\"last\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
-    "                            <div ng-switch-when=\"next\" ng-click=\"params.page(page.number)\">&raquo;</div>\n" +
-    "                        </button>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"col-md-4\">\n" +
-    "                    <div ng-if=\"params.settings().counts.length\" class=\"ng-table-counts btn-group pull-right\">\n" +
-    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 10}\" ng-click=\"params.count(10)\" class=\"btn btn-default\">10</button>\n" +
-    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 25}\" ng-click=\"params.count(25)\" class=\"btn btn-default\">25</button>\n" +
-    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 50}\" ng-click=\"params.count(50)\" class=\"btn btn-default\">50</button>\n" +
-    "                        <button type=\"button\" ng-class=\"{'active':params.count() == 100}\" ng-click=\"params.count(100)\" class=\"btn btn-default\">100</button>\n" +
-    "                    </div>\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputCreationDate\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.CREATION_DATE' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputCreationDate\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_CREATION_DATE' | translate}}\" readonly=\"true\"\n" +
+    "                           ng-model=\"editGroup.meta.created\"/>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "        </script>\n" +
-    "    </div>\n" +
-    "    <div ng-show=\"detail\">\n" +
-    "        <form id=\"groupDetail\" name=\"groupDetail\" ng-submit=\"save()\">\n" +
-    "            <fieldset>\n" +
-    "                <div class=\"row\">\n" +
-    "                    <div class=\"form-group col-md-6\">\n" +
-    "                        <label for=\"inputGroupId\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputGroupId\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}\" readonly=\"true\"\n" +
-    "                               ng-model=\"editGroup.id\"/>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"form-group col-md-6\">\n" +
-    "                        <label for=\"inputCreationDate\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.CREATION_DATE' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputCreationDate\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_CREATION_DATE' | translate}}\" readonly=\"true\"\n" +
-    "                               ng-model=\"editGroup.meta.created\"/>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group required\" ng-class=\"{ 'has-error' : groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine }\">\n" +
-    "                    <label for=\"inputGroupname\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputGroupname\" name=\"inputGroupname\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}\" required\n" +
-    "                           ng-model=\"editGroup.name\"/>\n" +
-    "                    <p ng-show=\"groupDetail.inputGroupname.$invalid && !groupDetail.inputGroupname.$pristine\" class=\"help-block\">A group name is required.</p>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label for=\"inputMembers\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>\n" +
-    "                    <multi-select id=\"inputMembers\" input-model=\"possibleMembers\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\"\n" +
-    "                                  group-property=\"isGroup\" ng-model=\"editGroup.members\"/>\n" +
-    "                </div>\n" +
-    "            </fieldset>\n" +
-    "            <button type=\"submit\" class=\"btn btn-primary\" ng-disabled=\"groupDetail.inputGroupname.$invalid\">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>\n" +
-    "            <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.GROUP_LIST.CANCEL_BUTTON' | translate}}</button>\n" +
+    "            <div class=\"form-group required\" ng-class=\"{ 'has-error' : groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine }\">\n" +
+    "                <label for=\"inputGroupname\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>\n" +
+    "                <input class=\"form-control\" id=\"inputGroupname\" name=\"inputGroupname\" placeholder=\"{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}\" required\n" +
+    "                       ng-model=\"editGroup.name\"/>\n" +
+    "                <p ng-show=\"groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine\" class=\"help-block\">A group name is required.</p>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputMembers\" class=\"control-label\">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>\n" +
+    "                <multi-select id=\"inputMembers\" input-model=\"possibleMembers\" button-label=\"icon name\" item-label=\"icon name\" tick-property=\"ticked\"\n" +
+    "                              group-property=\"isGroup\" ng-model=\"editGroup.members\"/>\n" +
+    "            </div>\n" +
+    "        </fieldset>\n" +
+    "        <button type=\"submit\" class=\"btn btn-primary\" ng-disabled=\"groupForm.inputGroupname.$invalid\">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>\n" +
+    "        <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.GROUP_LIST.CANCEL_BUTTON' | translate}}</button>\n" +
     "        </form>\n" +
-    "    </div>\n" +
+    "</div>");
+}]);
+
+angular.module("templates/group-list.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/group-list.tpl.html",
+    "<div>\n" +
+    "    <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/group\" class=\"table table-striped table-bordered\"\n" +
+    "           id=\"datatable\">\n" +
+    "        <tbody>\n" +
+    "        <tr ng-repeat=\"group in $data\">\n" +
+    "            <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate\" filter=\"{'name': 'text'}\" sortable=\"'name'\" ng-bind=\"group.name\" width=\"300px\"></td>\n" +
+    "            <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.MEMBERS' | translate\">\n" +
+    "                <div ng-repeat=\"member in group.members\">\n" +
+    "                    <i ng-show=\"member.type == 'User'\" class=\"glyphicon glyphicon-user\"></i>\n" +
+    "                    <i ng-show=\"member.type == 'Group'\" class=\"glyphicon glyphicon-lock\"></i>\n" +
+    "                    {{member.display}}\n" +
+    "                </div>\n" +
+    "            </td>\n" +
+    "            <td data-title=\"'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.ACTIONS' | translate\" class=\"center\">\n" +
+    "                <div class=\"btn-group btn-group-sm\">\n" +
+    "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}\" ng-click=\"view(group)\">\n" +
+    "                        <i class=\"glyphicon glyphicon-zoom-in icon-white\"></i>\n" +
+    "                    </a>\n" +
+    "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}\" ng-click=\"edit(group)\">\n" +
+    "                        <i class=\"glyphicon glyphicon-edit icon-white\"></i>\n" +
+    "                    </a>\n" +
+    "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}\" ng-click=\"remove(group)\">\n" +
+    "                        <i class=\"glyphicon glyphicon-trash icon-white\"></i>\n" +
+    "                    </a>\n" +
+    "                </div>\n" +
+    "            </td>\n" +
+    "        </tr>\n" +
+    "        </tbody>\n" +
+    "    </table>\n" +
+    "    <script type=\"text/ng-template\" id=\"custom/pager/group\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-md-4\">\n" +
+    "                <button class=\"btn btn-default\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
+    "                    | translate}}\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-md-4\">\n" +
+    "                <div class=\"btn-group center-block\">\n" +
+    "                    <button class=\"btn btn-default center-block\" ng-click=\"params.page(page.number)\" ng-class=\"{'disabled': !page.active}\" ng-repeat=\"page in pages\" ng-switch=\"page.type\">\n" +
+    "                        <div ng-switch-when=\"prev\" ng-click=\"params.page(page.number)\">&laquo;</div>\n" +
+    "                        <div ng-switch-when=\"first\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                        <div ng-switch-when=\"page\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                        <div ng-switch-when=\"more\" ng-click=\"params.page(page.number)\">&#8230;</div>\n" +
+    "                        <div ng-switch-when=\"last\" ng-click=\"params.page(page.number)\"><span ng-bind=\"page.number\"></span></div>\n" +
+    "                        <div ng-switch-when=\"next\" ng-click=\"params.page(page.number)\">&raquo;</div>\n" +
+    "                    </button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-md-4\">\n" +
+    "                <div ng-if=\"params.settings().counts.length\" class=\"ng-table-counts btn-group pull-right\">\n" +
+    "                    <button type=\"button\" ng-class=\"{'active':params.count() == 10}\" ng-click=\"params.count(10)\" class=\"btn btn-default\">10</button>\n" +
+    "                    <button type=\"button\" ng-class=\"{'active':params.count() == 25}\" ng-click=\"params.count(25)\" class=\"btn btn-default\">25</button>\n" +
+    "                    <button type=\"button\" ng-class=\"{'active':params.count() == 50}\" ng-click=\"params.count(50)\" class=\"btn btn-default\">50</button>\n" +
+    "                    <button type=\"button\" ng-class=\"{'active':params.count() == 100}\" ng-click=\"params.count(100)\" class=\"btn btn-default\">100</button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </script>\n" +
     "</div>");
 }]);
 
