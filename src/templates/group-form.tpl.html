@@ -1,5 +1,5 @@
 <div>
-    <form id="groupForm" name="groupForm" ng-submit="save()" ng-init="create()">
+    <form id="groupForm" name="groupForm" novalidate ng-submit="groupForm.$valid && save()" ng-init="create()">
         <fieldset>
             <div class="row">
                 <div class="form-group col-md-6">

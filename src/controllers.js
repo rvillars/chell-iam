@@ -218,6 +218,8 @@ chellIam.controller('GroupFormController', function ($scope, $filter, $timeout, 
                 $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
             });
         });
+
+        $scope.groupForm.$setPristine();
     };
 
     $scope.save = function () {
@@ -248,7 +250,6 @@ chellIam.controller('GroupFormController', function ($scope, $filter, $timeout, 
             });
         }
         $scope.create();
-        $scope.groupForm.$setPristine();
     };
 
     $scope.cancel = function () {

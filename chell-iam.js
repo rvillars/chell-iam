@@ -776,6 +776,7 @@ chellIam.controller('GroupFormController', [
           $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
         });
       });
+      $scope.groupForm.$setPristine();
     };
     $scope.save = function () {
       $scope.editGroup.members = [];
@@ -800,7 +801,6 @@ chellIam.controller('GroupFormController', [
         });
       }
       $scope.create();
-      $scope.groupForm.$setPristine();
     };
     $scope.cancel = function () {
       $scope.create();
@@ -1021,7 +1021,7 @@ angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateC
 angular.module("templates/group-form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/group-form.tpl.html",
     "<div>\n" +
-    "    <form id=\"groupForm\" name=\"groupForm\" ng-submit=\"save()\" ng-init=\"create()\">\n" +
+    "    <form id=\"groupForm\" name=\"groupForm\" novalidate ng-submit=\"groupForm.$valid && save()\" ng-init=\"create()\">\n" +
     "        <fieldset>\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"form-group col-md-6\">\n" +
