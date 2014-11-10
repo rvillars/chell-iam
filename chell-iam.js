@@ -748,6 +748,8 @@ chellIam.controller('GroupListController', [
       });
     };
     $scope.edit = function (group) {
+      $scope.editGroup = group;
+      $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
     };
     $scope.remove = function (group) {
       if (!confirm('Are you sure?'))
@@ -766,7 +768,6 @@ chellIam.controller('GroupFormController', [
   'IamGroup',
   'IamUser',
   function ($scope, $filter, $timeout, $modal, IamGroup, IamUser) {
-    $scope.editGroup = {};
     $scope.create = function () {
       $scope.editGroup = {};
       IamUser.query().then(function (possibleUsers) {
@@ -776,7 +777,9 @@ chellIam.controller('GroupFormController', [
           $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
         });
       });
-      $scope.groupForm.$setPristine();
+      if ($scope.groupForm) {
+        $scope.groupForm.$setPristine();
+      }
     };
     $scope.save = function () {
       $scope.editGroup.members = [];
