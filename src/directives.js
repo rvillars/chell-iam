@@ -14,7 +14,10 @@ chellIam.directive('chellGroupList', function () {
         restrict: 'E',
         scope: {
             showCreateButton: '=?',
-            createButtonHook: '&?'
+            createButtonHook: '&?',
+            editButtonHook: '&?',
+            viewButtonHook: '&?',
+            deleteButtonHook: '&?'
         },
         controller: 'GroupListController',
         templateUrl: 'templates/group-list.tpl.html'
@@ -25,7 +28,8 @@ chellIam.directive('chellGroupForm', function () {
     return {
         restrict: 'E',
         scope: {
-            saveButtonHook: '&?'
+            saveButtonHook: '&?',
+            cancelButtonHook: '&?'
         },
         controller: 'GroupFormController',
         templateUrl: 'templates/group-form.tpl.html'

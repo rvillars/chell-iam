@@ -37,11 +37,11 @@
     <div ng-controller="ExampleController2">
         <div ng-show="detail">
             <h2>Group Form</h2>
-            <chell-group-form save-button-hook="showList"/>
+            <chell-group-form save-button-hook="showList()" cancel-button-hook="showList()"/>
         </div>
         <div ng-show="list">
             <h2>Group List</h2>
-            <chell-group-list show-create-button="true" create-button-hook="showDetail"/>
+            <chell-group-list show-create-button="true" create-button-hook="showDetail()" edit-button-hook="showDetail()"/>
         </div>
     </div>
 </div>

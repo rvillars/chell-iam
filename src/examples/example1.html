@@ -28,9 +28,15 @@
         <h2>User List</h2>
         <chell-user-list/>
     </div>
-    <div>
-        <h2>Group List</h2>
-        <chell-group-list/>
+    <div ng-controller="ExampleGroupController">
+        <div ng-show="detail">
+            <h2>Group Form</h2>
+            <chell-group-form save-button-hook="showList()" cancel-button-hook="showList()"/>
+        </div>
+        <div ng-show="list">
+            <h2>Group List</h2>
+            <chell-group-list show-create-button="true" create-button-hook="showDetail()" edit-button-hook="showDetail()"/>
+        </div>
     </div>
     <div ng-controller="CurrentUserController">
         <h2>User Profile</h2>

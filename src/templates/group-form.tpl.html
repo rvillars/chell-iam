@@ -3,29 +3,29 @@
         <fieldset>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="inputGroupId" class="control-label">{{'CHELL_IAM.GROUP_LIST.GROUP_ID' | translate}}</label>
-                    <input class="form-control" id="inputGroupId" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_GENERATED' | translate}}" readonly="true"
+                    <label for="inputGroupId" class="control-label">{{'CHELL_IAM.GROUP_FORM.GROUP_ID' | translate}}</label>
+                    <input class="form-control" id="inputGroupId" placeholder="{{'CHELL_IAM.GROUP_FORM.PH_GENERATED' | translate}}" readonly="true"
                            ng-model="editGroup.id"/>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputCreationDate" class="control-label">{{'CHELL_IAM.GROUP_LIST.CREATION_DATE' | translate}}</label>
-                    <input class="form-control" id="inputCreationDate" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_CREATION_DATE' | translate}}" readonly="true"
+                    <label for="inputCreationDate" class="control-label">{{'CHELL_IAM.GROUP_FORM.CREATION_DATE' | translate}}</label>
+                    <input class="form-control" id="inputCreationDate" placeholder="{{'CHELL_IAM.GROUP_FORM.PH_CREATION_DATE' | translate}}" readonly="true"
                            ng-model="editGroup.meta.created"/>
                 </div>
             </div>
             <div class="form-group required" ng-class="{ 'has-error' : groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine }">
-                <label for="inputGroupname" class="control-label">{{'CHELL_IAM.GROUP_LIST.NAME' | translate}}</label>
-                <input class="form-control" id="inputGroupname" name="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_LIST.PH_NAME' | translate}}" required
+                <label for="inputGroupname" class="control-label">{{'CHELL_IAM.GROUP_FORM.NAME' | translate}}</label>
+                <input class="form-control" id="inputGroupname" name="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_FORM.PH_NAME' | translate}}" required
                        ng-model="editGroup.name"/>
                 <p ng-show="groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine" class="help-block">A group name is required.</p>
             </div>
             <div class="form-group">
-                <label for="inputMembers" class="control-label">{{'CHELL_IAM.GROUP_LIST.MEMBERS' | translate}}</label>
+                <label for="inputMembers" class="control-label">{{'CHELL_IAM.GROUP_FORM.MEMBERS' | translate}}</label>
                 <multi-select id="inputMembers" input-model="possibleMembers" button-label="icon name" item-label="icon name" tick-property="ticked"
                               group-property="isGroup" ng-model="editGroup.members"/>
             </div>
         </fieldset>
-        <button type="submit" class="btn btn-primary" ng-disabled="groupForm.inputGroupname.$invalid">{{'CHELL_IAM.GROUP_LIST.SAVE_BUTTON' | translate}}</button>
-        <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.GROUP_LIST.CANCEL_BUTTON' | translate}}</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="groupForm.inputGroupname.$invalid">{{'CHELL_IAM.GROUP_FORM.SAVE_BUTTON' | translate}}</button>
+        <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.GROUP_FORM.CANCEL_BUTTON' | translate}}</button>
         </form>
 </div>
