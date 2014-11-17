@@ -349,6 +349,10 @@ chellIam.directive('chellUserList', function () {
 chellIam.directive('chellGroupList', function () {
   return {
     restrict: 'E',
+    scope: {
+      showCreateButton: '=?',
+      createButtonHook: '&?'
+    },
     controller: 'GroupListController',
     templateUrl: 'templates/group-list.tpl.html'
   };
@@ -356,6 +360,7 @@ chellIam.directive('chellGroupList', function () {
 chellIam.directive('chellGroupForm', function () {
   return {
     restrict: 'E',
+    scope: { saveButtonHook: '&?' },
     controller: 'GroupFormController',
     templateUrl: 'templates/group-form.tpl.html'
   };
@@ -701,13 +706,19 @@ chellIam.controller('UserListController', [
 ]);
 chellIam.controller('GroupListController', [
   '$scope',
+  '$rootScope',
   '$filter',
   '$timeout',
   '$modal',
   'IamGroup',
   'IamUser',
   'ngTableParams',
-  function ($scope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
+  function ($scope, $rootScope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
+    $scope.$on('chellIam.groupCreated', function (event) {
+      IamGroup.query().then(function (groups) {
+        $scope.groups = groups;
+      });
+    });
     $scope.$watchCollection('groups', function () {
       if ($scope.tableParams) {
         $scope.tableParams.reload();
@@ -734,6 +745,9 @@ chellIam.controller('GroupListController', [
         }
       });
     });
+    $scope.create = function () {
+      $scope.createButtonHook();
+    };
     $scope.view = function (group) {
       $scope.modalInstance = $modal.open({
         templateUrl: 'templates/group-view-dialog.tpl.html',
@@ -748,8 +762,7 @@ chellIam.controller('GroupListController', [
       });
     };
     $scope.edit = function (group) {
-      $scope.editGroup = group;
-      $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
+      $rootScope.$broadcast('chellIam.editGroup', group);
     };
     $scope.remove = function (group) {
       if (!confirm('Are you sure?'))
@@ -762,25 +775,17 @@ chellIam.controller('GroupListController', [
 ]);
 chellIam.controller('GroupFormController', [
   '$scope',
+  '$rootScope',
   '$filter',
   '$timeout',
   '$modal',
   'IamGroup',
   'IamUser',
-  function ($scope, $filter, $timeout, $modal, IamGroup, IamUser) {
-    $scope.create = function () {
-      $scope.editGroup = {};
-      IamUser.query().then(function (possibleUsers) {
-        $scope.possibleUsers = possibleUsers;
-        IamGroup.query().then(function (possibleGroups) {
-          $scope.possibleGroups = possibleGroups;
-          $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
-        });
-      });
-      if ($scope.groupForm) {
-        $scope.groupForm.$setPristine();
-      }
-    };
+  function ($scope, $rootScope, $filter, $timeout, $modal, IamGroup, IamUser) {
+    $scope.$on('chellIam.editGroup', function (event, group) {
+      $scope.editGroup = group;
+      $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
+    });
     $scope.save = function () {
       $scope.editGroup.members = [];
       angular.forEach($scope.possibleMembers, function (possibleMember, key) {
@@ -795,18 +800,27 @@ chellIam.controller('GroupFormController', [
       var isNew = $scope.editGroup.id == null;
       if (isNew) {
         IamGroup.create($scope.editGroup).then(function (group) {
-          $scope.groups.push(group);
         });
       } else {
         IamGroup.update($scope.editGroup).then(function (group) {
-          var groupToUpdate = _.findWhere($scope.groups, { id: group.id });
-          $scope.groups[$scope.groups.indexOf(groupToUpdate)] = group;
         });
       }
-      $scope.create();
+      $scope.cancel();
+      $rootScope.$broadcast('chellIam.groupCreated');
+      $scope.saveButtonHook();
     };
     $scope.cancel = function () {
-      $scope.create();
+      $scope.editGroup = {};
+      IamUser.query().then(function (possibleUsers) {
+        $scope.possibleUsers = possibleUsers;
+        IamGroup.query().then(function (possibleGroups) {
+          $scope.possibleGroups = possibleGroups;
+          $scope.possibleMembers = $scope.calculatePossibleMembers($scope.editGroup, $scope.possibleGroups, $scope.possibleUsers);
+        });
+      });
+      if ($scope.groupForm) {
+        $scope.groupForm.$setPristine();
+      }
     };
     $scope.calculatePossibleMembers = function (editGroup, groups, users) {
       var possibleMembers = [];
@@ -1090,7 +1104,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "    <script type=\"text/ng-template\" id=\"custom/pager/group\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-4\">\n" +
-    "                <button class=\"btn btn-default\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
+    "                <button class=\"btn btn-default\" ng-show=\"$parent.$parent.showCreateButton\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
     "                    | translate}}\n" +
     "                </button>\n" +
     "            </div>\n" +

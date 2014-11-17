@@ -34,14 +34,14 @@
 </head>
 <body class="chell-login-required">
 <div style="width: 928px; margin: 0 auto;">
-    <div>
-        <div>
+    <div ng-controller="ExampleController2">
+        <div ng-show="detail">
             <h2>Group Form</h2>
-            <chell-group-form/>
+            <chell-group-form save-button-hook="showList"/>
         </div>
-        <div>
+        <div ng-show="list">
             <h2>Group List</h2>
-            <chell-group-list/>
+            <chell-group-list show-create-button="true" create-button-hook="showDetail"/>
         </div>
     </div>
 </div>

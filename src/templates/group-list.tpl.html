@@ -30,7 +30,7 @@
     <script type="text/ng-template" id="custom/pager/group">
         <div class="row">
             <div class="col-md-4">
-                <button class="btn btn-default" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'
+                <button class="btn btn-default" ng-show="$parent.$parent.showCreateButton" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'
                     | translate}}
                 </button>
             </div>
