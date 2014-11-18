@@ -1,5 +1,5 @@
 <div>
-    <form id="groupForm" name="groupForm" novalidate ng-submit="groupForm.$valid && save()" ng-init="create()">
+    <form id="groupForm" name="groupForm" novalidate ng-submit="groupForm.$valid && save()">
         <fieldset>
             <div class="row">
                 <div class="form-group col-md-6">
@@ -25,7 +25,7 @@
                               group-property="isGroup" ng-model="editGroup.members"/>
             </div>
         </fieldset>
-        <button type="submit" class="btn btn-primary" ng-disabled="groupForm.inputGroupname.$invalid">{{'CHELL_IAM.GROUP_FORM.SAVE_BUTTON' | translate}}</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="groupForm.$invalid">{{'CHELL_IAM.GROUP_FORM.SAVE_BUTTON' | translate}}</button>
         <button class="btn btn-default" ng-click="cancel()">{{'CHELL_IAM.GROUP_FORM.CANCEL_BUTTON' | translate}}</button>
         </form>
 </div>

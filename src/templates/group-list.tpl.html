@@ -1,6 +1,6 @@
 <div>
     <table ng-table="tableParams" show-filter="true" cellpadding="0" cellspacing="0" border="0" template-pagination="custom/pager/group" class="table table-striped table-bordered"
-           id="datatable">
+           id="groupDatatable">
         <tbody>
         <tr ng-repeat="group in $data">
             <td data-title="'CHELL_IAM.GROUP_LIST.COLUMN_TITLE.NAME' | translate" filter="{'name': 'text'}" sortable="'name'" ng-bind="group.name" width="300px"></td>

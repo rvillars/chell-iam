@@ -38,9 +38,15 @@
         <button ng-click="logout()" class="btn btn-default pull-right">Logout</button>
         <button ng-click="changePassword()" class="btn btn-default pull-right">Change Password</button>
     </div>
-    <div>
-        <h2>User List</h2>
-        <chell-user-list/>
+    <div ng-controller="ExampleUserController">
+        <div ng-show="detail">
+            <h2>User Form</h2>
+            <chell-user-form save-button-hook="showList()" cancel-button-hook="showList()"/>
+        </div>
+        <div ng-show="list">
+            <h2>User List</h2>
+            <chell-user-list show-create-button="true" create-button-hook="showDetail()" edit-button-hook="showDetail()"/>
+        </div>
     </div>
     <div ng-controller="ExampleGroupController">
         <div ng-show="detail">

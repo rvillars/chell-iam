@@ -5,7 +5,27 @@ var chellIam = angular.module('chell-iam');
 chellIam.directive('chellUserList', function () {
     return {
         restrict: 'E',
+        scope: {
+            showCreateButton: '=?',
+            createButtonHook: '&?',
+            editButtonHook: '&?',
+            viewButtonHook: '&?',
+            deleteButtonHook: '&?'
+        },
+        controller: 'UserListController',
         templateUrl: 'templates/user-list.tpl.html'
+    };
+});
+
+chellIam.directive('chellUserForm', function () {
+    return {
+        restrict: 'E',
+        scope: {
+            saveButtonHook: '&?',
+            cancelButtonHook: '&?'
+        },
+        controller: 'UserFormController',
+        templateUrl: 'templates/user-form.tpl.html'
     };
 });
 

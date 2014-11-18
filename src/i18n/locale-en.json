@@ -56,24 +56,6 @@
             "LOGIN_BUTTON": "Log in",
             "RESET_BUTTON": "Reset"
         },
-        "USER_LIST": {
-            "VIEW_BUTTON": "View",
-            "EDIT_BUTTON": "Edit",
-            "DELETE_BUTTON": "Delete",
-            "CREATE_USER_BUTTON": "New User",
-            "FILTER_ACTIVE": "Activated",
-            "FILTER_INACTIVE": "Inactive",
-            "SAVE_BUTTON": "Save",
-            "CANCEL_BUTTON": "Cancel",
-            "COLUMN_TITLE": {
-                "NAME": "Name",
-                "LOGIN": "Login",
-                "DATE_REGISTERED": "Creation Date",
-                "GROUPS": "Groups",
-                "STATUS": "Status",
-                "ACTIONS": "Actions"
-            }
-        },
         "USER_PROFILE": {
             "USER_ID": "User ID",
             "PH_USER_ID": "Generated",
@@ -109,6 +91,24 @@
             "GROUPS": "Groups",
             "PROFILE_PREVIEW": "Profile preview",
             "LOGIN_REQUIRED_ERROR": "Login required"
+        },
+        "USER_LIST": {
+            "VIEW_BUTTON": "View",
+            "EDIT_BUTTON": "Edit",
+            "DELETE_BUTTON": "Delete",
+            "CREATE_USER_BUTTON": "New User",
+            "FILTER_ACTIVE": "Activated",
+            "FILTER_INACTIVE": "Inactive",
+            "SAVE_BUTTON": "Save",
+            "CANCEL_BUTTON": "Cancel",
+            "COLUMN_TITLE": {
+                "NAME": "Name",
+                "LOGIN": "Login",
+                "DATE_REGISTERED": "Creation Date",
+                "GROUPS": "Groups",
+                "STATUS": "Status",
+                "ACTIONS": "Actions"
+            }
         },
         "USER_VIEW_DIALOG": {
             "X_BUTTON": "x",
