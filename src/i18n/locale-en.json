@@ -56,7 +56,7 @@
             "LOGIN_BUTTON": "Log in",
             "RESET_BUTTON": "Reset"
         },
-        "USER_PROFILE": {
+        "USER_FORM": {
             "USER_ID": "User ID",
             "PH_USER_ID": "Generated",
             "EXTERNAL_ID": "External ID",
@@ -88,9 +88,7 @@
             "PH_COUNTRY": "Country",
             "STATUS": "Status",
             "ACTIVE": "Active",
-            "GROUPS": "Groups",
-            "PROFILE_PREVIEW": "Profile preview",
-            "LOGIN_REQUIRED_ERROR": "Login required"
+            "GROUPS": "Groups"
         },
         "USER_LIST": {
             "VIEW_BUTTON": "View",
@@ -109,6 +107,42 @@
                 "STATUS": "Status",
                 "ACTIONS": "Actions"
             }
+        },
+        "USER_PROFILE": {
+            "USER_ID": "User ID",
+            "PH_USER_ID": "Generated",
+            "EXTERNAL_ID": "External ID",
+            "PH_EXTERNAL_ID": "External ID",
+            "LOGIN": "Login",
+            "PH_LOGIN": "Login",
+            "DISPLAY": "Display Name",
+            "PH_DISPLAY": "Display Name",
+            "FIRSTNAME": "Firstname",
+            "PH_FIRSTNAME": "Firstname",
+            "LASTNAME": "Lastname",
+            "PH_LASTNAME": "Lastname",
+            "TITLE": "Title",
+            "PH_TITLE": "Title",
+            "EMAIL": "E-Mail",
+            "PHONE": "Phone",
+            "IMS": "Instant Messaging",
+            "LANGUAGE": "Language",
+            "ADRESSES": "Addresses",
+            "STREET": "Street",
+            "PH_STREET": "Street",
+            "ZIP": "Zip",
+            "PH_ZIP": "Zip",
+            "CITY": "City",
+            "PH_CITY": "City",
+            "REGION": "Region",
+            "PH_REGION": "Region",
+            "COUNTRY": "Country",
+            "PH_COUNTRY": "Country",
+            "GROUPS": "Groups",
+            "PROFILE_PREVIEW": "Profile preview",
+            "STATUS": "Status",
+            "ACTIVE": "Active",
+            "LOGIN_REQUIRED_ERROR": "Login required"
         },
         "USER_VIEW_DIALOG": {
             "X_BUTTON": "x",

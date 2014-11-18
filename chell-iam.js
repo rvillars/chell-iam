@@ -65,7 +65,7 @@ angular.module('translations').config(function ($translateProvider) {
         'LOGIN_BUTTON': 'Log in',
         'RESET_BUTTON': 'Reset'
       },
-      'USER_PROFILE': {
+      'USER_FORM': {
         'USER_ID': 'User ID',
         'PH_USER_ID': 'Generated',
         'EXTERNAL_ID': 'External ID',
@@ -97,9 +97,7 @@ angular.module('translations').config(function ($translateProvider) {
         'PH_COUNTRY': 'Country',
         'STATUS': 'Status',
         'ACTIVE': 'Active',
-        'GROUPS': 'Groups',
-        'PROFILE_PREVIEW': 'Profile preview',
-        'LOGIN_REQUIRED_ERROR': 'Login required'
+        'GROUPS': 'Groups'
       },
       'USER_LIST': {
         'VIEW_BUTTON': 'View',
@@ -118,6 +116,42 @@ angular.module('translations').config(function ($translateProvider) {
           'STATUS': 'Status',
           'ACTIONS': 'Actions'
         }
+      },
+      'USER_PROFILE': {
+        'USER_ID': 'User ID',
+        'PH_USER_ID': 'Generated',
+        'EXTERNAL_ID': 'External ID',
+        'PH_EXTERNAL_ID': 'External ID',
+        'LOGIN': 'Login',
+        'PH_LOGIN': 'Login',
+        'DISPLAY': 'Display Name',
+        'PH_DISPLAY': 'Display Name',
+        'FIRSTNAME': 'Firstname',
+        'PH_FIRSTNAME': 'Firstname',
+        'LASTNAME': 'Lastname',
+        'PH_LASTNAME': 'Lastname',
+        'TITLE': 'Title',
+        'PH_TITLE': 'Title',
+        'EMAIL': 'E-Mail',
+        'PHONE': 'Phone',
+        'IMS': 'Instant Messaging',
+        'LANGUAGE': 'Language',
+        'ADRESSES': 'Addresses',
+        'STREET': 'Street',
+        'PH_STREET': 'Street',
+        'ZIP': 'Zip',
+        'PH_ZIP': 'Zip',
+        'CITY': 'City',
+        'PH_CITY': 'City',
+        'REGION': 'Region',
+        'PH_REGION': 'Region',
+        'COUNTRY': 'Country',
+        'PH_COUNTRY': 'Country',
+        'GROUPS': 'Groups',
+        'PROFILE_PREVIEW': 'Profile preview',
+        'STATUS': 'Status',
+        'ACTIVE': 'Active',
+        'LOGIN_REQUIRED_ERROR': 'Login required'
       },
       'USER_VIEW_DIALOG': {
         'X_BUTTON': 'x',
@@ -1351,179 +1385,141 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
 
 angular.module("templates/user-form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/user-form.tpl.html",
-    "<div class=\"row\">\n" +
-    "    <div class=\"col-md-8\">\n" +
-    "        <form id=\"userForm\" name=\"userForm\" novalidate ng-submit=\"userForm.$valid && save()\">\n" +
-    "            <fieldset>\n" +
-    "                <div class=\"row\">\n" +
-    "                    <div class=\"form-group col-md-6\">\n" +
-    "                        <label for=\"inputUserId\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.USER_ID' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputUserId\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_USER_ID' | translate}}\" readonly=\"true\"\n" +
-    "                               ng-model=\"editUser.id\">\n" +
+    "<div>\n" +
+    "    <form id=\"userForm\" name=\"userForm\" novalidate ng-submit=\"userForm.$valid && save()\">\n" +
+    "        <fieldset>\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputUserId\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.USER_ID' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputUserId\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_USER_ID' | translate}}\" readonly=\"true\"\n" +
+    "                           ng-model=\"editUser.id\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputExtId\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.EXTERNAL_ID' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputExtId\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_EXTERNAL_ID' | translate}}\"\n" +
+    "                           ng-model=\"editUser.externalId\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputLogin\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.LOGIN' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputLogin\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_LOGIN' | translate}}\"\n" +
+    "                           ng-model=\"editUser.login\" required=\"true\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputDisplay\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.DISPLAY' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputDisplay\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_DISPLAY' | translate}}\"\n" +
+    "                           ng-model=\"editUser.fullname\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputFirstname\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.FIRSTNAME' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputFirstname\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_FIRSTNAME' | translate}}\"\n" +
+    "                           ng-model=\"editUser.firstname\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group col-md-6\">\n" +
+    "                    <label for=\"inputLastname\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.LASTNAME' | translate}}</label>\n" +
+    "                    <input class=\"form-control\" id=\"inputLastname\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_LASTNAME' | translate}}\"\n" +
+    "                           ng-model=\"editUser.lastname\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputTitle\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.TITLE' | translate}}</label>\n" +
+    "                <input class=\"form-control\" id=\"inputTitle\"\n" +
+    "                       placeholder=\"{{'CHELL_IAM.USER_FORM.PH_TITLE' | translate}}\"\n" +
+    "                       ng-model=\"editUser.title\">\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputEMail\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.EMAIL' | translate}}</label>\n" +
+    "                <multi-value id=\"inputEMail\" value-list=\"editUser.emails\" label-property=\"type\"\n" +
+    "                             value-property=\"value\" possible-types=\"Work,Home,Gravatar\"/>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputPhone\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.PHONE' | translate}}</label>\n" +
+    "                <multi-value id=\"inputPhone\" value-list=\"editUser.phones\" label-property=\"type\"\n" +
+    "                             value-property=\"value\" possible-types=\"Work,Home,Mobile\"/>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputIms\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.IMS' | translate}}</label>\n" +
+    "                <multi-value id=\"inputIms\" value-list=\"editUser.ims\" label-property=\"type\"\n" +
+    "                             value-property=\"value\" possible-types=\"Skype,Lync,Yahoo\"/>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputLanguage\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.LANGUAGE' | translate}}</label>\n" +
+    "                <select class=\"form-control\" id=\"inputLanguage\" ng-model=\"editUser.language\">\n" +
+    "                    <option value=\"en_US\">English</option>\n" +
+    "                    <!-- TODO: Get available languages dynamically -->\n" +
+    "                    <option value=\"de\">German</option>\n" +
+    "                </select>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputAddresses\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.ADRESSES' | translate}}</label>\n" +
+    "                <multi-value id=\"inputAddresses\" value-list=\"editUser.addresses\" label-property=\"type\" panel=\"true\"\n" +
+    "                             possible-types=\"Work,Home\">\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <label for=\"inputStreetAddress\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.STREET' | translate}}</label>\n" +
+    "                        <input class=\"form-control\" id=\"inputStreetAddress\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.USER_FORM.PH_STREET' | translate}}\"\n" +
+    "                               ng-model=\"$parent.value.streetAddress\">\n" +
     "                    </div>\n" +
-    "                    <div class=\"form-group col-md-6\" ng-show=\"!readOnly || editUser.externalId\">\n" +
-    "                        <label for=\"inputExtId\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.EXTERNAL_ID' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputExtId\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_EXTERNAL_ID' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                               ng-model=\"editUser.externalId\">\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"row\">\n" +
-    "                    <div class=\"form-group col-md-6\">\n" +
-    "                        <label for=\"inputLogin\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.LOGIN' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputLogin\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LOGIN' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                               ng-model=\"editUser.login\" required=\"true\">\n" +
-    "                    </div>\n" +
-    "                    <div class=\"form-group col-md-6\">\n" +
-    "                        <label for=\"inputDisplay\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.DISPLAY' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputDisplay\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_DISPLAY' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                               ng-model=\"editUser.fullname\">\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"row\">\n" +
-    "                    <div class=\"form-group col-md-6\" ng-show=\"!readOnly || editUser.firstname\">\n" +
-    "                        <label for=\"inputFirstname\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.FIRSTNAME' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputFirstname\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_FIRSTNAME' | translate}}\"\n" +
-    "                               ng-model=\"editUser.firstname\" ng-readonly=\"readOnly\">\n" +
-    "                    </div>\n" +
-    "                    <div class=\"form-group col-md-6\" ng-show=\"!readOnly || editUser.lastname\">\n" +
-    "                        <label for=\"inputLastname\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.LASTNAME' | translate}}</label>\n" +
-    "                        <input class=\"form-control\" id=\"inputLastname\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LASTNAME' | translate}}\"\n" +
-    "                               ng-model=\"editUser.lastname\" ng-readonly=\"readOnly\">\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly || editUser.title\">\n" +
-    "                    <label for=\"inputTitle\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.TITLE' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputTitle\"\n" +
-    "                           placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_TITLE' | translate}}\"\n" +
-    "                           ng-model=\"editUser.title\" ng-readonly=\"readOnly\">\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"editUser.emails != null || editUser.emails.length != 0 && !readOnly\">\n" +
-    "                    <label for=\"inputEMail\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.EMAIL' | translate}}</label>\n" +
-    "                    <multi-value id=\"inputEMail\" value-list=\"editUser.emails\" label-property=\"type\"\n" +
-    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Work,Home,Gravatar\"/>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"editUser.phones != null || editUser.phones.length != 0 && !readOnly\">\n" +
-    "                    <label for=\"inputPhone\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.PHONE' | translate}}</label>\n" +
-    "                    <multi-value id=\"inputPhone\" value-list=\"editUser.phones\" label-property=\"type\"\n" +
-    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Work,Home,Mobile\"/>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"editUser.ims != null || editUser.ims.length != 0 && !readOnly\">\n" +
-    "                    <label for=\"inputIms\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.IMS' | translate}}</label>\n" +
-    "                    <multi-value id=\"inputIms\" value-list=\"editUser.ims\" label-property=\"type\"\n" +
-    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Skype,Lync,Yahoo\"/>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly || editUser.language\">\n" +
-    "                    <label for=\"inputLanguage\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.LANGUAGE' | translate}}</label>\n" +
-    "                    <select class=\"form-control\" id=\"inputLanguage\" ng-model=\"editUser.language\" ng-disabled=\"readOnly\">\n" +
-    "                        <option value=\"en_US\">English</option>\n" +
-    "                        <!-- TODO: Get available languages dynamically -->\n" +
-    "                        <option value=\"de\">German</option>\n" +
-    "                    </select>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly || editUser.addresses\">\n" +
-    "                    <label for=\"inputAddresses\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.ADRESSES' | translate}}</label>\n" +
-    "                    <multi-value id=\"inputAddresses\" value-list=\"editUser.addresses\" label-property=\"type\" panel=\"true\"\n" +
-    "                                 read-only=\"readOnly\" possible-types=\"Work,Home\">\n" +
-    "                        <div class=\"form-group\" ng-show=\"!readOnly || value.streetAddress\">\n" +
-    "                            <label for=\"inputStreetAddress\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.STREET' | translate}}</label>\n" +
-    "                            <input class=\"form-control\" id=\"inputStreetAddress\"\n" +
-    "                                   placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_STREET' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                   ng-model=\"$parent.value.streetAddress\">\n" +
+    "                    <div class=\"row\">\n" +
+    "                        <div class=\"form-group col-md-6\">\n" +
+    "                            <label for=\"inputZip\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.ZIP' | translate}}</label>\n" +
+    "                            <input class=\"form-control\" id=\"inputZip\"\n" +
+    "                                   placeholder=\"{{'CHELL_IAM.USER_FORM.PH_ZIP' | translate}}\"\n" +
+    "                                   ng-model=\"$parent.value.postalCode\">\n" +
     "                        </div>\n" +
-    "                        <div class=\"row\">\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.postalCode\">\n" +
-    "                                <label for=\"inputZip\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.ZIP' | translate}}</label>\n" +
-    "                                <input class=\"form-control\" id=\"inputZip\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_ZIP' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"$parent.value.postalCode\">\n" +
-    "                            </div>\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.locality\">\n" +
-    "                                <label for=\"inputCity\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.CITY' | translate}}</label>\n" +
-    "                                <input class=\"form-control\" id=\"inputCity\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_CITY' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"$parent.value.locality\">\n" +
-    "                            </div>\n" +
+    "                        <div class=\"form-group col-md-6\">\n" +
+    "                            <label for=\"inputCity\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.CITY' | translate}}</label>\n" +
+    "                            <input class=\"form-control\" id=\"inputCity\"\n" +
+    "                                   placeholder=\"{{'CHELL_IAM.USER_FORM.PH_CITY' | translate}}\"\n" +
+    "                                   ng-model=\"$parent.value.locality\">\n" +
     "                        </div>\n" +
-    "                        <div class=\"row\">\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.region\">\n" +
-    "                                <label for=\"inputRegion\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.REGION' | translate}}</label>\n" +
-    "                                <input class=\"form-control\" id=\"inputRegion\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_REGION' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"$parent.value.region\">\n" +
-    "                            </div>\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.country\">\n" +
-    "                                <label for=\"inputCountry\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.COUNTRY' | translate}}</label>\n" +
-    "                                <input class=\"form-control\" id=\"inputCountry\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_COUNTRY' | translate}}\" ng-readonly=\"readOnly\"\n" +
-    "                                       ng-model=\"$parent.value.country\">\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "                    </multi-value>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly\">\n" +
-    "                    <label for=\"inputActive\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.STATUS' | translate}}</label>\n" +
-    "\n" +
-    "                    <div class=\"checkbox\">\n" +
-    "                        <label>\n" +
-    "                            <input id=\"inputActive\" type=\"checkbox\"\n" +
-    "                                   ng-model=\"editUser.active\" ng-readonly=\"readOnly\"> {{'CHELL_IAM.USER_PROFILE.ACTIVE' |\n" +
-    "                            translate}}\n" +
-    "                        </label>\n" +
     "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly\">\n" +
-    "                    <label for=\"inputGroups\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.GROUPS' | translate}}</label>\n" +
-    "                    <multi-select id=\"inputGroups\" input-model=\"possibleGroups\" button-label=\"icon name\"\n" +
-    "                                  item-label=\"icon name\" tick-property=\"ticked\"\n" +
-    "                                  group-property=\"isGroup\"/>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"readOnly\">\n" +
-    "                    <i class=\"glyphicon glyphicon-lock\"></i> <label for=\"inputGroups\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.GROUPS'\n" +
-    "                    | translate}}</label>\n" +
-    "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\" ng-disabled=\"readOnly\">\n" +
-    "                        <option ng-repeat=\"group in editUser.groups\">{{group.display}}</option>\n" +
-    "                    </select>\n" +
-    "                </div>\n" +
-    "            </fieldset>\n" +
-    "            <button type=\"submit\" class=\"btn btn-primary\" ng-disabled=\"userForm.$invalid\">{{'CHELL_IAM.GROUP_FORM.SAVE_BUTTON' | translate}}</button>\n" +
-    "            <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.GROUP_FORM.CANCEL_BUTTON' | translate}}</button>\n" +
-    "        </form>\n" +
-    "    </div>\n" +
-    "    <div class=\"col-md-4\">\n" +
-    "        <div style=\"max-width: 220px; margin: 15px 5px\">\n" +
-    "            <label>{{'CHELL_IAM.USER_PROFILE.PROFILE_PREVIEW' | translate}}</label>\n" +
-    "            <img height=\"220\" width=\"220\"\n" +
-    "                 ng-src=\"{{editUser.gravatarMail ? ('http://www.gravatar.com/avatar/'+(editUser.gravatarMail | md5)+'?s=220') : editUser.photo}}\">\n" +
+    "                    <div class=\"row\">\n" +
+    "                        <div class=\"form-group col-md-6\">\n" +
+    "                            <label for=\"inputRegion\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.REGION' | translate}}</label>\n" +
+    "                            <input class=\"form-control\" id=\"inputRegion\"\n" +
+    "                                   placeholder=\"{{'CHELL_IAM.USER_FORM.PH_REGION' | translate}}\"\n" +
+    "                                   ng-model=\"$parent.value.region\">\n" +
+    "                        </div>\n" +
+    "                        <div class=\"form-group col-md-6\">\n" +
+    "                            <label for=\"inputCountry\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.COUNTRY' | translate}}</label>\n" +
+    "                            <input class=\"form-control\" id=\"inputCountry\"\n" +
+    "                                   placeholder=\"{{'CHELL_IAM.USER_FORM.PH_COUNTRY' | translate}}\"\n" +
+    "                                   ng-model=\"$parent.value.country\">\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </multi-value>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputActive\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.STATUS' | translate}}</label>\n" +
     "\n" +
-    "            <h1>\n" +
-    "                <span style=\"color: #428bca; font-size: 26px; line-height: 30px;\">{{editUser.fullname}}</span>\n" +
-    "                <span style=\"display: block; overflow: hidden; width: 100%; font-size: 20px; font-style: normal; font-weight: 300;\n" +
-    "                        line-height: 24px; color: #666; text-overflow: ellipsis;\">{{editUser.login}}</span>\n" +
-    "            </h1>\n" +
-    "            <ul style=\"list-style: none; padding-left: 0px; padding-top: 15px; padding-bottom: 15px; border-top: 1px solid #428bca; border-bottom: 1px solid #428bca\">\n" +
-    "\n" +
-    "                <li style=\"color: #428bca; font-size: 11px\" ng-repeat=\"email in editUser.emails\"><i\n" +
-    "                        style=\"padding-right: 10px\" class=\"glyphicon glyphicon-envelope\"></i> {{email.value}}\n" +
-    "                </li>\n" +
-    "                <li style=\"color: #428bca; font-size: 11px\"><i style=\"padding-right: 10px\"\n" +
-    "                                                               class=\"glyphicon glyphicon-time\"></i> {{editUser.creationDate\n" +
-    "                    | date:'dd.MM.yyyy'}}\n" +
-    "                </li>\n" +
-    "                <li style=\"color: #428bca; font-size: 11px\"><i style=\"padding-right: 10px\"\n" +
-    "                                                               class=\"glyphicon glyphicon-flag\"></i> {{editUser.status}}\n" +
-    "                </li>\n" +
-    "                <li style=\"color: #428bca; font-size: 11px\" ng-repeat=\"group in editUser.groups\"><i\n" +
-    "                        style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i> {{group.display}}\n" +
-    "                </li>\n" +
-    "            </ul>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
+    "                <div class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input id=\"inputActive\" type=\"checkbox\"\n" +
+    "                               ng-model=\"editUser.active\"> {{'CHELL_IAM.USER_FORM.ACTIVE' |\n" +
+    "                        translate}}\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"inputGroups\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.GROUPS' | translate}}</label>\n" +
+    "                <multi-select id=\"inputGroups\" input-model=\"possibleGroups\" button-label=\"icon name\"\n" +
+    "                              item-label=\"icon name\" tick-property=\"ticked\"\n" +
+    "                              group-property=\"isGroup\"/>\n" +
+    "            </div>\n" +
+    "        </fieldset>\n" +
+    "        <button type=\"submit\" class=\"btn btn-primary\" ng-disabled=\"userForm.$invalid\">{{'CHELL_IAM.GROUP_FORM.SAVE_BUTTON' | translate}}</button>\n" +
+    "        <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.GROUP_FORM.CANCEL_BUTTON' | translate}}</button>\n" +
+    "    </form>\n" +
     "</div>");
 }]);
 
@@ -1611,10 +1607,10 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_USER_ID' | translate}}\" readonly=\"true\"\n" +
     "                               ng-model=\"user.id\">\n" +
     "                    </div>\n" +
-    "                    <div class=\"form-group col-md-6\" ng-show=\"!readOnly || user.externalId\">\n" +
+    "                    <div class=\"form-group col-md-6\" ng-show=\"user.externalId\">\n" +
     "                        <label for=\"inputExtId\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.EXTERNAL_ID' | translate}}</label>\n" +
     "                        <input class=\"form-control\" id=\"inputExtId\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_EXTERNAL_ID' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_EXTERNAL_ID' | translate}}\" ng-readonly=\"true\"\n" +
     "                               ng-model=\"user.externalId\">\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -1622,125 +1618,107 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                    <div class=\"form-group col-md-6\">\n" +
     "                        <label for=\"inputLogin\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.LOGIN' | translate}}</label>\n" +
     "                        <input class=\"form-control\" id=\"inputLogin\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LOGIN' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LOGIN' | translate}}\" ng-readonly=\"true\"\n" +
     "                               ng-model=\"user.login\" required=\"true\">\n" +
     "                    </div>\n" +
     "                    <div class=\"form-group col-md-6\">\n" +
     "                        <label for=\"inputDisplay\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.DISPLAY' | translate}}</label>\n" +
     "                        <input class=\"form-control\" id=\"inputDisplay\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_DISPLAY' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_DISPLAY' | translate}}\" ng-readonly=\"true\"\n" +
     "                               ng-model=\"user.fullname\">\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "                <div class=\"row\">\n" +
-    "                    <div class=\"form-group col-md-6\" ng-show=\"!readOnly || user.firstname\">\n" +
+    "                    <div class=\"form-group col-md-6\" ng-show=\"user.firstname\">\n" +
     "                        <label for=\"inputFirstname\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.FIRSTNAME' | translate}}</label>\n" +
     "                        <input class=\"form-control\" id=\"inputFirstname\"\n" +
     "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_FIRSTNAME' | translate}}\" required=\"true\"\n" +
-    "                               ng-model=\"user.firstname\" ng-readonly=\"readOnly\">\n" +
+    "                               ng-model=\"user.firstname\" ng-readonly=\"true\">\n" +
     "                    </div>\n" +
-    "                    <div class=\"form-group col-md-6\" ng-show=\"!readOnly || user.lastname\">\n" +
+    "                    <div class=\"form-group col-md-6\" ng-show=\"user.lastname\">\n" +
     "                        <label for=\"inputLastname\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.LASTNAME' | translate}}</label>\n" +
     "                        <input class=\"form-control\" id=\"inputLastname\"\n" +
     "                               placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_LASTNAME' | translate}}\" required=\"true\"\n" +
-    "                               ng-model=\"user.lastname\" ng-readonly=\"readOnly\">\n" +
+    "                               ng-model=\"user.lastname\" ng-readonly=\"true\">\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly || user.title\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.title\">\n" +
     "                    <label for=\"inputTitle\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.TITLE' | translate}}</label>\n" +
     "                    <input class=\"form-control\" id=\"inputTitle\"\n" +
     "                           placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_TITLE' | translate}}\" required=\"true\"\n" +
-    "                           ng-model=\"user.title\" ng-readonly=\"readOnly\">\n" +
+    "                           ng-model=\"user.title\" ng-readonly=\"true\">\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"user.emails != null || user.emails.length != 0 && !readOnly\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.emails != null || user.emails.length != 0\">\n" +
     "                    <label for=\"inputEMail\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.EMAIL' | translate}}</label>\n" +
     "                    <multi-value id=\"inputEMail\" value-list=\"user.emails\" label-property=\"type\"\n" +
-    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Work,Home,Gravatar\"/>\n" +
+    "                                 value-property=\"value\" read-only=\"true\" possible-types=\"Work,Home,Gravatar\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"user.phones != null || user.phones.length != 0 && !readOnly\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.phones != null || user.phones.length != 0\">\n" +
     "                    <label for=\"inputPhone\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.PHONE' | translate}}</label>\n" +
     "                    <multi-value id=\"inputPhone\" value-list=\"user.phones\" label-property=\"type\"\n" +
-    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Work,Home,Mobile\"/>\n" +
+    "                                 value-property=\"value\" read-only=\"true\" possible-types=\"Work,Home,Mobile\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"user.ims != null || user.ims.length != 0 && !readOnly\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.ims != null || user.ims.length != 0\">\n" +
     "                    <label for=\"inputIms\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.IMS' | translate}}</label>\n" +
     "                    <multi-value id=\"inputIms\" value-list=\"user.ims\" label-property=\"type\"\n" +
-    "                                 value-property=\"value\" read-only=\"readOnly\" possible-types=\"Skype,Lync,Yahoo\"/>\n" +
+    "                                 value-property=\"value\" read-only=\"true\" possible-types=\"Skype,Lync,Yahoo\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly || user.language\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.language\">\n" +
     "                    <label for=\"inputLanguage\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.LANGUAGE' | translate}}</label>\n" +
-    "                    <select class=\"form-control\" id=\"inputLanguage\" ng-model=\"user.language\" ng-disabled=\"readOnly\">\n" +
+    "                    <select class=\"form-control\" id=\"inputLanguage\" ng-model=\"user.language\" ng-disabled=\"true\">\n" +
     "                        <option value=\"en_US\">English</option>\n" +
     "                        <!-- TODO: Get available languages dynamically -->\n" +
     "                        <option value=\"de\">German</option>\n" +
     "                    </select>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly || user.addresses\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.addresses\">\n" +
     "                    <label for=\"inputAddresses\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.ADRESSES' | translate}}</label>\n" +
     "                    <multi-value id=\"inputAddresses\" value-list=\"user.addresses\" label-property=\"type\" panel=\"true\"\n" +
-    "                                 read-only=\"readOnly\" possible-types=\"Work,Home\">\n" +
-    "                        <div class=\"form-group\" ng-show=\"!readOnly || value.streetAddress\">\n" +
+    "                                 read-only=\"true\" possible-types=\"Work,Home\">\n" +
+    "                        <div class=\"form-group\" ng-show=\"value.streetAddress\">\n" +
     "                            <label for=\"inputStreetAddress\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.STREET' | translate}}</label>\n" +
     "                            <input class=\"form-control\" id=\"inputStreetAddress\"\n" +
-    "                                   placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_STREET' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                   placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_STREET' | translate}}\" ng-readonly=\"true\"\n" +
     "                                   ng-model=\"$parent.value.streetAddress\">\n" +
     "                        </div>\n" +
     "                        <div class=\"row\">\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.postalCode\">\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"value.postalCode\">\n" +
     "                                <label for=\"inputZip\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.ZIP' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputZip\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_ZIP' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_ZIP' | translate}}\" ng-readonly=\"true\"\n" +
     "                                       ng-model=\"$parent.value.postalCode\">\n" +
     "                            </div>\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.locality\">\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"value.locality\">\n" +
     "                                <label for=\"inputCity\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.CITY' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputCity\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_CITY' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_CITY' | translate}}\" ng-readonly=\"true\"\n" +
     "                                       ng-model=\"$parent.value.locality\">\n" +
     "                            </div>\n" +
     "                        </div>\n" +
     "                        <div class=\"row\">\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.region\">\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"value.region\">\n" +
     "                                <label for=\"inputRegion\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.REGION' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputRegion\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_REGION' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_REGION' | translate}}\" ng-readonly=\"true\"\n" +
     "                                       ng-model=\"$parent.value.region\">\n" +
     "                            </div>\n" +
-    "                            <div class=\"form-group col-md-6\" ng-show=\"!readOnly || value.country\">\n" +
+    "                            <div class=\"form-group col-md-6\" ng-show=\"value.country\">\n" +
     "                                <label for=\"inputCountry\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.COUNTRY' | translate}}</label>\n" +
     "                                <input class=\"form-control\" id=\"inputCountry\"\n" +
-    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_COUNTRY' | translate}}\" ng-readonly=\"readOnly\"\n" +
+    "                                       placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_COUNTRY' | translate}}\" ng-readonly=\"true\"\n" +
     "                                       ng-model=\"$parent.value.country\">\n" +
     "                            </div>\n" +
     "                        </div>\n" +
     "                    </multi-value>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly\">\n" +
-    "                    <label for=\"inputActive\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.STATUS' | translate}}</label>\n" +
-    "\n" +
-    "                    <div class=\"checkbox\">\n" +
-    "                        <label>\n" +
-    "                            <input id=\"inputActive\" type=\"checkbox\" required=\"true\"\n" +
-    "                                   ng-model=\"user.active\" ng-readonly=\"readOnly\"> {{'CHELL_IAM.USER_PROFILE.ACTIVE' |\n" +
-    "                            translate}}\n" +
-    "                        </label>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"!readOnly\">\n" +
-    "                    <label for=\"inputGroups\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.GROUPS' | translate}}</label>\n" +
-    "                    <multi-select id=\"inputGroups\" input-model=\"possibleGroups\" button-label=\"icon name\"\n" +
-    "                                  item-label=\"icon name\" tick-property=\"ticked\"\n" +
-    "                                  group-property=\"isGroup\"/>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"readOnly\">\n" +
+    "                <div class=\"form-group\">\n" +
     "                    <i class=\"glyphicon glyphicon-lock\"></i> <label for=\"inputGroups\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.GROUPS'\n" +
     "                    | translate}}</label>\n" +
-    "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\" ng-disabled=\"readOnly\">\n" +
+    "                    <select id=\"inputGroups\" size=\"5\" class=\"form-control\" ng-disabled=\"true\">\n" +
     "                        <option ng-repeat=\"group in user.groups\">{{group.display}}</option>\n" +
     "                    </select>\n" +
     "                </div>\n" +
     "            </fieldset>\n" +
-    "            <div ng-transclude></div>\n" +
     "        </form>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-4\">\n" +
