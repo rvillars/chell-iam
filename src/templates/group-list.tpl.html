@@ -16,10 +16,10 @@
                     <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}" ng-click="view(group)">
                         <i class="glyphicon glyphicon-zoom-in icon-white"></i>
                     </a>
-                    <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(group)">
+                    <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(group)" ng-hide="readOnly()">
                         <i class="glyphicon glyphicon-edit icon-white"></i>
                     </a>
-                    <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(group)">
+                    <a class="btn btn-default" rel="tooltip" title="{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(group)" ng-hide="readOnly()">
                         <i class="glyphicon glyphicon-trash icon-white"></i>
                     </a>
                 </div>
@@ -30,7 +30,7 @@
     <script type="text/ng-template" id="custom/pager/group">
         <div class="row">
             <div class="col-md-4">
-                <button class="btn btn-default" ng-show="$parent.$parent.showCreateButton" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'
+                <button class="btn btn-default" ng-show="$parent.$parent.showCreateButton && !$parent.$parent.readOnly()" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-lock"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'
                     | translate}}
                 </button>
             </div>

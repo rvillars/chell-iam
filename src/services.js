@@ -15,7 +15,9 @@ chellIam.factory('CurrentUserService', function () {
             if (this.currentUser == null) {
                 return false;
             }
-            return this.currentUser.primaryGroup.id == groupId;
+            return this.currentUser.groups.some(function(group) {
+                return group.value == groupId;
+            });
         }
     };
 });

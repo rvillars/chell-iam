@@ -10,7 +10,8 @@ chellIam.directive('chellUserList', function () {
             createButtonHook: '&?',
             editButtonHook: '&?',
             viewButtonHook: '&?',
-            deleteButtonHook: '&?'
+            deleteButtonHook: '&?',
+            readOnly: '&?'
         },
         controller: 'UserListController',
         templateUrl: 'templates/user-list.tpl.html'
@@ -37,7 +38,8 @@ chellIam.directive('chellGroupList', function () {
             createButtonHook: '&?',
             editButtonHook: '&?',
             viewButtonHook: '&?',
-            deleteButtonHook: '&?'
+            deleteButtonHook: '&?',
+            readOnly: '&?'
         },
         controller: 'GroupListController',
         templateUrl: 'templates/group-list.tpl.html'

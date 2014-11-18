@@ -19,10 +19,10 @@
                     <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.VIEW_BUTTON' | translate}}">
                         <i class="glyphicon glyphicon-zoom-in icon-white" ng-click="view(user)"></i>
                     </button>
-                    <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(user)">
+                    <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.EDIT_BUTTON' | translate}}" ng-click="edit(user)" ng-hide="readOnly()">
                         <i class="glyphicon glyphicon-edit icon-white"></i>
                     </button>
-                    <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(user)">
+                    <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(user)" ng-hide="readOnly()">
                         <i class="glyphicon glyphicon-trash icon-white"></i>
                     </button>
                 </div>
@@ -33,7 +33,7 @@
     <script type="text/ng-template" id="chell-iam/user-list/pager">
         <div class="row">
             <div class="col-md-4">
-                <button class="btn btn-default" ng-show="$parent.$parent.showCreateButton" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-user"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>
+                <button class="btn btn-default" ng-show="$parent.$parent.showCreateButton && !$parent.$parent.readOnly()" ng-click="$parent.$parent.create()"><i style="padding-right: 10px" class="glyphicon glyphicon-user"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>
             </div>
             <div class="col-md-4">
                 <div class="btn-group center-block">
