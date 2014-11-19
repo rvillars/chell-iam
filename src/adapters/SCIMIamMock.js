@@ -163,7 +163,12 @@ chellIam.run(
         ];
         var authenticated = function (headers) {
             if (headers.Authorization == null) return false;
-            var userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
+            var userName;
+            try {
+                userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
+            } catch (err) {
+                return false;
+            }
             var currentUser = _.findWhere(mockUsers, {userName: userName});
             var validUserCredentials = 'Basic ' + $base64.encode(currentUser.userName + ':' + currentUser.password);
             return headers.Authorization == validUserCredentials;

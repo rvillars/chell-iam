@@ -131,7 +131,25 @@ chellIam.controller('UserFormController', function ($scope, $rootScope, $filter,
 
         var isNew = $scope.editUser.id == null;
         if (isNew) {
-            IamUser.create($scope.editUser);
+            IamUser.create($scope.editUser).then(function(createdUser) {
+                $scope.modalInstance = $modal.open({
+                    templateUrl: 'templates/change-password-dialog.tpl.html',
+                    backdrop: false,
+                    controller: 'ChangePasswordModalController',
+                    resolve: {
+                        user: function () {
+                            return createdUser;
+                        },
+                        requestOldPassword: function () {
+                            return false;
+                        }
+                    }
+                });
+
+                $scope.modalInstance.result.then(function (newBase64Credential) {
+                    IamUser.changePassword(createdUser, newBase64Credential);
+                });
+            });
         } else {
             IamUser.update($scope.editUser);
         }
