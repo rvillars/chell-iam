@@ -25,6 +25,9 @@
                     <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.DELETE_BUTTON' | translate}}" ng-click="remove(user)" ng-hide="readOnly()">
                         <i class="glyphicon glyphicon-trash icon-white"></i>
                     </button>
+                    <button class="btn btn-default" title="{{'CHELL_IAM.USER_LIST.PASSWORD_CHANGE_BUTTON' | translate}}" ng-click="changePassword(user)" ng-hide="readOnly()">
+                        <i class="glyphicon glyphicon-asterisk icon-white"></i>
+                    </button>
                 </div>
             </td>
         </tr>

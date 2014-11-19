@@ -94,6 +94,7 @@
             "VIEW_BUTTON": "View",
             "EDIT_BUTTON": "Edit",
             "DELETE_BUTTON": "Delete",
+            "PASSWORD_CHANGE_BUTTON": "Change Password",
             "CREATE_USER_BUTTON": "New User",
             "FILTER_ACTIVE": "Activated",
             "FILTER_INACTIVE": "Inactive",

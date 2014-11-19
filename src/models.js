@@ -21,6 +21,9 @@ chellIam.factory('IamUser', function(IamAdapter) {
         },
         remove: function(user) {
             return IamAdapter.removeUser(user);
+        },
+        changePassword: function(user, newBase64Credential) {
+            return IamAdapter.changePassword(user, newBase64Credential);
         }
     };
 });

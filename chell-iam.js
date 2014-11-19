@@ -103,6 +103,7 @@ angular.module('translations').config(function ($translateProvider) {
         'VIEW_BUTTON': 'View',
         'EDIT_BUTTON': 'Edit',
         'DELETE_BUTTON': 'Delete',
+        'PASSWORD_CHANGE_BUTTON': 'Change Password',
         'CREATE_USER_BUTTON': 'New User',
         'FILTER_ACTIVE': 'Activated',
         'FILTER_INACTIVE': 'Inactive',
@@ -309,7 +310,9 @@ chellIam.factory('CurrentUserService', function () {
       if (this.currentUser == null) {
         return false;
       }
-      return this.currentUser.primaryGroup.id == groupId;
+      return this.currentUser.groups.some(function (group) {
+        return group.value == groupId;
+      });
     }
   };
 });
@@ -349,6 +352,9 @@ chellIam.factory('IamUser', [
       },
       remove: function (user) {
         return IamAdapter.removeUser(user);
+      },
+      changePassword: function (user, newBase64Credential) {
+        return IamAdapter.changePassword(user, newBase64Credential);
       }
     };
   }
@@ -384,7 +390,8 @@ chellIam.directive('chellUserList', function () {
       createButtonHook: '&?',
       editButtonHook: '&?',
       viewButtonHook: '&?',
-      deleteButtonHook: '&?'
+      deleteButtonHook: '&?',
+      readOnly: '&?'
     },
     controller: 'UserListController',
     templateUrl: 'templates/user-list.tpl.html'
@@ -409,7 +416,8 @@ chellIam.directive('chellGroupList', function () {
       createButtonHook: '&?',
       editButtonHook: '&?',
       viewButtonHook: '&?',
-      deleteButtonHook: '&?'
+      deleteButtonHook: '&?',
+      readOnly: '&?'
     },
     controller: 'GroupListController',
     templateUrl: 'templates/group-list.tpl.html'
@@ -696,6 +704,24 @@ chellIam.controller('UserListController', [
       });
       $scope.deleteButtonHook();
     };
+    $scope.changePassword = function (user) {
+      $scope.modalInstance = $modal.open({
+        templateUrl: 'templates/change-password-dialog.tpl.html',
+        backdrop: false,
+        controller: 'ChangePasswordModalController',
+        resolve: {
+          user: function () {
+            return user;
+          },
+          requestOldPassword: function () {
+            return false;
+          }
+        }
+      });
+      $scope.modalInstance.result.then(function (newBase64Credential) {
+        IamUser.changePassword(user, newBase64Credential);
+      });
+    };
   }
 ]);
 chellIam.controller('UserFormController', [
@@ -705,8 +731,7 @@ chellIam.controller('UserFormController', [
   '$modal',
   'IamUser',
   'IamGroup',
-  'ngTableParams',
-  function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup, ngTableParams) {
+  function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup) {
     $scope.editUser = {};
     IamGroup.query().then(function (possibleGroups) {
       $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, possibleGroups);
@@ -983,21 +1008,28 @@ chellIam.controller('ChangePasswordModalController', [
   '$scope',
   '$modalInstance',
   'user',
+  'requestOldPassword',
   '$base64',
   '$window',
-  function ($scope, $modalInstance, user, $base64, $window) {
+  function ($scope, $modalInstance, user, requestOldPassword, $base64, $window) {
     $scope.user = user;
+    $scope.requestOldPassword = requestOldPassword;
     $scope.wrongCredentials = false;
     $scope.notMatching = false;
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
     $scope.changePassword = function () {
-      var base64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.oldPassword);
-      $scope.wrongCredentials = $window.sessionStorage.token != base64Credential;
+      if ($scope.requestOldPassword) {
+        var base64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.oldPassword);
+        $scope.wrongCredentials = $window.sessionStorage.token != base64Credential;
+      } else {
+        $scope.wrongCredentials = false;
+      }
       $scope.notMatching = $scope.newPassword != $scope.repeatPassword;
       if (!$scope.wrongCredentials && !$scope.notMatching) {
-        $modalInstance.close($scope.newPassword);
+        var newBase64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.newPassword);
+        $modalInstance.close(newBase64Credential);
       }
     };
   }
@@ -1064,11 +1096,16 @@ chellIam.controller('CurrentUserController', [
         resolve: {
           user: function () {
             return $scope.currentUser;
+          },
+          requestOldPassword: function () {
+            return true;
           }
         }
       });
-      $scope.modalInstance.result.then(function (newPassword) {
-        console.log(newPassword);
+      $scope.modalInstance.result.then(function (newBase64Credential) {
+        IamUser.changePassword($scope.currentUser, newBase64Credential).then(function () {
+          $window.sessionStorage.token = newBase64Credential;
+        });
       });
     };
   }
@@ -1083,42 +1120,44 @@ angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateC
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <form role=\"form\">\n" +
-    "        <div class=\"alert alert-danger\" ng-show=\"wrongCredentials\">\n" +
-    "            <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.INCORRECT_OLD_PW' | translate}}\n" +
-    "        </div>\n" +
-    "        <div class=\"alert alert-danger\" ng-show=\"notMatching\">\n" +
-    "            <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORDS_NOT_MATCHING' | translate}}\n" +
-    "        </div>\n" +
-    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\">\n" +
-    "            <div class=\"col-sm-12\">\n" +
-    "                <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
-    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
-    "                    <input type=\"password\" class=\"form-control\" id=\"inputOldPassoword\"\n" +
-    "                           placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_OLD_PASSWORD' | translate}}\"\n" +
-    "                           required ng-model=\"$parent.oldPassword\" autofocus/>\n" +
+    "        <fieldset>\n" +
+    "            <div class=\"alert alert-danger\" ng-show=\"wrongCredentials\">\n" +
+    "                <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.INCORRECT_OLD_PW' | translate}}\n" +
+    "            </div>\n" +
+    "            <div class=\"alert alert-danger\" ng-show=\"notMatching\">\n" +
+    "                <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORDS_NOT_MATCHING' | translate}}\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\" ng-show=\"requestOldPassword\">\n" +
+    "                <div class=\"col-sm-12\">\n" +
+    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
+    "                        <input type=\"password\" class=\"form-control\" id=\"inputOldPassoword\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_OLD_PASSWORD' | translate}}\"\n" +
+    "                               required ng-model=\"$parent.oldPassword\" autofocus/>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
-    "            <div class=\"col-sm-12\">\n" +
-    "                <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
-    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-asterisk\"></i></span>\n" +
-    "                    <input type=\"password\" class=\"form-control\" id=\"inputNewPassword\"\n" +
-    "                           placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_NEW_PASSWORD' | translate}}\" required\n" +
-    "                           ng-model=\"$parent.newPassword\">\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
+    "                <div class=\"col-sm-12\">\n" +
+    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-asterisk\"></i></span>\n" +
+    "                        <input type=\"password\" class=\"form-control\" id=\"inputNewPassword\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_NEW_PASSWORD' | translate}}\" required\n" +
+    "                               ng-model=\"$parent.newPassword\">\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
-    "            <div class=\"col-sm-12\">\n" +
-    "                <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
-    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-repeat\"></i></span>\n" +
-    "                    <input type=\"password\" class=\"form-control\" id=\"inputRepeatPassword\"\n" +
-    "                           placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_REPEAT_PASSWORD' | translate}}\" required\n" +
-    "                           ng-model=\"$parent.repeatPassword\">\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
+    "                <div class=\"col-sm-12\">\n" +
+    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-repeat\"></i></span>\n" +
+    "                        <input type=\"password\" class=\"form-control\" id=\"inputRepeatPassword\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_REPEAT_PASSWORD' | translate}}\" required\n" +
+    "                               ng-model=\"$parent.repeatPassword\">\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "        </div>\n" +
+    "        </fieldset>\n" +
     "    </form>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
@@ -1184,10 +1223,10 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.VIEW_BUTTON' | translate}}\" ng-click=\"view(group)\">\n" +
     "                        <i class=\"glyphicon glyphicon-zoom-in icon-white\"></i>\n" +
     "                    </a>\n" +
-    "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}\" ng-click=\"edit(group)\">\n" +
+    "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.EDIT_BUTTON' | translate}}\" ng-click=\"edit(group)\" ng-hide=\"readOnly()\">\n" +
     "                        <i class=\"glyphicon glyphicon-edit icon-white\"></i>\n" +
     "                    </a>\n" +
-    "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}\" ng-click=\"remove(group)\">\n" +
+    "                    <a class=\"btn btn-default\" rel=\"tooltip\" title=\"{{'CHELL_IAM.GROUP_LIST.DELETE_BUTTON' | translate}}\" ng-click=\"remove(group)\" ng-hide=\"readOnly()\">\n" +
     "                        <i class=\"glyphicon glyphicon-trash icon-white\"></i>\n" +
     "                    </a>\n" +
     "                </div>\n" +
@@ -1198,7 +1237,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "    <script type=\"text/ng-template\" id=\"custom/pager/group\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-4\">\n" +
-    "                <button class=\"btn btn-default\" ng-show=\"$parent.$parent.showCreateButton\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
+    "                <button class=\"btn btn-default\" ng-show=\"$parent.$parent.showCreateButton && !$parent.$parent.readOnly()\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
     "                    | translate}}\n" +
     "                </button>\n" +
     "            </div>\n" +
@@ -1546,11 +1585,14 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "                    <button class=\"btn btn-default\" title=\"{{'CHELL_IAM.USER_LIST.VIEW_BUTTON' | translate}}\">\n" +
     "                        <i class=\"glyphicon glyphicon-zoom-in icon-white\" ng-click=\"view(user)\"></i>\n" +
     "                    </button>\n" +
-    "                    <button class=\"btn btn-default\" title=\"{{'CHELL_IAM.USER_LIST.EDIT_BUTTON' | translate}}\" ng-click=\"edit(user)\">\n" +
+    "                    <button class=\"btn btn-default\" title=\"{{'CHELL_IAM.USER_LIST.EDIT_BUTTON' | translate}}\" ng-click=\"edit(user)\" ng-hide=\"readOnly()\">\n" +
     "                        <i class=\"glyphicon glyphicon-edit icon-white\"></i>\n" +
     "                    </button>\n" +
-    "                    <button class=\"btn btn-default\" title=\"{{'CHELL_IAM.USER_LIST.DELETE_BUTTON' | translate}}\" ng-click=\"remove(user)\">\n" +
+    "                    <button class=\"btn btn-default\" title=\"{{'CHELL_IAM.USER_LIST.DELETE_BUTTON' | translate}}\" ng-click=\"remove(user)\" ng-hide=\"readOnly()\">\n" +
     "                        <i class=\"glyphicon glyphicon-trash icon-white\"></i>\n" +
+    "                    </button>\n" +
+    "                    <button class=\"btn btn-default\" title=\"{{'CHELL_IAM.USER_LIST.PASSWORD_CHANGE_BUTTON' | translate}}\" ng-click=\"changePassword(user)\" ng-hide=\"readOnly()\">\n" +
+    "                        <i class=\"glyphicon glyphicon-asterisk icon-white\"></i>\n" +
     "                    </button>\n" +
     "                </div>\n" +
     "            </td>\n" +
@@ -1560,7 +1602,7 @@ angular.module("templates/user-list.tpl.html", []).run(["$templateCache", functi
     "    <script type=\"text/ng-template\" id=\"chell-iam/user-list/pager\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-4\">\n" +
-    "                <button class=\"btn btn-default\" ng-show=\"$parent.$parent.showCreateButton\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-user\"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>\n" +
+    "                <button class=\"btn btn-default\" ng-show=\"$parent.$parent.showCreateButton && !$parent.$parent.readOnly()\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-user\"></i>{{'CHELL_IAM.USER_LIST.CREATE_USER_BUTTON' | translate}}</button>\n" +
     "            </div>\n" +
     "            <div class=\"col-md-4\">\n" +
     "                <div class=\"btn-group center-block\">\n" +

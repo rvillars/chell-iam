@@ -70,9 +70,29 @@ chellIam.controller('UserListController', function ($scope, $rootScope, $filter,
         });
         $scope.deleteButtonHook();
     };
+
+    $scope.changePassword = function (user) {
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'templates/change-password-dialog.tpl.html',
+            backdrop: false,
+            controller: 'ChangePasswordModalController',
+            resolve: {
+                user: function () {
+                    return user;
+                },
+                requestOldPassword: function () {
+                    return false;
+                }
+            }
+        });
+
+        $scope.modalInstance.result.then(function (newBase64Credential) {
+            IamUser.changePassword(user, newBase64Credential);
+        });
+    };
 });
 
-chellIam.controller('UserFormController', function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup, ngTableParams) {
+chellIam.controller('UserFormController', function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup) {
 
     $scope.editUser = {};
 
@@ -346,9 +366,10 @@ chellIam.controller('UserViewModalController', function ($scope, $modalInstance,
     };
 });
 
-chellIam.controller('ChangePasswordModalController', function ($scope, $modalInstance, user, $base64, $window) {
+chellIam.controller('ChangePasswordModalController', function ($scope, $modalInstance, user, requestOldPassword, $base64, $window) {
 
     $scope.user = user;
+    $scope.requestOldPassword = requestOldPassword;
     $scope.wrongCredentials = false;
     $scope.notMatching = false;
 
@@ -357,12 +378,17 @@ chellIam.controller('ChangePasswordModalController', function ($scope, $modalIns
     };
 
     $scope.changePassword = function () {
-        var base64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.oldPassword);
-        $scope.wrongCredentials = $window.sessionStorage.token != base64Credential;
+        if ($scope.requestOldPassword) {
+            var base64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.oldPassword);
+            $scope.wrongCredentials = $window.sessionStorage.token != base64Credential;
+        } else {
+            $scope.wrongCredentials = false;
+        }
         $scope.notMatching = $scope.newPassword != $scope.repeatPassword;
 
         if (!$scope.wrongCredentials && !$scope.notMatching) {
-            $modalInstance.close($scope.newPassword);
+            var newBase64Credential = 'Basic ' + $base64.encode(user.login + ':' + $scope.newPassword);
+            $modalInstance.close(newBase64Credential);
         }
     };
 });
@@ -426,12 +452,17 @@ chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $
             resolve: {
                 user: function () {
                     return $scope.currentUser;
+                },
+                requestOldPassword: function () {
+                    return true;
                 }
             }
         });
 
-        $scope.modalInstance.result.then(function (newPassword) {
-            console.log(newPassword);
+        $scope.modalInstance.result.then(function (newBase64Credential) {
+            IamUser.changePassword($scope.currentUser, newBase64Credential).then(function() {
+                $window.sessionStorage.token = newBase64Credential;
+            });
         });
     };
 });

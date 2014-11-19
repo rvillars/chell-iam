@@ -339,5 +339,21 @@ chellIam.run(
                 return [401];
             }
         });
+        $httpBackend.whenPUT(/iam\/Password\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
+            if (authenticated(headers)) {
+                var id = url.split('/').pop();
+                var newBase64Credential = data;
+                var existingUser = _.findWhere(mockUsers, { id: id });
+                if (!existingUser) {
+                    return [404];
+                }
+                existingUser.password = $base64.decode(newBase64Credential.split(' ')[1]).split(':')[1];
+                return [
+                    200
+                ];
+            } else {
+                return [401];
+            }
+        });
     }
 );
