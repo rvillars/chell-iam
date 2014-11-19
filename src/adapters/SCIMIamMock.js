@@ -169,7 +169,10 @@ chellIam.run(
             } catch (err) {
                 return false;
             }
-            var currentUser = _.findWhere(mockUsers, {userName: userName});
+            var currentUser = _.findWhere(mockUsers, {userName: userName, active: true});
+            if (currentUser == null) {
+                return false;
+            }
             var validUserCredentials = 'Basic ' + $base64.encode(currentUser.userName + ':' + currentUser.password);
             return headers.Authorization == validUserCredentials;
         };
@@ -239,11 +242,13 @@ chellIam.run(
                 var id = url.split('/').pop();
                 var user = JSON.parse(data);
                 var existingUser = _.findWhere(mockUsers, { id: id });
+                var existingPassword = existingUser.password;
                 if (!existingUser) {
                     return [404];
                 }
                 var index = mockUsers.indexOf(existingUser);
                 mockUsers[index] = user;
+                mockUsers[index].password = existingPassword;
                 return [
                     200,
                     user
