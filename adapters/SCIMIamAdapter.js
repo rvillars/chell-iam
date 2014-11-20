@@ -64,6 +64,15 @@ chellIam.factory('IamAdapter', [
         });
         return deferred.promise;
       },
+      changePassword: function (user, newBase64Credential) {
+        var deferred = $q.defer();
+        $http.put('http://' + host + '/iam/Password/' + user.id, newBase64Credential).success(function () {
+          deferred.resolve();
+        }).error(function () {
+          deferred.reject('An error occured while updating user');
+        });
+        return deferred.promise;
+      },
       getGroupList: function () {
         var deferred = $q.defer();
         $http.get('http://' + host + '/iam/Groups').success(function (groups) {

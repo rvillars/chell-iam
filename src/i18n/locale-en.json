@@ -5,11 +5,11 @@
             "TITLE": "Change Password",
             "INCORRECT_OLD_PW": "Incorrect old Password",
             "PASSWORDS_NOT_MATCHING": "Password do not match",
-            "PH_OLD_PASSWORD": "Old Password",
             "PH_NEW_PASSWORD": "New Password",
             "PH_REPEAT_PASSWORD": "Repeat Password",
+            "PH_OLD_PASSWORD": "Old Password",
             "CANCEL_BUTTON": "Cancel",
-            "CLOSE_BUTTON": "Change Password"
+            "CLOSE_BUTTON": "Set Password"
         },
         "GROUP_FORM": {
             "GROUP_ID": "Group ID",
@@ -53,8 +53,8 @@
             "PH_LOGIN": "Login (Use login 'chellAdmin')",
             "PH_PASSWORD": "Password (Use password 'chellAdmin')",
             "REMEMBER_ME": "Remember me",
-            "LOGIN_BUTTON": "Log in",
-            "RESET_BUTTON": "Reset"
+            "RESET_BUTTON": "Reset",
+            "LOGIN_BUTTON": "Log in"
         },
         "USER_FORM": {
             "USER_ID": "User ID",

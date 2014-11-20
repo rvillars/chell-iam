@@ -18,7 +18,16 @@ chellIam.factory('CurrentUserService', function () {
             return this.currentUser.groups.some(function(group) {
                 return group.value == groupId;
             });
+        },
+        hasGroupName: function(groupName) {
+            if (this.currentUser == null) {
+                return false;
+            }
+            return this.currentUser.groups.some(function(group) {
+                return group.display == groupName;
+            });
         }
+
     };
 });
 

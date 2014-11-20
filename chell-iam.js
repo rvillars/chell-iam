@@ -14,11 +14,11 @@ angular.module('translations').config(function ($translateProvider) {
         'TITLE': 'Change Password',
         'INCORRECT_OLD_PW': 'Incorrect old Password',
         'PASSWORDS_NOT_MATCHING': 'Password do not match',
-        'PH_OLD_PASSWORD': 'Old Password',
         'PH_NEW_PASSWORD': 'New Password',
         'PH_REPEAT_PASSWORD': 'Repeat Password',
+        'PH_OLD_PASSWORD': 'Old Password',
         'CANCEL_BUTTON': 'Cancel',
-        'CLOSE_BUTTON': 'Change Password'
+        'CLOSE_BUTTON': 'Set Password'
       },
       'GROUP_FORM': {
         'GROUP_ID': 'Group ID',
@@ -62,8 +62,8 @@ angular.module('translations').config(function ($translateProvider) {
         'PH_LOGIN': 'Login (Use login \'chellAdmin\')',
         'PH_PASSWORD': 'Password (Use password \'chellAdmin\')',
         'REMEMBER_ME': 'Remember me',
-        'LOGIN_BUTTON': 'Log in',
-        'RESET_BUTTON': 'Reset'
+        'RESET_BUTTON': 'Reset',
+        'LOGIN_BUTTON': 'Log in'
       },
       'USER_FORM': {
         'USER_ID': 'User ID',
@@ -312,6 +312,14 @@ chellIam.factory('CurrentUserService', function () {
       }
       return this.currentUser.groups.some(function (group) {
         return group.value == groupId;
+      });
+    },
+    hasGroupName: function (groupName) {
+      if (this.currentUser == null) {
+        return false;
+      }
+      return this.currentUser.groups.some(function (group) {
+        return group.display == groupName;
       });
     }
   };
@@ -760,7 +768,24 @@ chellIam.controller('UserFormController', [
       });
       var isNew = $scope.editUser.id == null;
       if (isNew) {
-        IamUser.create($scope.editUser);
+        IamUser.create($scope.editUser).then(function (createdUser) {
+          $scope.modalInstance = $modal.open({
+            templateUrl: 'templates/change-password-dialog.tpl.html',
+            backdrop: false,
+            controller: 'ChangePasswordModalController',
+            resolve: {
+              user: function () {
+                return createdUser;
+              },
+              requestOldPassword: function () {
+                return false;
+              }
+            }
+          });
+          $scope.modalInstance.result.then(function (newBase64Credential) {
+            IamUser.changePassword(createdUser, newBase64Credential);
+          });
+        });
       } else {
         IamUser.update($scope.editUser);
       }
@@ -1114,28 +1139,18 @@ angular.module('templates-chell-iam', ['templates/change-password-dialog.tpl.htm
 
 angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/change-password-dialog.tpl.html",
-    "<div class=\"modal-header\">\n" +
+    "<div class=\"panel-heading\">\n" +
     "    <button class=\"close\" ng-click=\"cancel()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.X_BUTTON' | translate}}</button>\n" +
     "    <h3>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.TITLE' | translate}}</h3>\n" +
     "</div>\n" +
-    "<div class=\"modal-body\">\n" +
-    "    <form role=\"form\">\n" +
-    "        <fieldset>\n" +
+    "<div class=\"panel-body\">\n" +
+    "    <form id=\"loginForm\" name=\"loginForm\" ng-submit=\"loginForm.$valid && changePassword()\" novalidate>\n" +
+    "\n" +
     "            <div class=\"alert alert-danger\" ng-show=\"wrongCredentials\">\n" +
     "                <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.INCORRECT_OLD_PW' | translate}}\n" +
     "            </div>\n" +
     "            <div class=\"alert alert-danger\" ng-show=\"notMatching\">\n" +
     "                <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORDS_NOT_MATCHING' | translate}}\n" +
-    "            </div>\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\" ng-show=\"requestOldPassword\">\n" +
-    "                <div class=\"col-sm-12\">\n" +
-    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
-    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
-    "                        <input type=\"password\" class=\"form-control\" id=\"inputOldPassoword\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_OLD_PASSWORD' | translate}}\"\n" +
-    "                               required ng-model=\"$parent.oldPassword\" autofocus/>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
     "                <div class=\"col-sm-12\">\n" +
@@ -1143,7 +1158,7 @@ angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateC
     "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-asterisk\"></i></span>\n" +
     "                        <input type=\"password\" class=\"form-control\" id=\"inputNewPassword\"\n" +
     "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_NEW_PASSWORD' | translate}}\" required\n" +
-    "                               ng-model=\"$parent.newPassword\">\n" +
+    "                               ng-model=\"$parent.newPassword\" autofocus>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -1157,12 +1172,28 @@ angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateC
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "        </fieldset>\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\" ng-show=\"requestOldPassword\">\n" +
+    "                <div class=\"col-sm-12\">\n" +
+    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
+    "                        <input type=\"password\" class=\"form-control\" id=\"inputOldPassoword\"\n" +
+    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_OLD_PASSWORD' | translate}}\"\n" +
+    "                               ng-model=\"$parent.oldPassword\"/>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group last\">\n" +
+    "                <div class=\"col-sm-12\">\n" +
+    "                    <div class=\"pull-right\">\n" +
+    "                        <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CANCEL_BUTTON' | translate}}</button>\n" +
+    "                        <button class=\"btn btn-primary\" ng-click=\"changePassword()\" type=\"submit\" ng-disabled=\"loginForm.$invalid\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CLOSE_BUTTON' | translate}}</button>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
     "    </form>\n" +
     "</div>\n" +
-    "<div class=\"modal-footer\">\n" +
-    "    <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CANCEL_BUTTON' | translate}}</button>\n" +
-    "    <button class=\"btn btn-primary\" ng-click=\"changePassword()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CLOSE_BUTTON' | translate}}</button>\n" +
+    "<div class=\"panel-footer\">\n" +
+    "\n" +
     "</div>\n" +
     "\n" +
     "");
@@ -1188,7 +1219,7 @@ angular.module("templates/group-form.tpl.html", []).run(["$templateCache", funct
     "            <div class=\"form-group required\" ng-class=\"{ 'has-error' : groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine }\">\n" +
     "                <label for=\"inputGroupname\" class=\"control-label\">{{'CHELL_IAM.GROUP_FORM.NAME' | translate}}</label>\n" +
     "                <input class=\"form-control\" id=\"inputGroupname\" name=\"inputGroupname\" placeholder=\"{{'CHELL_IAM.GROUP_FORM.PH_NAME' | translate}}\" required\n" +
-    "                       ng-model=\"editGroup.name\"/>\n" +
+    "                       ng-model=\"editGroup.name\" autofocus/>\n" +
     "                <p ng-show=\"groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine\" class=\"help-block\">A group name is required.</p>\n" +
     "            </div>\n" +
     "            <div class=\"form-group\">\n" +
@@ -1347,8 +1378,8 @@ angular.module("templates/login-dialog.tpl.html", []).run(["$templateCache", fun
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\">\n" +
-    "                <div class=\"col-sm-12\">\n" +
+    "            <div class=\"form-group last\">\n" +
+    "                <div class=\"col-sm-8\">\n" +
     "                    <div class=\"checkbox\">\n" +
     "                        <label>\n" +
     "                            <input type=\"checkbox\"/>\n" +
@@ -1356,15 +1387,15 @@ angular.module("templates/login-dialog.tpl.html", []).run(["$templateCache", fun
     "                        </label>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"form-group last\">\n" +
-    "                <div class=\"col-sm-12\">\n" +
-    "                    <button type=\"submit\" class=\"btn btn-success btn-sm\" ng-click=\"signin()\">\n" +
-    "                        {{'CHELL_IAM.LOGIN_DIALOG.LOGIN_BUTTON' | translate}}\n" +
-    "                    </button>\n" +
-    "                    <button type=\"reset\" class=\"btn btn-default btn-sm\">\n" +
-    "                        {{'CHELL_IAM.LOGIN_DIALOG.RESET_BUTTON' | translate}}\n" +
-    "                    </button>\n" +
+    "                <div class=\"col-sm-4\">\n" +
+    "                    <div class=\"pull-right\">\n" +
+    "                        <button type=\"reset\" class=\"btn btn-default btn-sm\">\n" +
+    "                            {{'CHELL_IAM.LOGIN_DIALOG.RESET_BUTTON' | translate}}\n" +
+    "                        </button>\n" +
+    "                        <button type=\"submit\" class=\"btn btn-success btn-sm\" ng-click=\"signin()\">\n" +
+    "                            {{'CHELL_IAM.LOGIN_DIALOG.LOGIN_BUTTON' | translate}}\n" +
+    "                        </button>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </form>\n" +
@@ -1446,7 +1477,7 @@ angular.module("templates/user-form.tpl.html", []).run(["$templateCache", functi
     "                    <label for=\"inputLogin\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.LOGIN' | translate}}</label>\n" +
     "                    <input class=\"form-control\" id=\"inputLogin\"\n" +
     "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_LOGIN' | translate}}\"\n" +
-    "                           ng-model=\"editUser.login\" required=\"true\">\n" +
+    "                           ng-model=\"editUser.login\" required=\"true\" autofocus>\n" +
     "                </div>\n" +
     "                <div class=\"form-group col-md-6\">\n" +
     "                    <label for=\"inputDisplay\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.DISPLAY' | translate}}</label>\n" +
@@ -1690,17 +1721,17 @@ angular.module("templates/user-profile.tpl.html", []).run(["$templateCache", fun
     "                           placeholder=\"{{'CHELL_IAM.USER_PROFILE.PH_TITLE' | translate}}\" required=\"true\"\n" +
     "                           ng-model=\"user.title\" ng-readonly=\"true\">\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"user.emails != null || user.emails.length != 0\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.emails != null && user.emails.length != 0\">\n" +
     "                    <label for=\"inputEMail\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.EMAIL' | translate}}</label>\n" +
     "                    <multi-value id=\"inputEMail\" value-list=\"user.emails\" label-property=\"type\"\n" +
     "                                 value-property=\"value\" read-only=\"true\" possible-types=\"Work,Home,Gravatar\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"user.phones != null || user.phones.length != 0\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.phones != null && user.phones.length != 0\">\n" +
     "                    <label for=\"inputPhone\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.PHONE' | translate}}</label>\n" +
     "                    <multi-value id=\"inputPhone\" value-list=\"user.phones\" label-property=\"type\"\n" +
     "                                 value-property=\"value\" read-only=\"true\" possible-types=\"Work,Home,Mobile\"/>\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\" ng-show=\"user.ims != null || user.ims.length != 0\">\n" +
+    "                <div class=\"form-group\" ng-show=\"user.ims != null && user.ims.length != 0\">\n" +
     "                    <label for=\"inputIms\" class=\"control-label\">{{'CHELL_IAM.USER_PROFILE.IMS' | translate}}</label>\n" +
     "                    <multi-value id=\"inputIms\" value-list=\"user.ims\" label-property=\"type\"\n" +
     "                                 value-property=\"value\" read-only=\"true\" possible-types=\"Skype,Lync,Yahoo\"/>\n" +

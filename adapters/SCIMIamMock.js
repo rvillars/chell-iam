@@ -157,8 +157,24 @@ chellIam.run([
     var authenticated = function (headers) {
       if (headers.Authorization == null)
         return false;
-      var userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
-      var currentUser = _.findWhere(mockUsers, { userName: userName });
+      var userName;
+      try {
+        userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
+      } catch (err) {
+        return false;
+      }
+      var currentUser = _.findWhere(mockUsers, {
+          userName: userName,
+          active: true
+        });
+      if (currentUser == null) {
+        return false;
+      }
+      if (!currentUser.groups.some(function (group) {
+          return group.value == 'e9e304ba-f08f-4409-8486-d5c6a43166ee';
+        })) {
+        return false;
+      }
       var validUserCredentials = 'Basic ' + $base64.encode(currentUser.userName + ':' + currentUser.password);
       return headers.Authorization == validUserCredentials;
     };
@@ -228,11 +244,13 @@ chellIam.run([
         var id = url.split('/').pop();
         var user = JSON.parse(data);
         var existingUser = _.findWhere(mockUsers, { id: id });
+        var existingPassword = existingUser.password;
         if (!existingUser) {
           return [404];
         }
         var index = mockUsers.indexOf(existingUser);
         mockUsers[index] = user;
+        mockUsers[index].password = existingPassword;
         return [
           200,
           user
@@ -328,6 +346,20 @@ chellIam.run([
         }
         var index = mockGroups.indexOf(existingGroup);
         mockGroups.splice(index, 1);
+        return [200];
+      } else {
+        return [401];
+      }
+    });
+    $httpBackend.whenPUT(/iam\/Password\/[a-z0-9\-]+/).respond(function (method, url, data, headers) {
+      if (authenticated(headers)) {
+        var id = url.split('/').pop();
+        var newBase64Credential = data;
+        var existingUser = _.findWhere(mockUsers, { id: id });
+        if (!existingUser) {
+          return [404];
+        }
+        existingUser.password = $base64.decode(newBase64Credential.split(' ')[1]).split(':')[1];
         return [200];
       } else {
         return [401];

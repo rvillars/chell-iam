@@ -173,6 +173,10 @@ chellIam.run(
             if (currentUser == null) {
                 return false;
             }
+            // User must be member of 'Users' group
+            if (!currentUser.groups.some(function(group) {return group.value == 'e9e304ba-f08f-4409-8486-d5c6a43166ee';})) {
+                return false;
+            }
             var validUserCredentials = 'Basic ' + $base64.encode(currentUser.userName + ':' + currentUser.password);
             return headers.Authorization == validUserCredentials;
         };
