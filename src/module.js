@@ -11,6 +11,7 @@ var chellIam = angular.module('chell-iam', [
     'pascalprecht.translate',
     'multi-select',
     'translations',
+    'preferences',
     'base64',
     'ngMockE2E'
 ]);

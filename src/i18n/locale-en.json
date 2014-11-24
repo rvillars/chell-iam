@@ -8,6 +8,9 @@
             "PH_NEW_PASSWORD": "New Password",
             "PH_REPEAT_PASSWORD": "Repeat Password",
             "PH_OLD_PASSWORD": "Old Password",
+            "PASSWORD_INFO_LINK": "Password Info",
+            "PASSWORD_INFO": "Password must be between 4 and 15 characters and must consist at least one capitel character.",
+            "PASSWORD_PATTERN_INFO": "Password Pattern Regex",
             "CANCEL_BUTTON": "Cancel",
             "CLOSE_BUTTON": "Set Password"
         },

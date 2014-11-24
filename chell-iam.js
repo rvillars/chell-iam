@@ -17,6 +17,9 @@ angular.module('translations').config(function ($translateProvider) {
         'PH_NEW_PASSWORD': 'New Password',
         'PH_REPEAT_PASSWORD': 'Repeat Password',
         'PH_OLD_PASSWORD': 'Old Password',
+        'PASSWORD_INFO_LINK': 'Password Info',
+        'PASSWORD_INFO': 'Password must be between 4 and 15 characters and must consist at least one capitel character.',
+        'PASSWORD_PATTERN_INFO': 'Password Pattern Regex',
         'CANCEL_BUTTON': 'Cancel',
         'CLOSE_BUTTON': 'Set Password'
       },
@@ -163,7 +166,9 @@ angular.module('translations').config(function ($translateProvider) {
   });
   $translateProvider.preferredLanguage('en');
 });
-;// Source: build/interceptors.js
+;// Source: build/preferences.js
+var preferences = angular.module('preferences', []);
+preferences.constant('$preferences', { 'CHELL_IAM': { 'SECURITY': { 'PASSWORD_PATTERN': /^(?=.*[a-z])(?=.*[A-Z]).{4,15}$/ } } });;// Source: build/interceptors.js
 var httpAuthInterceptor = angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer']);
 httpAuthInterceptor.factory('authService', [
   '$rootScope',
@@ -268,6 +273,7 @@ var chellIam = angular.module('chell-iam', [
     'pascalprecht.translate',
     'multi-select',
     'translations',
+    'preferences',
     'base64',
     'ngMockE2E'
   ]);
@@ -1036,11 +1042,14 @@ chellIam.controller('ChangePasswordModalController', [
   'requestOldPassword',
   '$base64',
   '$window',
-  function ($scope, $modalInstance, user, requestOldPassword, $base64, $window) {
+  '$preferences',
+  function ($scope, $modalInstance, user, requestOldPassword, $base64, $window, $preferences) {
     $scope.user = user;
     $scope.requestOldPassword = requestOldPassword;
     $scope.wrongCredentials = false;
     $scope.notMatching = false;
+    $scope.passwordPattern = $preferences.CHELL_IAM.SECURITY.PASSWORD_PATTERN;
+    $scope.infoCollapsed = true;
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
@@ -1146,50 +1155,63 @@ angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateC
     "<div class=\"panel-body\">\n" +
     "    <form id=\"loginForm\" name=\"loginForm\" ng-submit=\"loginForm.$valid && changePassword()\" novalidate>\n" +
     "\n" +
-    "            <div class=\"alert alert-danger\" ng-show=\"wrongCredentials\">\n" +
-    "                <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.INCORRECT_OLD_PW' | translate}}\n" +
+    "        <div class=\"alert alert-danger\" ng-show=\"wrongCredentials\">\n" +
+    "            <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.INCORRECT_OLD_PW' | translate}}\n" +
+    "        </div>\n" +
+    "        <div class=\"alert alert-danger\" ng-show=\"notMatching\">\n" +
+    "            <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORDS_NOT_MATCHING' | translate}}\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div style=\"margin-bottom: 10px\" class=\"input-group\">\n" +
+    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-asterisk\"></i></span>\n" +
+    "                    <input type=\"password\" class=\"form-control\" id=\"inputNewPassword\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_NEW_PASSWORD' | translate}}\" required\n" +
+    "                           ng-model=\"$parent.newPassword\" ng-pattern=\"passwordPattern\" autofocus>\n" +
+    "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"alert alert-danger\" ng-show=\"notMatching\">\n" +
-    "                <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORDS_NOT_MATCHING' | translate}}\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div style=\"margin-bottom: 10px\" class=\"input-group\">\n" +
+    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-repeat\"></i></span>\n" +
+    "                    <input type=\"password\" class=\"form-control\" id=\"inputRepeatPassword\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_REPEAT_PASSWORD' | translate}}\" required\n" +
+    "                           ng-model=\"$parent.repeatPassword\" ng-pattern=\"passwordPattern\">\n" +
+    "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
-    "                <div class=\"col-sm-12\">\n" +
-    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
-    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-asterisk\"></i></span>\n" +
-    "                        <input type=\"password\" class=\"form-control\" id=\"inputNewPassword\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_NEW_PASSWORD' | translate}}\" required\n" +
-    "                               ng-model=\"$parent.newPassword\" autofocus>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\" ng-show=\"requestOldPassword\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div style=\"margin-bottom: 10px\" class=\"input-group\">\n" +
+    "                    <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
+    "                    <input type=\"password\" class=\"form-control\" id=\"inputOldPassoword\"\n" +
+    "                           placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_OLD_PASSWORD' | translate}}\"\n" +
+    "                           ng-model=\"$parent.oldPassword\"/>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div style=\"margin-bottom: 10px\">\n" +
+    "                    <a ng-click=\"infoCollapsed = !infoCollapsed\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORD_INFO_LINK' | translate}}</a>\n" +
+    "                    <div collapse=\"infoCollapsed\" class=\"panel panel-default\">\n" +
+    "                        <div class=\"panel-body\">\n" +
+    "                            <div>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORD_INFO' | translate}}</div>\n" +
+    "                            <div>{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PASSWORD_PATTERN_INFO' | translate}}: <span style=\"color: blue\">{{passwordPattern.toString()}}</span></div>\n" +
+    "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':notMatching}\">\n" +
-    "                <div class=\"col-sm-12\">\n" +
-    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
-    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-repeat\"></i></span>\n" +
-    "                        <input type=\"password\" class=\"form-control\" id=\"inputRepeatPassword\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_REPEAT_PASSWORD' | translate}}\" required\n" +
-    "                               ng-model=\"$parent.repeatPassword\">\n" +
-    "                    </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group last\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <div class=\"pull-right\">\n" +
+    "                    <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CANCEL_BUTTON' | translate}}</button>\n" +
+    "                    <button class=\"btn btn-primary\" ng-click=\"changePassword()\" type=\"submit\" ng-disabled=\"loginForm.$invalid\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CLOSE_BUTTON' | translate}}</button>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\" ng-show=\"requestOldPassword\">\n" +
-    "                <div class=\"col-sm-12\">\n" +
-    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
-    "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
-    "                        <input type=\"password\" class=\"form-control\" id=\"inputOldPassoword\"\n" +
-    "                               placeholder=\"{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.PH_OLD_PASSWORD' | translate}}\"\n" +
-    "                               ng-model=\"$parent.oldPassword\"/>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"form-group last\">\n" +
-    "                <div class=\"col-sm-12\">\n" +
-    "                    <div class=\"pull-right\">\n" +
-    "                        <button class=\"btn btn-default\" ng-click=\"cancel()\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CANCEL_BUTTON' | translate}}</button>\n" +
-    "                        <button class=\"btn btn-primary\" ng-click=\"changePassword()\" type=\"submit\" ng-disabled=\"loginForm.$invalid\">{{'CHELL_IAM.CHANGE_PASSWORD_DIALOG.CLOSE_BUTTON' | translate}}</button>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
+    "        </div>\n" +
     "    </form>\n" +
     "</div>\n" +
     "<div class=\"panel-footer\">\n" +
@@ -1363,7 +1385,7 @@ angular.module("templates/login-dialog.tpl.html", []).run(["$templateCache", fun
     "            </div>\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\">\n" +
     "                <div class=\"col-sm-12\">\n" +
-    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                    <div style=\"margin-bottom: 10px\" class=\"input-group\">\n" +
     "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-user\"></i></span>\n" +
     "                        <input class=\"form-control\" id=\"inputLogin\" placeholder=\"{{'CHELL_IAM.LOGIN_DIALOG.PH_LOGIN' | translate}}\" required ng-model=\"$parent.login\" autofocus>\n" +
     "                    </div>\n" +
@@ -1371,7 +1393,7 @@ angular.module("templates/login-dialog.tpl.html", []).run(["$templateCache", fun
     "            </div>\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error has-feedback':wrongCredentials}\">\n" +
     "                <div class=\"col-sm-12\">\n" +
-    "                    <div style=\"margin-bottom: 25px\" class=\"input-group\">\n" +
+    "                    <div style=\"margin-bottom: 10px\" class=\"input-group\">\n" +
     "                        <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n" +
     "                        <input type=\"password\" class=\"form-control\" id=\"inputPassword\" placeholder=\"{{'CHELL_IAM.LOGIN_DIALOG.PH_PASSWORD' | translate}}\" required\n" +
     "                               ng-model=\"$parent.password\">\n" +

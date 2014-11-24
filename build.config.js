@@ -43,6 +43,7 @@ module.exports = {
      */
     module_files: [
         'locale-en.js',
+        'preferences.js',
         'interceptors.js',
         'module.js',
         'services.js',

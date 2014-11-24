@@ -384,12 +384,14 @@ chellIam.controller('UserViewModalController', function ($scope, $modalInstance,
     };
 });
 
-chellIam.controller('ChangePasswordModalController', function ($scope, $modalInstance, user, requestOldPassword, $base64, $window) {
+chellIam.controller('ChangePasswordModalController', function ($scope, $modalInstance, user, requestOldPassword, $base64, $window, $preferences) {
 
     $scope.user = user;
     $scope.requestOldPassword = requestOldPassword;
     $scope.wrongCredentials = false;
     $scope.notMatching = false;
+    $scope.passwordPattern = $preferences.CHELL_IAM.SECURITY.PASSWORD_PATTERN;
+    $scope.infoCollapsed = true;
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
