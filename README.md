@@ -66,8 +66,8 @@ chell-iam is based on:
 
 ## History
 
-0.1.0 - Version for chell-js prototype *Not production ready*
-0.2.0 - Enhanced SCIM compatible version *Not production ready*
+- 0.1.0 - Version for chell-js prototype *Not production ready*
+- 0.2.0 - Enhanced SCIM compatible version *Not production ready*
 
 ## License
 
