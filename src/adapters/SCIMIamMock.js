@@ -172,11 +172,12 @@ chellIam.run(
             }
             var currentUser = _.findWhere(mockUsers, {userName: userName, active: true});
             if (currentUser == null) {
-                $log.warn('SCIMIamMock: User not found: '+userName);
+                $log.warn('SCIMIamMock: User not found or not active: '+userName);
                 return false;
             }
             // User must be member of 'Users' group
             if (!currentUser.groups.some(function(group) {return group.value == 'e9e304ba-f08f-4409-8486-d5c6a43166ee';})) {
+                $log.warn('SCIMIamMock: User not member of Users group: '+userName);
                 return false;
             }
             var validUserCredentials = 'Basic ' + $base64.encode(currentUser.userName + ':' + currentUser.password);
