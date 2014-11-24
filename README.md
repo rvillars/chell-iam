@@ -24,8 +24,8 @@ Different REST based backend IAM services (like Apache Syncope, OpenIDM, etc.) c
 ## Screenshots
 
 ![user-list](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/user-list.png "User List")
-![group-form](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/user-list.png "Editing Groups")
-![Login](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/user-list.png "Login Dialog")
+![group-form](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/group-form.png "Editing Groups")
+![Login](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/login.png "Login Dialog")
 
 TODO: Provide link to example page
 
