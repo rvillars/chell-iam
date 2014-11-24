@@ -28,7 +28,7 @@ TODO: Provide link to example page
 
 ## Installation
 
-Classical clientside javascript procedure:
+Just the common clientside javascript procedure:
 
 Once on your system:
 - Install NodeJS
@@ -47,14 +47,14 @@ TODO: Write usage instructions
 ## Thirdparty libraries
 
 chell-iam is based on:
+ - AngularJS
  - Twitter Bootstrap
  - UI Bootstrap
- - AngularJS
  - ng-table
- - underscore
  - angular-md5
  - angular-translate
  - angular-base64
+ - underscore
 
 ## Contributing
 
@@ -66,7 +66,8 @@ chell-iam is based on:
 
 ## History
 
-TODO: Write history
+0.1.0 - Version for chell-js prototype *Not production ready*
+0.2.0 - Enhanced SCIM compatible version *Not production ready*
 
 ## License
 
