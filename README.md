@@ -21,13 +21,18 @@ Different REST based backend IAM services (like Apache Syncope, OpenIDM, etc.) c
 - Provided SCIM 2.0 compatible backend adapter (http://www.simplecloud.info)
 - Support for custom IAM backends by implementing your own adapters
 
-## Screenshots
+## Example/Screenshots
 
+Example Site
+
+#### User List
 ![user-list](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/user-list.png "User List")
-![group-form](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/group-form.png "Editing Groups")
-![Login](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/login.png "Login Dialog")
 
-TODO: Provide link to example page
+#### Editing Groups
+![group-form](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/group-form.png "Editing Groups")
+
+#### Login Dialog
+![Login](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/login.png "Login Dialog")
 
 ## Installation
 
