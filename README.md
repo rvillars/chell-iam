@@ -44,13 +44,17 @@ For this module:
 
 TODO: Write usage instructions
 
-## Thirdparty Libraries
+## Thirdparty libraries
 
 chell-iam is based on:
  - Twitter Bootstrap
+ - UI Bootstrap
  - AngularJS
  - ng-table
  - underscore
+ - angular-md5
+ - angular-translate
+ - angular-base64
 
 ## Contributing
 
