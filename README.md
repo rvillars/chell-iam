@@ -11,7 +11,6 @@ Different REST based backend IAM services (like Apache Syncope, OpenIDM, etc.) c
 - Support for multible phone numbers, email, messenger and mail addresses.
 - Assinging groups to users and other groups
 - Editable user profile
-
 - Login mechansim based on HTTP and basicauth
 - Custom password patterns with validation
 - Customizable readonly mode (e.g. based on group membership)
@@ -19,7 +18,6 @@ Different REST based backend IAM services (like Apache Syncope, OpenIDM, etc.) c
 - Full functional example based on a SCIM backend mock
 - Fully translatable with angular-translate
 - Autorisation service for group mebership check
-
 - Provided SCIM 2.0 compatible backend adapter (http://www.simplecloud.info)
 - Support for custom IAM backends by implementing your own adapters
 
@@ -68,5 +66,4 @@ TODO: Write history
 
 ## License
 
-Apache License 2.0
-see LICENSE file.
+Apache License 2.0, see LICENSE file.
