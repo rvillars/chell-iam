@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html ng-app="chell-iam-example1">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>chell-iam Example 1</title>
+
+    <!-- compiled CSS -->
+    <link rel="stylesheet" type="text/css" href="bower-components/ng-table/ng-table.css" />
+    <link rel="stylesheet" type="text/css" href="bower-components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="bower-components/isteven-angular-multiselect/angular-multi-select.css" />
+
+    <!-- compiled JavaScript -->
+    <script type="text/javascript" src="bower-components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bower-components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower-components/angular-resource/angular-resource.js"></script>
+    <script type="text/javascript" src="bower-components/angular-mocks/angular-mocks.js"></script>
+    <script type="text/javascript" src="bower-components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script type="text/javascript" src="bower-components/underscore/underscore.js"></script>
+    <script type="text/javascript" src="bower-components/angular-underscore-module/angular-underscore-module.js"></script>
+    <script type="text/javascript" src="bower-components/angular-underscore/angular-underscore.js"></script>
+    <script type="text/javascript" src="bower-components/angular-translate/angular-translate.js"></script>
+    <script type="text/javascript" src="bower-components/angular-md5/angular-md5.js"></script>
+    <script type="text/javascript" src="bower-components/angular-base64/angular-base64.js"></script>
+    <script type="text/javascript" src="bower-components/ng-table/ng-table.js"></script>
+    <script type="text/javascript" src="bower-components/isteven-angular-multiselect/angular-multi-select.js"></script>
+
+    <script type="text/javascript" src="chell-iam.js"></script>
+    <script type="text/javascript" src="adapters/SCIMIamAdapter.js"></script>
+    <script type="text/javascript" src="adapters/SCIMIamMock.js"></script>
+    <script type="text/javascript" src="example1.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="styles/chell-iam.css" />
+
+</head>
+<body class="chell-login-required">
+<div style="width: 928px; margin: 0 auto;">
+    <div ng-controller="CurrentUserController">
+        <button ng-click="logout()" class="btn btn-default pull-right">Logout</button>
+        <button ng-click="changePassword()" class="btn btn-default pull-right">Change Password</button>
+    </div>
+    <div ng-controller="ExampleUserController">
+        <div ng-show="detail">
+            <h2>User Form</h2>
+            <chell-user-form save-button-hook="showList()" cancel-button-hook="showList()"/>
+        </div>
+        <div ng-show="list">
+            <h2>User List</h2>
+            <chell-user-list show-create-button="true" create-button-hook="showDetail()" edit-button-hook="showDetail()" read-only="readOnly()"/>
+        </div>
+    </div>
+    <div ng-controller="ExampleGroupController">
+        <div ng-show="detail">
+            <h2>Group Form</h2>
+            <chell-group-form save-button-hook="showList()" cancel-button-hook="showList()"/>
+        </div>
+        <div ng-show="list">
+            <h2>Group List</h2>
+            <chell-group-list show-create-button="true" create-button-hook="showDetail()" edit-button-hook="showDetail()" read-only="readOnly()"/>
+        </div>
+    </div>
+    <div ng-controller="CurrentUserController">
+        <h2>User Profile</h2>
+        <chell-user-profile user="currentUser" read-only="true"/>
+    </div>
+</div>
+</body>
+</html>

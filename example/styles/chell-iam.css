@@ -1,0 +1,7 @@
+.modal-wide .modal-dialog {
+  width: 800px;
+}
+.form-group.required .control-label:after {
+  content: "*";
+  color: #a94442;
+}
