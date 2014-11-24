@@ -1,7 +1,7 @@
 'use strict';
 var chellIam = angular.module('chell-iam');
 chellIam.run(
-    function ($httpBackend, $base64, uuid) {
+    function ($log, $httpBackend, $base64, uuid) {
         var mockUserGroup = {
             schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
             id: 'e9e304ba-f08f-4409-8486-d5c6a43166ee',
@@ -167,10 +167,12 @@ chellIam.run(
             try {
                 userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
             } catch (err) {
+                $log.error('SCIMIamMock: Error decoding user credentials '+err);
                 return false;
             }
             var currentUser = _.findWhere(mockUsers, {userName: userName, active: true});
             if (currentUser == null) {
+                $log.warn('SCIMIamMock: User not found: '+userName);
                 return false;
             }
             // User must be member of 'Users' group
@@ -182,7 +184,13 @@ chellIam.run(
         };
         $httpBackend.whenGET(/iam\/Users\/self/).respond(function (method, url, data, headers) {
             if (headers.Authorization == null) return [401];
-            var userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
+            var userName;
+            try {
+                userName = $base64.decode(headers.Authorization.split(' ')[1]).split(':')[0];
+            } catch(err) {
+                $log.error('SCIMIamMock: Error decoding user credentials '+err);
+                return [401];
+            }
             var currentUser = _.findWhere(mockUsers, {userName: userName});
 
             return authenticated(headers) ? [
