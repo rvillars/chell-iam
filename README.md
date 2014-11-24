@@ -23,7 +23,7 @@ Different REST based backend IAM services (like Apache Syncope, OpenIDM, etc.) c
 
 ## Example/Screenshots
 
-Example Site
+(Example Site)[http://mimacom.github.io/chell-iam/example/example1.html]
 
 #### User List
 ![user-list](https://raw.githubusercontent.com/mimacom/chell-iam/gh-pages/screenshots/user-list.png "User List")
