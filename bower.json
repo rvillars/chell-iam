@@ -20,5 +20,6 @@
         "angular-bootstrap": "~0.10.0",
         "angular-translate": "~2.2.0",
         "isteven-angular-multiselect": "~2.0"
-    }
+    },
+    "ignore": ["build", "src", "tests"]
 }
