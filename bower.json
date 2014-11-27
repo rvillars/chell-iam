@@ -16,7 +16,7 @@
         "angular-underscore": "",
         "angular-md5": "~0.1",
         "angular-base64": "~2.0",
-        "angular-bootstrap": "~0.10.0",
+        "angular-bootstrap": "~0.11",
         "angular-translate": "~2.2.0",
         "isteven-angular-multiselect": "~2.0"
     },
