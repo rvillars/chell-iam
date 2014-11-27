@@ -26,7 +26,7 @@
         "src",
         "tests",
         "examples",
-        "travis.yml",
+        ".travis.yml",
         ".gitignore",
         ".bowerrc",
         "build.config.js",
