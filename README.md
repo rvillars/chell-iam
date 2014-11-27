@@ -50,7 +50,20 @@ For this module:
 
 ## Usage
 
-TODO: Write usage instructions
+TODO: code and examples
+
+- Add "chell-iam": "mimacom/chell-iam#master" to your bower dependencies
+- Load "chell-iam.min.js" in your index file
+- Make sure you also load transitive dependencies (e.g. with grunt-bower-install). See also bower.json file of chell-iam dependency
+- Load "styles/chell-iam.css" in your index file
+- Select an adapter form the directory "adapters" (e.g. SCIMIamAdapter.js) or write your own adapter and load it in your index file
+- Add 'chell-iam' as a depencency to your angularjs module
+- Add the attribute class="chell-login-required" on the body tag of your website to enable the chell-iam login functionality for your application
+- Add <chell-user-profile/> or an appropriate tag (see wiki) to your html code.
+
+#### Using Iam Mock
+- Add "adapters/SCIMIamMock.js"
+- Add httpBackend passthrough
 
 ## Thirdparty libraries
 
