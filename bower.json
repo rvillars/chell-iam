@@ -21,5 +21,16 @@
         "angular-translate": "~2.2.0",
         "isteven-angular-multiselect": "~2.0"
     },
-    "ignore": ["build", "src", "tests"]
+    "ignore": [
+        "build",
+        "src",
+        "tests",
+        "examples",
+        "travis.yml",
+        ".gitignore",
+        ".bowerrc",
+        "build.config.js",
+        "Gruntfile.js",
+        "package.json"
+    ]
 }
