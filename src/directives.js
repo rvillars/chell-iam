@@ -74,7 +74,7 @@ chellIam.directive('chellUserProfile', function () {
 
 chellIam.directive('chellLoginRequired', function ($modal) {
     return {
-        restrict: 'C',
+        restrict: 'CA',
         link: function (scope) {
             var loginModal;
             scope.$on('event:auth-loginRequired', function () {
