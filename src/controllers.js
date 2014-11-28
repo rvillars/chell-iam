@@ -430,9 +430,6 @@ chellIam.controller('AuthenticationController', function ($scope, IamAdapter, au
         authService.loginConfirmed(null, configUpdater);
     };
 
-    $scope.$on('event:auth-logoutConfirmed', function () {
-        authService.wrongCredentials = false;
-    });
 
 });
 

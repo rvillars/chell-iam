@@ -461,6 +461,13 @@ chellIam.directive('chellUserProfile', function () {
     templateUrl: 'templates/user-profile.tpl.html'
   };
 });
+chellIam.directive('chellUserButton', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'templates/user-button.tpl.html'
+  };
+});
 chellIam.directive('chellLoginRequired', [
   '$modal',
   function ($modal) {
@@ -1087,9 +1094,6 @@ chellIam.controller('AuthenticationController', [
       };
       authService.loginConfirmed(null, configUpdater);
     };
-    $scope.$on('event:auth-logoutConfirmed', function () {
-      authService.wrongCredentials = false;
-    });
   }
 ]);
 chellIam.controller('CurrentUserController', [
@@ -1146,7 +1150,7 @@ chellIam.controller('CurrentUserController', [
     };
   }
 ]);;// Source: build/templates.js
-angular.module('templates-chell-iam', ['templates/change-password-dialog.tpl.html', 'templates/group-form.tpl.html', 'templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/multi-value.tpl.html', 'templates/user-form.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
+angular.module('templates-chell-iam', ['templates/change-password-dialog.tpl.html', 'templates/group-form.tpl.html', 'templates/group-list.tpl.html', 'templates/group-view-dialog.tpl.html', 'templates/login-dialog.tpl.html', 'templates/multi-value.tpl.html', 'templates/user-button.tpl.html', 'templates/user-form.tpl.html', 'templates/user-list.tpl.html', 'templates/user-profile.tpl.html', 'templates/user-view-dialog.tpl.html']);
 
 angular.module("templates/change-password-dialog.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/change-password-dialog.tpl.html",
@@ -1475,6 +1479,23 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
     "    </div>\n" +
     "</div>\n" +
     "<button type=\"button\" class=\"btn btn-success btn-xs\" ng-click=\"addValue()\" ng-hide=\"readOnly\">+</button>");
+}]);
+
+angular.module("templates/user-button.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/user-button.tpl.html",
+    "<div class=\"dropdown\" ng-controller=\"CurrentUserController\">\n" +
+    "    <button class=\"btn btn-default dropdown-toggle\" type=\"button\" id=\"dropdownMenu1\" data-toggle=\"dropdown\" aria-expanded=\"true\">\n" +
+    "        <img height=22 width=\"22\" ng-src=\"{{currentUser.gravatarMail ? ('http://www.gravatar.com/avatar/'+(currentUser.gravatarMail | md5)+'?s=22') : currentUser.photo}}\">\n" +
+    "        {{currentUser.fullname}}\n" +
+    "        <span class=\"caret\"></span>\n" +
+    "    </button>\n" +
+    "    <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu1\">\n" +
+    "        <li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" >Profile</a></li>\n" +
+    "        <li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" ng-click=\"changePassword()\">Change Password</a></li>\n" +
+    "        <li role=\"presentation\" class=\"divider\"></li>\n" +
+    "        <li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" ng-click=\"logout()\">Logout</a></li>\n" +
+    "    </ul>\n" +
+    "</div>");
 }]);
 
 angular.module("templates/user-form.tpl.html", []).run(["$templateCache", function($templateCache) {

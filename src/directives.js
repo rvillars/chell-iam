@@ -72,6 +72,14 @@ chellIam.directive('chellUserProfile', function () {
     };
 });
 
+chellIam.directive('chellUserButton', function () {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'templates/user-button.tpl.html'
+    };
+});
+
 chellIam.directive('chellLoginRequired', function ($modal) {
     return {
         restrict: 'CA',
