@@ -436,7 +436,7 @@ chellIam.controller('AuthenticationController', function ($scope, IamAdapter, au
 
 });
 
-chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $rootScope, $window, CurrentUserService, $modal) {
+chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $rootScope, $window, CurrentUserService, $modal, authService) {
 
     CurrentUserService.authPromise.then(function (user) {
         $scope.currentUser = user;
@@ -458,6 +458,7 @@ chellIam.controller('CurrentUserController', function ($scope, IamUser, $http, $
         $window.sessionStorage.token = null;
         $scope.currentUser = null;
         CurrentUserService.setCurrentUser(null);
+        authService.wrongCredentials = false;
     });
 
     $scope.logout = function () {

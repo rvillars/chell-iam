@@ -1100,7 +1100,8 @@ chellIam.controller('CurrentUserController', [
   '$window',
   'CurrentUserService',
   '$modal',
-  function ($scope, IamUser, $http, $rootScope, $window, CurrentUserService, $modal) {
+  'authService',
+  function ($scope, IamUser, $http, $rootScope, $window, CurrentUserService, $modal, authService) {
     CurrentUserService.authPromise.then(function (user) {
       $scope.currentUser = user;
     });
@@ -1118,6 +1119,7 @@ chellIam.controller('CurrentUserController', [
       $window.sessionStorage.token = null;
       $scope.currentUser = null;
       CurrentUserService.setCurrentUser(null);
+      authService.wrongCredentials = false;
     });
     $scope.logout = function () {
       $rootScope.$broadcast('event:auth-logoutConfirmed');
