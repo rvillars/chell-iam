@@ -194,6 +194,12 @@ chellIam.controller('UserFormController', function ($scope, $rootScope, $filter,
     };
 });
 
+chellIam.controller('UserProfileController', function($scope, IamUser) {
+    $scope.save = function (user) {
+        IamUser.update(user);
+    };
+});
+
 chellIam.controller('GroupListController', function ($scope, $rootScope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
 
     $scope.groups = [];

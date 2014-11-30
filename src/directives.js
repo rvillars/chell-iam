@@ -68,6 +68,7 @@ chellIam.directive('chellUserProfile', function () {
             possibleGroups: '=',
             readOnly: '='
         },
+        controller: 'UserProfileController',
         templateUrl: 'templates/user-profile.tpl.html'
     };
 });
@@ -75,7 +76,10 @@ chellIam.directive('chellUserProfile', function () {
 chellIam.directive('chellUserButton', function () {
     return {
         restrict: 'E',
-        replace: true,
+        transclude: true,
+        link: function(scope,element,attrs,ctrl, transclude) {
+            element.find('#transclude').replaceWith(transclude());
+        },
         templateUrl: 'templates/user-button.tpl.html'
     };
 });

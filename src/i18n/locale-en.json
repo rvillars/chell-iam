@@ -143,7 +143,9 @@
             "COUNTRY": "Country",
             "PH_COUNTRY": "Country",
             "GROUPS": "Groups",
+            "SAVE_BUTTON": "Save",
             "PROFILE_PREVIEW": "Profile preview",
+            "CANCEL_BUTTON": "Cancel",
             "STATUS": "Status",
             "ACTIVE": "Active",
             "LOGIN_REQUIRED_ERROR": "Login required"

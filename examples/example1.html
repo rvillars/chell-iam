@@ -35,7 +35,8 @@
 <body chell-login-required>
 <div style="width: 928px; margin: 0 auto;">
 
-    <chell-user-button class="pull-right"></chell-user-button>
+    <chell-user-button class="pull-right">
+    </chell-user-button>
 
     <div ng-controller="ExampleUserController">
         <div ng-show="detail">
@@ -59,8 +60,9 @@
     </div>
     <div ng-controller="CurrentUserController">
         <h2>User Profile</h2>
-        <chell-user-profile user="currentUser" read-only="true"/>
+        <chell-user-profile user="currentUser" read-only="false"/>
     </div>
 </div>
+<br/>
 </body>
 </html>
