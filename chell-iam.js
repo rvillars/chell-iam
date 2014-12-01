@@ -314,21 +314,33 @@ chellIam.factory('CurrentUserService', function () {
     getCurrentUser: function () {
       return this.currentUser;
     },
-    hasGroupId: function (groupId) {
-      if (this.currentUser == null) {
+    hasGroupId: function (groupId, user) {
+      if (this.currentUser == null && user == null) {
         return false;
       }
-      return this.currentUser.groups.some(function (group) {
-        return group.value == groupId;
-      });
+      if (user != null) {
+        return user.groups.some(function (group) {
+          return group.value == groupId;
+        });
+      } else {
+        return this.currentUser.groups.some(function (group) {
+          return group.value == groupId;
+        });
+      }
     },
-    hasGroupName: function (groupName) {
-      if (this.currentUser == null) {
+    hasGroupName: function (groupName, user) {
+      if (this.currentUser == null && user == null) {
         return false;
       }
-      return this.currentUser.groups.some(function (group) {
-        return group.display == groupName;
-      });
+      if (user != null) {
+        return user.groups.some(function (group) {
+          return group.display == groupName;
+        });
+      } else {
+        return this.currentUser.groups.some(function (group) {
+          return group.display == groupName;
+        });
+      }
     }
   };
 });
@@ -515,7 +527,7 @@ chellIam.directive('chellLoginDialog', function () {
     templateUrl: 'templates/login-dialog.html'
   };
 });
-chellIam.directive('visibilityGroupId', [
+chellIam.directive('visibleByGroup', [
   'CurrentUserService',
   'IamUser',
   function (CurrentUserService, IamUser) {
@@ -530,7 +542,7 @@ chellIam.directive('visibilityGroupId', [
       ],
       link: function ($scope, element, attrs) {
         IamUser.self().then(function (user) {
-          if (!CurrentUserService.hasGroupId(attrs.visibilityGroupId)) {
+          if (!CurrentUserService.hasGroupId(attrs.visibleByGroup, user) && !CurrentUserService.hasGroupName(attrs.visibleByGroup, user)) {
             element.hide();
           } else {
             element.show();
@@ -538,7 +550,7 @@ chellIam.directive('visibilityGroupId', [
         });
         $scope.$on('event:auth-loginConfirmed', function () {
           IamUser.self().then(function (user) {
-            if (!CurrentUserService.hasGroupId(attrs.visibilityGroupId)) {
+            if (!CurrentUserService.hasGroupId(attrs.visibleByGroup, user) && !CurrentUserService.hasGroupName(attrs.visibleByGroup, user)) {
               element.hide();
             } else {
               element.show();
@@ -552,38 +564,31 @@ chellIam.directive('visibilityGroupId', [
     };
   }
 ]);
-chellIam.directive('moveableGroupId', [
+chellIam.directive('hasGroup', [
   'CurrentUserService',
   'IamUser',
   function (CurrentUserService, IamUser) {
     return {
       restrict: 'A',
-      controller: [
-        '$scope',
-        '$element',
-        function ($scope, $element) {
-          $($element).addClass('box-locked');
-        }
-      ],
       link: function ($scope, element, attrs) {
         IamUser.self().then(function (user) {
-          if (!CurrentUserService.hasGroupId(attrs.moveableGroupId)) {
-            $(element).addClass('box-locked');
+          if (!CurrentUserService.hasGroupId(attrs.visibilityGroup) && !CurrentUserService.hasGroupName(attrs.visibilityGroup)) {
+            return false;
           } else {
-            $(element).removeClass('box-locked');
+            return true;
           }
         });
         $scope.$on('event:auth-loginConfirmed', function () {
           IamUser.self().then(function (user) {
-            if (!CurrentUserService.hasGroupId(attrs.moveableGroupId)) {
-              $(element).addClass('box-locked');
+            if (!CurrentUserService.hasGroupId(attrs.visibilityGroup) && !CurrentUserService.hasGroupName(attrs.visibilityGroup)) {
+              return false;
             } else {
-              $(element).removeClass('box-locked');
+              return true;
             }
           });
         });
         $scope.$on('event:auth-logoutConfirmed', function () {
-          $(element).addClass('box-locked');
+          return false;
         });
       }
     };

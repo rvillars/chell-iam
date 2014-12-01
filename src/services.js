@@ -11,21 +11,33 @@ chellIam.factory('CurrentUserService', function () {
         getCurrentUser: function () {
             return this.currentUser;
         },
-        hasGroupId: function(groupId) {
-            if (this.currentUser == null) {
+        hasGroupId: function(groupId, user) {
+            if (this.currentUser == null && user == null) {
                 return false;
             }
-            return this.currentUser.groups.some(function(group) {
-                return group.value == groupId;
-            });
+            if (user != null) {
+                return user.groups.some(function(group) {
+                    return group.value == groupId;
+                });
+            } else {
+                return this.currentUser.groups.some(function(group) {
+                    return group.value == groupId;
+                });
+            }
         },
-        hasGroupName: function(groupName) {
-            if (this.currentUser == null) {
+        hasGroupName: function(groupName, user) {
+            if (this.currentUser == null && user == null) {
                 return false;
             }
-            return this.currentUser.groups.some(function(group) {
-                return group.display == groupName;
-            });
+            if (user != null) {
+                return user.groups.some(function(group) {
+                    return group.display == groupName;
+                });
+            } else {
+                return this.currentUser.groups.some(function(group) {
+                    return group.display == groupName;
+                });
+            }
         }
 
     };

@@ -48,7 +48,7 @@
             <chell-user-list show-create-button="true" create-button-hook="showDetail()" edit-button-hook="showDetail()" read-only="readOnly()"/>
         </div>
     </div>
-    <div ng-controller="ExampleGroupController">
+    <div ng-controller="ExampleGroupController" visible-by-group="Administrators">
         <div ng-show="detail">
             <h2>Group Form</h2>
             <chell-group-form save-button-hook="showList()" cancel-button-hook="showList()"/>
