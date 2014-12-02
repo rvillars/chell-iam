@@ -6,168 +6,170 @@ try {
   angular.module('translations', ['pascalprecht.translate']);
 }
 
-angular.module('translations').config(function ($translateProvider) {
-  $translateProvider.translations('en', {
-    'CHELL_IAM': {
-      'CHANGE_PASSWORD_DIALOG': {
-        'X_BUTTON': 'x',
-        'TITLE': 'Change Password',
-        'INCORRECT_OLD_PW': 'Incorrect old Password',
-        'PASSWORDS_NOT_MATCHING': 'Password do not match',
-        'PH_NEW_PASSWORD': 'New Password',
-        'PH_REPEAT_PASSWORD': 'Repeat Password',
-        'PH_OLD_PASSWORD': 'Old Password',
-        'PASSWORD_INFO_LINK': 'Password Info',
-        'PASSWORD_INFO': 'Password must be between 4 and 15 characters and must consist at least one capitel character.',
-        'PASSWORD_PATTERN_INFO': 'Password Pattern Regex',
-        'CANCEL_BUTTON': 'Cancel',
-        'CLOSE_BUTTON': 'Set Password'
-      },
-      'GROUP_FORM': {
-        'GROUP_ID': 'Group ID',
-        'PH_GENERATED': 'Generated',
-        'CREATION_DATE': 'Creation Date',
-        'PH_CREATION_DATE': 'Generated',
-        'NAME': 'Name',
-        'PH_NAME': 'Name',
-        'MEMBERS': 'Members',
-        'SAVE_BUTTON': 'Save',
-        'CANCEL_BUTTON': 'Cancel'
-      },
-      'GROUP_LIST': {
-        'VIEW_BUTTON': 'View',
-        'EDIT_BUTTON': 'Edit',
-        'DELETE_BUTTON': 'Delete',
-        'CREATE_GROUP_BUTTON': 'New Group',
-        'COLUMN_TITLE': {
+angular.module('translations').config(['$translateProvider',
+  function ($translateProvider) {
+    $translateProvider.translations('en', {
+      'CHELL_IAM': {
+        'CHANGE_PASSWORD_DIALOG': {
+          'X_BUTTON': 'x',
+          'TITLE': 'Change Password',
+          'INCORRECT_OLD_PW': 'Incorrect old Password',
+          'PASSWORDS_NOT_MATCHING': 'Password do not match',
+          'PH_NEW_PASSWORD': 'New Password',
+          'PH_REPEAT_PASSWORD': 'Repeat Password',
+          'PH_OLD_PASSWORD': 'Old Password',
+          'PASSWORD_INFO_LINK': 'Password Info',
+          'PASSWORD_INFO': 'Password must be between 4 and 15 characters and must consist at least one capitel character.',
+          'PASSWORD_PATTERN_INFO': 'Password Pattern Regex',
+          'CANCEL_BUTTON': 'Cancel',
+          'CLOSE_BUTTON': 'Set Password'
+        },
+        'GROUP_FORM': {
+          'GROUP_ID': 'Group ID',
+          'PH_GENERATED': 'Generated',
+          'CREATION_DATE': 'Creation Date',
+          'PH_CREATION_DATE': 'Generated',
           'NAME': 'Name',
+          'PH_NAME': 'Name',
           'MEMBERS': 'Members',
-          'ACTIONS': 'Actions'
-        }
-      },
-      'GROUP_VIEW_DIALOG': {
-        'X_BUTTON': 'x',
-        'GROUP_TITLE': 'Group',
-        'GROUP_ID': 'Group ID',
-        'PH_GROUP_ID': 'Generated',
-        'CREATION_DATE': 'Creation Date',
-        'PH_CREATION_DATE': 'Generated',
-        'NAME': 'Name',
-        'PH_NAME': 'Name',
-        'USERS': 'Member users',
-        'GROUPS': 'Member groups',
-        'CLOSE_BUTTON': 'Close'
-      },
-      'LOGIN_DIALOG': {
-        'TITLE': 'Login',
-        'FORGOT_PASSWORD': 'Forgot password?',
-        'INCORRECT_LOGIN_PW': 'Incorrect Username or password!',
-        'PH_LOGIN': 'Login (Use login \'chellAdmin\')',
-        'PH_PASSWORD': 'Password (Use password \'chellAdmin\')',
-        'REMEMBER_ME': 'Remember me',
-        'RESET_BUTTON': 'Reset',
-        'LOGIN_BUTTON': 'Log in'
-      },
-      'USER_FORM': {
-        'USER_ID': 'User ID',
-        'PH_USER_ID': 'Generated',
-        'EXTERNAL_ID': 'External ID',
-        'PH_EXTERNAL_ID': 'External ID',
-        'LOGIN': 'Login',
-        'PH_LOGIN': 'Login',
-        'DISPLAY': 'Display Name',
-        'PH_DISPLAY': 'Display Name',
-        'FIRSTNAME': 'Firstname',
-        'PH_FIRSTNAME': 'Firstname',
-        'LASTNAME': 'Lastname',
-        'PH_LASTNAME': 'Lastname',
-        'TITLE': 'Title',
-        'PH_TITLE': 'Title',
-        'EMAIL': 'E-Mail',
-        'PHONE': 'Phone',
-        'IMS': 'Instant Messaging',
-        'LANGUAGE': 'Language',
-        'ADRESSES': 'Addresses',
-        'STREET': 'Street',
-        'PH_STREET': 'Street',
-        'ZIP': 'Zip',
-        'PH_ZIP': 'Zip',
-        'CITY': 'City',
-        'PH_CITY': 'City',
-        'REGION': 'Region',
-        'PH_REGION': 'Region',
-        'COUNTRY': 'Country',
-        'PH_COUNTRY': 'Country',
-        'STATUS': 'Status',
-        'ACTIVE': 'Active',
-        'GROUPS': 'Groups'
-      },
-      'USER_LIST': {
-        'VIEW_BUTTON': 'View',
-        'EDIT_BUTTON': 'Edit',
-        'DELETE_BUTTON': 'Delete',
-        'PASSWORD_CHANGE_BUTTON': 'Change Password',
-        'CREATE_USER_BUTTON': 'New User',
-        'FILTER_ACTIVE': 'Activated',
-        'FILTER_INACTIVE': 'Inactive',
-        'SAVE_BUTTON': 'Save',
-        'CANCEL_BUTTON': 'Cancel',
-        'COLUMN_TITLE': {
+          'SAVE_BUTTON': 'Save',
+          'CANCEL_BUTTON': 'Cancel'
+        },
+        'GROUP_LIST': {
+          'VIEW_BUTTON': 'View',
+          'EDIT_BUTTON': 'Edit',
+          'DELETE_BUTTON': 'Delete',
+          'CREATE_GROUP_BUTTON': 'New Group',
+          'COLUMN_TITLE': {
+            'NAME': 'Name',
+            'MEMBERS': 'Members',
+            'ACTIONS': 'Actions'
+          }
+        },
+        'GROUP_VIEW_DIALOG': {
+          'X_BUTTON': 'x',
+          'GROUP_TITLE': 'Group',
+          'GROUP_ID': 'Group ID',
+          'PH_GROUP_ID': 'Generated',
+          'CREATION_DATE': 'Creation Date',
+          'PH_CREATION_DATE': 'Generated',
           'NAME': 'Name',
+          'PH_NAME': 'Name',
+          'USERS': 'Member users',
+          'GROUPS': 'Member groups',
+          'CLOSE_BUTTON': 'Close'
+        },
+        'LOGIN_DIALOG': {
+          'TITLE': 'Login',
+          'FORGOT_PASSWORD': 'Forgot password?',
+          'INCORRECT_LOGIN_PW': 'Incorrect Username or password!',
+          'PH_LOGIN': 'Login (Use login \'chellAdmin\')',
+          'PH_PASSWORD': 'Password (Use password \'chellAdmin\')',
+          'REMEMBER_ME': 'Remember me',
+          'RESET_BUTTON': 'Reset',
+          'LOGIN_BUTTON': 'Log in'
+        },
+        'USER_FORM': {
+          'USER_ID': 'User ID',
+          'PH_USER_ID': 'Generated',
+          'EXTERNAL_ID': 'External ID',
+          'PH_EXTERNAL_ID': 'External ID',
           'LOGIN': 'Login',
-          'DATE_REGISTERED': 'Creation Date',
-          'GROUPS': 'Groups',
+          'PH_LOGIN': 'Login',
+          'DISPLAY': 'Display Name',
+          'PH_DISPLAY': 'Display Name',
+          'FIRSTNAME': 'Firstname',
+          'PH_FIRSTNAME': 'Firstname',
+          'LASTNAME': 'Lastname',
+          'PH_LASTNAME': 'Lastname',
+          'TITLE': 'Title',
+          'PH_TITLE': 'Title',
+          'EMAIL': 'E-Mail',
+          'PHONE': 'Phone',
+          'IMS': 'Instant Messaging',
+          'LANGUAGE': 'Language',
+          'ADRESSES': 'Addresses',
+          'STREET': 'Street',
+          'PH_STREET': 'Street',
+          'ZIP': 'Zip',
+          'PH_ZIP': 'Zip',
+          'CITY': 'City',
+          'PH_CITY': 'City',
+          'REGION': 'Region',
+          'PH_REGION': 'Region',
+          'COUNTRY': 'Country',
+          'PH_COUNTRY': 'Country',
           'STATUS': 'Status',
-          'ACTIONS': 'Actions'
+          'ACTIVE': 'Active',
+          'GROUPS': 'Groups'
+        },
+        'USER_LIST': {
+          'VIEW_BUTTON': 'View',
+          'EDIT_BUTTON': 'Edit',
+          'DELETE_BUTTON': 'Delete',
+          'PASSWORD_CHANGE_BUTTON': 'Change Password',
+          'CREATE_USER_BUTTON': 'New User',
+          'FILTER_ACTIVE': 'Activated',
+          'FILTER_INACTIVE': 'Inactive',
+          'SAVE_BUTTON': 'Save',
+          'CANCEL_BUTTON': 'Cancel',
+          'COLUMN_TITLE': {
+            'NAME': 'Name',
+            'LOGIN': 'Login',
+            'DATE_REGISTERED': 'Creation Date',
+            'GROUPS': 'Groups',
+            'STATUS': 'Status',
+            'ACTIONS': 'Actions'
+          }
+        },
+        'USER_PROFILE': {
+          'USER_ID': 'User ID',
+          'PH_USER_ID': 'Generated',
+          'EXTERNAL_ID': 'External ID',
+          'PH_EXTERNAL_ID': 'External ID',
+          'LOGIN': 'Login',
+          'PH_LOGIN': 'Login',
+          'DISPLAY': 'Display Name',
+          'PH_DISPLAY': 'Display Name',
+          'FIRSTNAME': 'Firstname',
+          'PH_FIRSTNAME': 'Firstname',
+          'LASTNAME': 'Lastname',
+          'PH_LASTNAME': 'Lastname',
+          'TITLE': 'Title',
+          'PH_TITLE': 'Title',
+          'EMAIL': 'E-Mail',
+          'PHONE': 'Phone',
+          'IMS': 'Instant Messaging',
+          'LANGUAGE': 'Language',
+          'ADRESSES': 'Addresses',
+          'STREET': 'Street',
+          'PH_STREET': 'Street',
+          'ZIP': 'Zip',
+          'PH_ZIP': 'Zip',
+          'CITY': 'City',
+          'PH_CITY': 'City',
+          'REGION': 'Region',
+          'PH_REGION': 'Region',
+          'COUNTRY': 'Country',
+          'PH_COUNTRY': 'Country',
+          'GROUPS': 'Groups',
+          'SAVE_BUTTON': 'Save',
+          'PROFILE_PREVIEW': 'Profile preview',
+          'CANCEL_BUTTON': 'Cancel',
+          'STATUS': 'Status',
+          'ACTIVE': 'Active',
+          'LOGIN_REQUIRED_ERROR': 'Login required'
+        },
+        'USER_VIEW_DIALOG': {
+          'X_BUTTON': 'x',
+          'USER_TITLE': 'User',
+          'CLOSE_BUTTON': 'Close'
         }
-      },
-      'USER_PROFILE': {
-        'USER_ID': 'User ID',
-        'PH_USER_ID': 'Generated',
-        'EXTERNAL_ID': 'External ID',
-        'PH_EXTERNAL_ID': 'External ID',
-        'LOGIN': 'Login',
-        'PH_LOGIN': 'Login',
-        'DISPLAY': 'Display Name',
-        'PH_DISPLAY': 'Display Name',
-        'FIRSTNAME': 'Firstname',
-        'PH_FIRSTNAME': 'Firstname',
-        'LASTNAME': 'Lastname',
-        'PH_LASTNAME': 'Lastname',
-        'TITLE': 'Title',
-        'PH_TITLE': 'Title',
-        'EMAIL': 'E-Mail',
-        'PHONE': 'Phone',
-        'IMS': 'Instant Messaging',
-        'LANGUAGE': 'Language',
-        'ADRESSES': 'Addresses',
-        'STREET': 'Street',
-        'PH_STREET': 'Street',
-        'ZIP': 'Zip',
-        'PH_ZIP': 'Zip',
-        'CITY': 'City',
-        'PH_CITY': 'City',
-        'REGION': 'Region',
-        'PH_REGION': 'Region',
-        'COUNTRY': 'Country',
-        'PH_COUNTRY': 'Country',
-        'GROUPS': 'Groups',
-        'SAVE_BUTTON': 'Save',
-        'PROFILE_PREVIEW': 'Profile preview',
-        'CANCEL_BUTTON': 'Cancel',
-        'STATUS': 'Status',
-        'ACTIVE': 'Active',
-        'LOGIN_REQUIRED_ERROR': 'Login required'
-      },
-      'USER_VIEW_DIALOG': {
-        'X_BUTTON': 'x',
-        'USER_TITLE': 'User',
-        'CLOSE_BUTTON': 'Close'
       }
-    }
-  });
-  $translateProvider.preferredLanguage('en');
-});
+    });
+    $translateProvider.preferredLanguage('en');
+  }
+]);
 ;// Source: build/preferences.js
 var preferences = angular.module('preferences', []);
 preferences.constant('$preferences', { 'CHELL_IAM': { 'SECURITY': { 'PASSWORD_PATTERN': /^(?=.*[a-z])(?=.*[A-Z]).{4,15}$/ } } });;// Source: build/interceptors.js
