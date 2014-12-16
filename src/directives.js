@@ -86,10 +86,17 @@ chellIam.directive('chellUserButton', function () {
 
 chellIam.directive('chellLoginRequired', function ($modal) {
     return {
-        restrict: 'CA',
-        link: function (scope) {
+        restrict: 'EAC',
+        scope: {
+            loginFunction: '&?'
+        },
+        link: function (scope, element, attrs) {
             var loginModal;
             scope.$on('event:auth-loginRequired', function () {
+                if (scope.loginFunction) {
+                    scope.loginFunction();
+                    return;
+                }
                 if (!loginModal) {
                     loginModal = $modal.open({
                         templateUrl: 'templates/login-dialog.tpl.html',
