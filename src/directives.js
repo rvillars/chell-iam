@@ -88,13 +88,13 @@ chellIam.directive('chellLoginRequired', function ($modal) {
     return {
         restrict: 'EAC',
         scope: {
-            loginFunction: '&?'
+            loginRequiredFunction: '&?'
         },
         link: function (scope, element, attrs) {
             var loginModal;
             scope.$on('event:auth-loginRequired', function () {
-                if (attrs.loginFunction) {
-                    scope.loginFunction();
+                if (attrs.loginRequiredFunction) {
+                    scope.loginRequiredFunction();
                     return;
                 }
                 if (!loginModal) {
@@ -108,6 +108,10 @@ chellIam.directive('chellLoginRequired', function ($modal) {
                 }
             });
             scope.$on('event:auth-logoutConfirmed', function () {
+                if (attrs.loginRequiredFunction) {
+                    scope.loginRequiredFunction();
+                    return;
+                }
                 loginModal = $modal.open({
                     templateUrl: 'templates/login-dialog.tpl.html',
                     backdrop: 'static',
@@ -117,8 +121,10 @@ chellIam.directive('chellLoginRequired', function ($modal) {
                 });
             });
             scope.$on('event:auth-loginConfirmed', function () {
-                loginModal.close();
-                loginModal = null;
+                if (loginModal) {
+                    loginModal.close();
+                    loginModal = null;
+                }
             });
         }
     };
