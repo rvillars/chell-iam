@@ -21,6 +21,7 @@
             "PH_CREATION_DATE": "Generated",
             "NAME": "Name",
             "PH_NAME": "Name",
+            "ERROR_NAME": "A group name is required",
             "MEMBERS": "Members",
             "SAVE_BUTTON": "Save",
             "CANCEL_BUTTON": "Cancel"
@@ -66,6 +67,7 @@
             "PH_EXTERNAL_ID": "External ID",
             "LOGIN": "Login",
             "PH_LOGIN": "Login",
+            "ERROR_LOGIN": "A login name is required",
             "DISPLAY": "Display Name",
             "PH_DISPLAY": "Display Name",
             "FIRSTNAME": "Firstname",

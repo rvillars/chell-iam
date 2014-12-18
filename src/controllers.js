@@ -92,7 +92,7 @@ chellIam.controller('UserListController', function ($scope, $rootScope, $filter,
     };
 });
 
-chellIam.controller('UserFormController', function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup) {
+chellIam.controller('UserFormController', function ($scope, $rootScope, $modal, IamUser, IamGroup) {
 
     $scope.editUser = {};
 
@@ -200,7 +200,7 @@ chellIam.controller('UserProfileController', function($scope, IamUser) {
     };
 });
 
-chellIam.controller('GroupListController', function ($scope, $rootScope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
+chellIam.controller('GroupListController', function ($scope, $rootScope, $filter, $modal, IamGroup, IamUser, ngTableParams) {
 
     $scope.groups = [];
 
@@ -270,7 +270,7 @@ chellIam.controller('GroupListController', function ($scope, $rootScope, $filter
     };
 });
 
-chellIam.controller('GroupFormController', function ($scope, $rootScope, $filter, $timeout, $modal, IamGroup, IamUser) {
+chellIam.controller('GroupFormController', function ($scope, $rootScope, IamGroup, IamUser) {
 
     $scope.editGroup = {};
 

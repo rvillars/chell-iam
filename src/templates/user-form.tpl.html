@@ -16,11 +16,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required" ng-class="{ 'has-error' : userForm.inputLogin.$invalid && !userForm.inputLogin.$pristine }">
                     <label for="inputLogin" class="control-label">{{'CHELL_IAM.USER_FORM.LOGIN' | translate}}</label>
-                    <input class="form-control" id="inputLogin"
-                           placeholder="{{'CHELL_IAM.USER_FORM.PH_LOGIN' | translate}}"
-                           ng-model="editUser.login" required="true" autofocus>
+                    <input class="form-control" id="inputLogin" name="inputLogin" placeholder="{{'CHELL_IAM.USER_FORM.PH_LOGIN' | translate}}" required
+                           ng-model="editUser.login" autofocus/>
+                    <p ng-show="userForm.inputLogin.$invalid && !userForm.inputLogin.$pristine" class="help-block">{{'CHELL_IAM.USER_FORM.ERROR_LOGIN' | translate}}</p>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputDisplay" class="control-label">{{'CHELL_IAM.USER_FORM.DISPLAY' | translate}}</label>

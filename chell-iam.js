@@ -31,6 +31,7 @@ angular.module('translations').config(['$translateProvider',
           'PH_CREATION_DATE': 'Generated',
           'NAME': 'Name',
           'PH_NAME': 'Name',
+          'ERROR_NAME': 'A group name is required',
           'MEMBERS': 'Members',
           'SAVE_BUTTON': 'Save',
           'CANCEL_BUTTON': 'Cancel'
@@ -76,6 +77,7 @@ angular.module('translations').config(['$translateProvider',
           'PH_EXTERNAL_ID': 'External ID',
           'LOGIN': 'Login',
           'PH_LOGIN': 'Login',
+          'ERROR_LOGIN': 'A login name is required',
           'DISPLAY': 'Display Name',
           'PH_DISPLAY': 'Display Name',
           'FIRSTNAME': 'Firstname',
@@ -799,11 +801,10 @@ chellIam.controller('UserListController', [
 chellIam.controller('UserFormController', [
   '$scope',
   '$rootScope',
-  '$filter',
   '$modal',
   'IamUser',
   'IamGroup',
-  function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup) {
+  function ($scope, $rootScope, $modal, IamUser, IamGroup) {
     $scope.editUser = {};
     IamGroup.query().then(function (possibleGroups) {
       $scope.possibleGroups = $scope.calculatePossibleGroups($scope.editUser, possibleGroups);
@@ -907,12 +908,11 @@ chellIam.controller('GroupListController', [
   '$scope',
   '$rootScope',
   '$filter',
-  '$timeout',
   '$modal',
   'IamGroup',
   'IamUser',
   'ngTableParams',
-  function ($scope, $rootScope, $filter, $timeout, $modal, IamGroup, IamUser, ngTableParams) {
+  function ($scope, $rootScope, $filter, $modal, IamGroup, IamUser, ngTableParams) {
     $scope.groups = [];
     IamGroup.query().then(function (groups) {
       $scope.groups = groups;
@@ -979,12 +979,9 @@ chellIam.controller('GroupListController', [
 chellIam.controller('GroupFormController', [
   '$scope',
   '$rootScope',
-  '$filter',
-  '$timeout',
-  '$modal',
   'IamGroup',
   'IamUser',
-  function ($scope, $rootScope, $filter, $timeout, $modal, IamGroup, IamUser) {
+  function ($scope, $rootScope, IamGroup, IamUser) {
     $scope.editGroup = {};
     IamUser.query().then(function (possibleUsers) {
       IamGroup.query().then(function (possibleGroups) {
@@ -1308,7 +1305,7 @@ angular.module("templates/group-form.tpl.html", []).run(["$templateCache", funct
     "                <label for=\"inputGroupname\" class=\"control-label\">{{'CHELL_IAM.GROUP_FORM.NAME' | translate}}</label>\n" +
     "                <input class=\"form-control\" id=\"inputGroupname\" name=\"inputGroupname\" placeholder=\"{{'CHELL_IAM.GROUP_FORM.PH_NAME' | translate}}\" required\n" +
     "                       ng-model=\"editGroup.name\" autofocus/>\n" +
-    "                <p ng-show=\"groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine\" class=\"help-block\">A group name is required.</p>\n" +
+    "                <p ng-show=\"groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine\" class=\"help-block\">{{'CHELL_IAM.GROUP_FORM.ERROR_NAME' | translate}}</p>\n" +
     "            </div>\n" +
     "            <div class=\"form-group\">\n" +
     "                <label for=\"inputMembers\" class=\"control-label\">{{'CHELL_IAM.GROUP_FORM.MEMBERS' | translate}}</label>\n" +
@@ -1578,11 +1575,11 @@ angular.module("templates/user-form.tpl.html", []).run(["$templateCache", functi
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"row\">\n" +
-    "                <div class=\"form-group col-md-6\">\n" +
+    "                <div class=\"form-group col-md-6 required\" ng-class=\"{ 'has-error' : userForm.inputLogin.$invalid && !userForm.inputLogin.$pristine }\">\n" +
     "                    <label for=\"inputLogin\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.LOGIN' | translate}}</label>\n" +
-    "                    <input class=\"form-control\" id=\"inputLogin\"\n" +
-    "                           placeholder=\"{{'CHELL_IAM.USER_FORM.PH_LOGIN' | translate}}\"\n" +
-    "                           ng-model=\"editUser.login\" required=\"true\" autofocus>\n" +
+    "                    <input class=\"form-control\" id=\"inputLogin\" name=\"inputLogin\" placeholder=\"{{'CHELL_IAM.USER_FORM.PH_LOGIN' | translate}}\" required\n" +
+    "                           ng-model=\"editUser.login\" autofocus/>\n" +
+    "                    <p ng-show=\"userForm.inputLogin.$invalid && !userForm.inputLogin.$pristine\" class=\"help-block\">{{'CHELL_IAM.USER_FORM.ERROR_LOGIN' | translate}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"form-group col-md-6\">\n" +
     "                    <label for=\"inputDisplay\" class=\"control-label\">{{'CHELL_IAM.USER_FORM.DISPLAY' | translate}}</label>\n" +

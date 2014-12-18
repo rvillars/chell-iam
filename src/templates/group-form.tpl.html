@@ -17,7 +17,7 @@
                 <label for="inputGroupname" class="control-label">{{'CHELL_IAM.GROUP_FORM.NAME' | translate}}</label>
                 <input class="form-control" id="inputGroupname" name="inputGroupname" placeholder="{{'CHELL_IAM.GROUP_FORM.PH_NAME' | translate}}" required
                        ng-model="editGroup.name" autofocus/>
-                <p ng-show="groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine" class="help-block">A group name is required.</p>
+                <p ng-show="groupForm.inputGroupname.$invalid && !groupForm.inputGroupname.$pristine" class="help-block">{{'CHELL_IAM.GROUP_FORM.ERROR_NAME' | translate}}</p>
             </div>
             <div class="form-group">
                 <label for="inputMembers" class="control-label">{{'CHELL_IAM.GROUP_FORM.MEMBERS' | translate}}</label>
