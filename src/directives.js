@@ -188,6 +188,23 @@ chellIam.directive('hasGroup', function (CurrentUserService, IamUser) {
     };
 });
 
+chellIam.directive('visibleByLogin', function () {
+    return {
+        restrict: 'A',
+        controller: function ($scope, $element) {
+            $element.hide();
+        },
+        link: function ($scope, element, attrs) {
+            $scope.$on('event:auth-loginConfirmed', function () {
+                element.show();
+            });
+            $scope.$on('event:auth-logoutConfirmed', function () {
+                element.hide();
+            });
+        }
+    };
+});
+
 chellIam.directive('multiValue', function () {
     return {
         restrict: 'EA',

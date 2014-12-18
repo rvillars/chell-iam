@@ -492,10 +492,15 @@ chellIam.directive('chellLoginRequired', [
   '$modal',
   function ($modal) {
     return {
-      restrict: 'CA',
-      link: function (scope) {
+      restrict: 'EAC',
+      scope: { loginFunction: '&?' },
+      link: function (scope, element, attrs) {
         var loginModal;
         scope.$on('event:auth-loginRequired', function () {
+          if (scope.loginFunction) {
+            scope.loginFunction();
+            return;
+          }
           if (!loginModal) {
             loginModal = $modal.open({
               templateUrl: 'templates/login-dialog.tpl.html',
@@ -596,6 +601,26 @@ chellIam.directive('hasGroup', [
     };
   }
 ]);
+chellIam.directive('visibleByLogin', function () {
+  return {
+    restrict: 'A',
+    controller: [
+      '$scope',
+      '$element',
+      function ($scope, $element) {
+        $element.hide();
+      }
+    ],
+    link: function ($scope, element, attrs) {
+      $scope.$on('event:auth-loginConfirmed', function () {
+        element.show();
+      });
+      $scope.$on('event:auth-logoutConfirmed', function () {
+        element.hide();
+      });
+    }
+  };
+});
 chellIam.directive('multiValue', function () {
   return {
     restrict: 'EA',
@@ -1513,9 +1538,9 @@ angular.module("templates/user-button.tpl.html", []).run(["$templateCache", func
     "    </button>\n" +
     "    <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu1\">\n" +
     "        <div id=\"transclude\"></div>\n" +
-    "        <li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" ng-click=\"changePassword()\"><i class=\"glyphicon glyphicon-asterisk\"></i> Change Password</a></li>\n" +
+    "        <li visible-by-login role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" ng-click=\"changePassword()\"><i class=\"glyphicon glyphicon-asterisk\"></i> Change Password</a></li>\n" +
     "        <li role=\"presentation\" class=\"divider\"></li>\n" +
-    "        <li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" ng-click=\"logout()\"><i class=\"glyphicon glyphicon-log-out\"></i> Logout</a></li>\n" +
+    "        <li visible-by-login role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" ng-click=\"logout()\"><i class=\"glyphicon glyphicon-log-out\"></i> Logout</a></li>\n" +
     "    </ul>\n" +
     "</div>");
 }]);
