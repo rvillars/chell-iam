@@ -88,13 +88,14 @@ chellIam.directive('chellLoginRequired', function ($modal) {
     return {
         restrict: 'EAC',
         scope: {
-            loginRequiredFunction: '&?'
+            preLoginHook: '&?',
+            postLoginHook: '&?'
         },
         link: function (scope, element, attrs) {
             var loginModal;
             scope.$on('event:auth-loginRequired', function () {
-                if (attrs.loginRequiredFunction) {
-                    scope.loginRequiredFunction();
+                if (attrs.preLoginHook) {
+                    scope.preLoginHook();
                     return;
                 }
                 if (!loginModal) {
@@ -108,8 +109,8 @@ chellIam.directive('chellLoginRequired', function ($modal) {
                 }
             });
             scope.$on('event:auth-logoutConfirmed', function () {
-                if (attrs.loginRequiredFunction) {
-                    scope.loginRequiredFunction();
+                if (attrs.preLoginHook) {
+                    scope.preLoginHook();
                     return;
                 }
                 loginModal = $modal.open({
@@ -121,6 +122,10 @@ chellIam.directive('chellLoginRequired', function ($modal) {
                 });
             });
             scope.$on('event:auth-loginConfirmed', function () {
+                if (attrs.postLoginHook) {
+                    scope.postLoginHook();
+                    return;
+                }
                 if (loginModal) {
                     loginModal.close();
                     loginModal = null;
