@@ -10,6 +10,38 @@ angular.module('translations').config(['$translateProvider',
   function ($translateProvider) {
     $translateProvider.translations('en', {
       'CHELL_IAM': {
+        'USER_LIST': {
+          'REMOVE_QUESTION': null,
+          'VIEW_BUTTON': 'View',
+          'EDIT_BUTTON': 'Edit',
+          'DELETE_BUTTON': 'Delete',
+          'PASSWORD_CHANGE_BUTTON': 'Change Password',
+          'CREATE_USER_BUTTON': 'New User',
+          'FILTER_ACTIVE': 'Activated',
+          'FILTER_INACTIVE': 'Inactive',
+          'SAVE_BUTTON': 'Save',
+          'CANCEL_BUTTON': 'Cancel',
+          'COLUMN_TITLE': {
+            'NAME': 'Name',
+            'LOGIN': 'Login',
+            'DATE_REGISTERED': 'Creation Date',
+            'GROUPS': 'Groups',
+            'STATUS': 'Status',
+            'ACTIONS': 'Actions'
+          }
+        },
+        'GROUP_LIST': {
+          'REMOVE_QUESTION': null,
+          'VIEW_BUTTON': 'View',
+          'EDIT_BUTTON': 'Edit',
+          'DELETE_BUTTON': 'Delete',
+          'CREATE_GROUP_BUTTON': 'New Group',
+          'COLUMN_TITLE': {
+            'NAME': 'Name',
+            'MEMBERS': 'Members',
+            'ACTIONS': 'Actions'
+          }
+        },
         'CHANGE_PASSWORD_DIALOG': {
           'X_BUTTON': 'x',
           'TITLE': 'Change Password',
@@ -35,17 +67,6 @@ angular.module('translations').config(['$translateProvider',
           'MEMBERS': 'Members',
           'SAVE_BUTTON': 'Save',
           'CANCEL_BUTTON': 'Cancel'
-        },
-        'GROUP_LIST': {
-          'VIEW_BUTTON': 'View',
-          'EDIT_BUTTON': 'Edit',
-          'DELETE_BUTTON': 'Delete',
-          'CREATE_GROUP_BUTTON': 'New Group',
-          'COLUMN_TITLE': {
-            'NAME': 'Name',
-            'MEMBERS': 'Members',
-            'ACTIONS': 'Actions'
-          }
         },
         'GROUP_VIEW_DIALOG': {
           'X_BUTTON': 'x',
@@ -104,25 +125,6 @@ angular.module('translations').config(['$translateProvider',
           'STATUS': 'Status',
           'ACTIVE': 'Active',
           'GROUPS': 'Groups'
-        },
-        'USER_LIST': {
-          'VIEW_BUTTON': 'View',
-          'EDIT_BUTTON': 'Edit',
-          'DELETE_BUTTON': 'Delete',
-          'PASSWORD_CHANGE_BUTTON': 'Change Password',
-          'CREATE_USER_BUTTON': 'New User',
-          'FILTER_ACTIVE': 'Activated',
-          'FILTER_INACTIVE': 'Inactive',
-          'SAVE_BUTTON': 'Save',
-          'CANCEL_BUTTON': 'Cancel',
-          'COLUMN_TITLE': {
-            'NAME': 'Name',
-            'LOGIN': 'Login',
-            'DATE_REGISTERED': 'Creation Date',
-            'GROUPS': 'Groups',
-            'STATUS': 'Status',
-            'ACTIONS': 'Actions'
-          }
         },
         'USER_PROFILE': {
           'USER_ID': 'User ID',
@@ -713,10 +715,11 @@ chellIam.controller('UserListController', [
   '$rootScope',
   '$filter',
   '$modal',
+  '$translate',
   'IamUser',
   'IamGroup',
   'ngTableParams',
-  function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup, ngTableParams) {
+  function ($scope, $rootScope, $filter, $modal, $translate, IamUser, IamGroup, ngTableParams) {
     $scope.users = [];
     IamUser.query().then(function (users) {
       $scope.users = users;
@@ -771,12 +774,14 @@ chellIam.controller('UserListController', [
       $scope.editButtonHook();
     };
     $scope.remove = function (user) {
-      if (!confirm('Are you sure?'))
-        return;
-      IamUser.remove(user).then(function () {
-        $scope.users.splice($scope.users.indexOf(user), 1);
+      $translate('CHELL_IAM.USER_LIST.REMOVE_QUESTION').then(function (removeQuestion) {
+        if (!confirm(removeQuestion))
+          return;
+        IamUser.remove(user).then(function () {
+          $scope.users.splice($scope.users.indexOf(user), 1);
+        });
+        $scope.deleteButtonHook();
       });
-      $scope.deleteButtonHook();
     };
     $scope.changePassword = function (user) {
       $scope.modalInstance = $modal.open({
@@ -909,10 +914,11 @@ chellIam.controller('GroupListController', [
   '$rootScope',
   '$filter',
   '$modal',
+  '$translate',
   'IamGroup',
   'IamUser',
   'ngTableParams',
-  function ($scope, $rootScope, $filter, $modal, IamGroup, IamUser, ngTableParams) {
+  function ($scope, $rootScope, $filter, $modal, $translate, IamGroup, IamUser, ngTableParams) {
     $scope.groups = [];
     IamGroup.query().then(function (groups) {
       $scope.groups = groups;
@@ -967,12 +973,14 @@ chellIam.controller('GroupListController', [
       $scope.editButtonHook();
     };
     $scope.remove = function (group) {
-      if (!confirm('Are you sure?'))
-        return;
-      IamGroup.remove(group).then(function () {
-        $scope.groups.splice($scope.groups.indexOf(group), 1);
+      $translate('CHELL_IAM.GROUP_LIST.REMOVE_QUESTION').then(function (removeQuestion) {
+        if (!confirm(removeQuestion))
+          return;
+        IamGroup.remove(group).then(function () {
+          $scope.groups.splice($scope.groups.indexOf(group), 1);
+        });
+        $scope.deleteButtonHook();
       });
-      $scope.deleteButtonHook();
     };
   }
 ]);

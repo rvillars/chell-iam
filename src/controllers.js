@@ -2,7 +2,7 @@
 
 var chellIam = angular.module('chell-iam');
 
-chellIam.controller('UserListController', function ($scope, $rootScope, $filter, $modal, IamUser, IamGroup, ngTableParams) {
+chellIam.controller('UserListController', function ($scope, $rootScope, $filter, $modal, $translate, IamUser, IamGroup, ngTableParams) {
 
     $scope.users = [];
 
@@ -64,11 +64,13 @@ chellIam.controller('UserListController', function ($scope, $rootScope, $filter,
     };
 
     $scope.remove = function (user) {
-        if (!confirm('Are you sure?')) return;
-        IamUser.remove(user).then(function () {
-            $scope.users.splice($scope.users.indexOf(user), 1);
+        $translate('CHELL_IAM.USER_LIST.REMOVE_QUESTION').then(function (removeQuestion) {
+            if (!confirm(removeQuestion)) return;
+            IamUser.remove(user).then(function () {
+                $scope.users.splice($scope.users.indexOf(user), 1);
+            });
+            $scope.deleteButtonHook();
         });
-        $scope.deleteButtonHook();
     };
 
     $scope.changePassword = function (user) {
@@ -200,7 +202,7 @@ chellIam.controller('UserProfileController', function($scope, IamUser) {
     };
 });
 
-chellIam.controller('GroupListController', function ($scope, $rootScope, $filter, $modal, IamGroup, IamUser, ngTableParams) {
+chellIam.controller('GroupListController', function ($scope, $rootScope, $filter, $modal, $translate, IamGroup, IamUser, ngTableParams) {
 
     $scope.groups = [];
 
@@ -262,11 +264,13 @@ chellIam.controller('GroupListController', function ($scope, $rootScope, $filter
     };
 
     $scope.remove = function (group) {
-        if (!confirm('Are you sure?')) return;
-        IamGroup.remove(group).then(function () {
-            $scope.groups.splice($scope.groups.indexOf(group), 1);
+        $translate('CHELL_IAM.GROUP_LIST.REMOVE_QUESTION').then(function (removeQuestion) {
+            if (!confirm(removeQuestion)) return;
+            IamGroup.remove(group).then(function () {
+                $scope.groups.splice($scope.groups.indexOf(group), 1);
+            });
+            $scope.deleteButtonHook();
         });
-        $scope.deleteButtonHook();
     };
 });
 
