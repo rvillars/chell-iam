@@ -93,7 +93,7 @@ chellIam.directive('chellLoginRequired', function ($modal) {
         link: function (scope, element, attrs) {
             var loginModal;
             scope.$on('event:auth-loginRequired', function () {
-                if (scope.loginFunction) {
+                if (attrs.loginFunction) {
                     scope.loginFunction();
                     return;
                 }
