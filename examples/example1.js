@@ -42,3 +42,7 @@ chellIamExample1.controller('ExampleUserController', function($scope, CurrentUse
         return !CurrentUserService.hasGroupId('e9e30dba-f08f-4109-8486-d5c6a331660a');
     };
 });
+
+chellIamExample1.run(function run($httpBackend) {
+    $httpBackend.whenGET(/.*/).passThrough();
+});

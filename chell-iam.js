@@ -11,7 +11,7 @@ angular.module('translations').config(['$translateProvider',
     $translateProvider.translations('en', {
       'CHELL_IAM': {
         'USER_LIST': {
-          'REMOVE_QUESTION': null,
+          'REMOVE_QUESTION': 'Are you sure?',
           'VIEW_BUTTON': 'View',
           'EDIT_BUTTON': 'Edit',
           'DELETE_BUTTON': 'Delete',
@@ -31,7 +31,7 @@ angular.module('translations').config(['$translateProvider',
           }
         },
         'GROUP_LIST': {
-          'REMOVE_QUESTION': null,
+          'REMOVE_QUESTION': 'Are you sure?',
           'VIEW_BUTTON': 'View',
           'EDIT_BUTTON': 'Edit',
           'DELETE_BUTTON': 'Delete',
