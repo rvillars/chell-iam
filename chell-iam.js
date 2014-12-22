@@ -855,13 +855,17 @@ chellIam.controller('UserFormController', [
           $scope.modalInstance.result.then(function (newBase64Credential) {
             IamUser.changePassword(createdUser, newBase64Credential);
           });
+          $scope.cancel();
+          $rootScope.$broadcast('chellIam.userCreated');
+          $scope.saveButtonHook();
         });
       } else {
-        IamUser.update($scope.editUser);
+        IamUser.update($scope.editUser).then(function () {
+          $scope.cancel();
+          $rootScope.$broadcast('chellIam.userCreated');
+          $scope.saveButtonHook();
+        });
       }
-      $scope.cancel();
-      $rootScope.$broadcast('chellIam.userCreated');
-      $scope.saveButtonHook();
     };
     $scope.cancel = function () {
       $scope.editUser = {};
@@ -1024,13 +1028,18 @@ chellIam.controller('GroupFormController', [
       });
       var isNew = $scope.editGroup.id == null;
       if (isNew) {
-        IamGroup.create($scope.editGroup);
+        IamGroup.create($scope.editGroup).then(function () {
+          $scope.cancel();
+          $rootScope.$broadcast('chellIam.groupCreated');
+          $scope.saveButtonHook();
+        });
       } else {
-        IamGroup.update($scope.editGroup);
+        IamGroup.update($scope.editGroup).then(function () {
+          $scope.cancel();
+          $rootScope.$broadcast('chellIam.groupCreated');
+          $scope.saveButtonHook();
+        });
       }
-      $scope.cancel();
-      $rootScope.$broadcast('chellIam.groupCreated');
-      $scope.saveButtonHook();
     };
     $scope.cancel = function () {
       $scope.editGroup = {};
