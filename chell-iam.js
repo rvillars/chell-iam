@@ -1339,7 +1339,7 @@ angular.module("templates/group-form.tpl.html", []).run(["$templateCache", funct
 angular.module("templates/group-list.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/group-list.tpl.html",
     "<div>\n" +
-    "    <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"custom/pager/group\" class=\"table table-striped table-bordered\"\n" +
+    "    <table ng-table=\"tableParams\" show-filter=\"true\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" template-pagination=\"chell-iam/group-list/pager\" class=\"table table-striped table-bordered\"\n" +
     "           id=\"groupDatatable\">\n" +
     "        <tbody>\n" +
     "        <tr ng-repeat=\"group in $data\">\n" +
@@ -1367,7 +1367,7 @@ angular.module("templates/group-list.tpl.html", []).run(["$templateCache", funct
     "        </tr>\n" +
     "        </tbody>\n" +
     "    </table>\n" +
-    "    <script type=\"text/ng-template\" id=\"custom/pager/group\">\n" +
+    "    <script type=\"text/ng-template\" id=\"chell-iam/group-list/pager\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-4\">\n" +
     "                <button class=\"btn btn-default\" ng-show=\"$parent.$parent.showCreateButton && !$parent.$parent.readOnly()\" ng-click=\"$parent.$parent.create()\"><i style=\"padding-right: 10px\" class=\"glyphicon glyphicon-lock\"></i>{{'CHELL_IAM.GROUP_LIST.CREATE_GROUP_BUTTON'\n" +
