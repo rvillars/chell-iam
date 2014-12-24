@@ -12,8 +12,7 @@ var chellIam = angular.module('chell-iam', [
     'multi-select',
     'translations',
     'preferences',
-    'base64',
-    'ngMockE2E'
+    'base64'
 ]);
 
 chellIam.config(['$httpProvider', function($httpProvider) {

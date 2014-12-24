@@ -2,7 +2,8 @@
 'use strict';
 
 var chellIamExample1 = angular.module('chell-iam-example1', [
-    'chell-iam'
+    'chell-iam',
+    'ngMockE2E'
 ]);
 
 chellIamExample1.controller('ExampleGroupController', function($scope, CurrentUserService) {
@@ -45,4 +46,7 @@ chellIamExample1.controller('ExampleUserController', function($scope, CurrentUse
 
 chellIamExample1.run(function run($httpBackend) {
     $httpBackend.whenGET(/.*/).passThrough();
+    $httpBackend.whenPOST(/.*/).passThrough();
+    $httpBackend.whenPUT(/.*/).passThrough();
+    $httpBackend.whenDELETE(/.*/).passThrough();
 });
