@@ -62,8 +62,9 @@ TODO: code and examples
 - Add <chell-user-profile/> or an appropriate tag (see wiki) to your html code.
 
 #### Using Iam Mock
-- Add "adapters/SCIMIamMock.js"
-- Add httpBackend passthrough
+- Add module 'ngMockE2E' to your applications module dependencies
+- Load "adapters/SCIMIamMock.js"
+- Add httpBackend passthrough (e.g. like in example1.js)
 
 ## Thirdparty libraries
 
