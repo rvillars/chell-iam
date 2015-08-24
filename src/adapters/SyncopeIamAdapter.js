@@ -7,6 +7,7 @@ chellIam.host = 'syncope-cf.cfapps.io';
 chellIam.factory('IamAdapter', function ($http, $q, _) {
     return {
         getUserList: function(){
+            //TODO http already returns promises
             var deferred = $q.defer();
             $http.get('http://'+chellIam.host+'/cxf/users').success(function(users){
                 deferred.resolve(_.map(users, externalToIamUser));
