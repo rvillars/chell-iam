@@ -199,13 +199,17 @@ chellIam.directive('hasGroup', function (CurrentUserService, IamUser) {
     };
 });
 
-chellIam.directive('visibleByLogin', function () {
+chellIam.directive('visibleByLogin', function (CurrentUserService, IamUser) {
     return {
         restrict: 'A',
-        controller: function ($scope, $element) {
-            $element.hide();
-        },
         link: function ($scope, element, attrs) {
+            IamUser.self().then(function (user) {
+                if (!CurrentUserService.getCurrentUser()) {
+                    element.hide();
+                } else {
+                    element.show();
+                }
+            });
             $scope.$on('event:auth-loginConfirmed', function () {
                 element.show();
             });

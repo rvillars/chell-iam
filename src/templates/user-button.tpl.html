@@ -1,10 +1,10 @@
 <div class="dropdown" ng-controller="CurrentUserController">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+    <button class="btn btn-default dropdown-toggle navbar-btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
         <img height=22 width="22" ng-src="{{currentUser.gravatarMail ? ('http://www.gravatar.com/avatar/'+(currentUser.gravatarMail | md5)+'?s=22') : currentUser.photo}}">
         {{currentUser.fullname}}
         <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
         <div id="transclude"></div>
         <li visible-by-login role="presentation"><a role="menuitem" tabindex="-1" ng-click="changePassword()"><i class="glyphicon glyphicon-asterisk"></i> Change Password</a></li>
         <li role="presentation" class="divider"></li>

@@ -617,26 +617,30 @@ chellIam.directive('hasGroup', [
     };
   }
 ]);
-chellIam.directive('visibleByLogin', function () {
-  return {
-    restrict: 'A',
-    controller: [
-      '$scope',
-      '$element',
-      function ($scope, $element) {
-        $element.hide();
+chellIam.directive('visibleByLogin', [
+  'CurrentUserService',
+  'IamUser',
+  function (CurrentUserService, IamUser) {
+    return {
+      restrict: 'A',
+      link: function ($scope, element, attrs) {
+        IamUser.self().then(function (user) {
+          if (!CurrentUserService.getCurrentUser()) {
+            element.hide();
+          } else {
+            element.show();
+          }
+        });
+        $scope.$on('event:auth-loginConfirmed', function () {
+          element.show();
+        });
+        $scope.$on('event:auth-logoutConfirmed', function () {
+          element.hide();
+        });
       }
-    ],
-    link: function ($scope, element, attrs) {
-      $scope.$on('event:auth-loginConfirmed', function () {
-        element.show();
-      });
-      $scope.$on('event:auth-logoutConfirmed', function () {
-        element.hide();
-      });
-    }
-  };
-});
+    };
+  }
+]);
 chellIam.directive('multiValue', function () {
   return {
     restrict: 'EA',
@@ -1557,12 +1561,12 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
 angular.module("templates/user-button.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/user-button.tpl.html",
     "<div class=\"dropdown\" ng-controller=\"CurrentUserController\">\n" +
-    "    <button class=\"btn btn-default dropdown-toggle\" type=\"button\" id=\"dropdownMenu1\" data-toggle=\"dropdown\" aria-expanded=\"true\">\n" +
+    "    <button class=\"btn btn-default dropdown-toggle navbar-btn\" type=\"button\" id=\"dropdownMenu1\" data-toggle=\"dropdown\" aria-expanded=\"true\">\n" +
     "        <img height=22 width=\"22\" ng-src=\"{{currentUser.gravatarMail ? ('http://www.gravatar.com/avatar/'+(currentUser.gravatarMail | md5)+'?s=22') : currentUser.photo}}\">\n" +
     "        {{currentUser.fullname}}\n" +
     "        <span class=\"caret\"></span>\n" +
     "    </button>\n" +
-    "    <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu1\">\n" +
+    "    <ul class=\"dropdown-menu pull-right\" role=\"menu\" aria-labelledby=\"dropdownMenu1\">\n" +
     "        <div id=\"transclude\"></div>\n" +
     "        <li visible-by-login role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" ng-click=\"changePassword()\"><i class=\"glyphicon glyphicon-asterisk\"></i> Change Password</a></li>\n" +
     "        <li role=\"presentation\" class=\"divider\"></li>\n" +
