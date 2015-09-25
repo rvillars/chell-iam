@@ -1516,7 +1516,7 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
   $templateCache.put("templates/multi-value.tpl.html",
     "<div ng-show=\"!panel\">\n" +
     "    <div class=\"multiple-form-group input-group\" style=\"padding-bottom: 3px\" ng-repeat=\"value in valueList\" ng-show=\"valueList\">\n" +
-    "        <div class=\"input-group-btn input-group-select\">\n" +
+    "        <div class=\"input-group-btn input-group-select dropdown\">\n" +
     "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"readOnly\"\n" +
     "                    style=\"min-width: 95px;\">\n" +
     "                <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +
@@ -1534,7 +1534,7 @@ angular.module("templates/multi-value.tpl.html", []).run(["$templateCache", func
     "<div ng-show=\"panel\">\n" +
     "    <div class=\"panel panel-default\" ng-repeat=\"value in valueList\">\n" +
     "        <div class=\"panel-heading clearfix\" style=\"padding: 0px; background-color: #ffffff\">\n" +
-    "            <div class=\"input-group-btn input-group-select pull-left\">\n" +
+    "            <div class=\"input-group-btn input-group-select pull-left dropdown\">\n" +
     "                <button class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" ng-disabled=\"readOnly\"\n" +
     "                        style=\"min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px\">\n" +
     "                    <span class=\"concept\">{{value.type}}</span> <span class=\"caret\"></span>\n" +

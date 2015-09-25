@@ -1,6 +1,6 @@
 <div ng-show="!panel">
     <div class="multiple-form-group input-group" style="padding-bottom: 3px" ng-repeat="value in valueList" ng-show="valueList">
-        <div class="input-group-btn input-group-select">
+        <div class="input-group-btn input-group-select dropdown">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-disabled="readOnly"
                     style="min-width: 95px;">
                 <span class="concept">{{value.type}}</span> <span class="caret"></span>
@@ -18,7 +18,7 @@
 <div ng-show="panel">
     <div class="panel panel-default" ng-repeat="value in valueList">
         <div class="panel-heading clearfix" style="padding: 0px; background-color: #ffffff">
-            <div class="input-group-btn input-group-select pull-left">
+            <div class="input-group-btn input-group-select pull-left dropdown">
                 <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-disabled="readOnly"
                         style="min-width: 95px; border-left: none; border-top: none; border-bottom: none; border-bottom-left-radius: 0px">
                     <span class="concept">{{value.type}}</span> <span class="caret"></span>
